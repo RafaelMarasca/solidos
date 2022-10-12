@@ -44,7 +44,7 @@ const std::string vertexShaderSource =
  */
 const std::string fragmentShaderSource = 
         "#version 330 core\n"
-        "in vec4 vertexColor;\n"
+        "smooth in vec4 vertexColor;\n"
         "out vec4 FragColor;\n"
         "void main(){\n"
         "FragColor = vertexColor;\n"
