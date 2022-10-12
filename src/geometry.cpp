@@ -265,11 +265,6 @@ void geometry::setView(matrix &view)
     glUniformMatrix4fv(this->viewLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->viewMatrix)[0]));
 }
 
-
-
-
-
-
 cube::cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage): geometry(usage)
 {
 
@@ -330,7 +325,7 @@ cube::cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage): geometry(u
 
     //Transfere os dados para o buffer de objetos.
     glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, (this->vertices).size()*sizeof(GLfloat),&(this->vertices[0]), usage);
+    glBufferData(GL_ARRAY_BUFFER, (this->vertices.size())*sizeof(GLfloat),&(this->vertices[0]), usage);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, (this->indices.size())*sizeof(int), &(this->indices[0]), usage);
@@ -339,5 +334,5 @@ cube::cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage): geometry(u
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7*sizeof(GLfloat), (void*)0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7*sizeof(GLfloat), (void*)0);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
 }
