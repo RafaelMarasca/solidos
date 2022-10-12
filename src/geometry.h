@@ -112,12 +112,17 @@ class icosahedron : public geometry
 {
 
     public:
-        icosahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
+        icosahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usage = GL_DYNAMIC_DRAW);
+        void subdivide(int times, GLfloat radius);
 };
 
 
 
-
+class sphere : public geometry
+{
+    public:
+        sphere(GLfloat size, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
+};
 
 
 

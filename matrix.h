@@ -59,8 +59,6 @@ class vec3 :public matrix
 
         vec3 normalize();
 
-        void print();
-
 };
 
 

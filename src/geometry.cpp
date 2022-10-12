@@ -25,6 +25,13 @@ shaderProgram* geometry::program = nullptr;
 
 std::vector<GLfloat> branco = {1.0f, 1.0f, 1.0f, 1.0f};
 
+bool floatCmp(GLfloat a, GLfloat b)
+{
+    if(std::fabs(a-b)>0.00001f)
+        return false;
+    
+    return true;
+}
 
 geometry::geometry(std::vector<GLfloat> &vertices, std::vector<int> &indices, std::vector<GLfloat> &centralPoint, GLenum usage)
 {
@@ -179,10 +186,6 @@ void geometry::rotate(GLfloat degrees, AXIS a)
 
     this->modelMatrix = rotation*this->modelMatrix;
     this->translate(cPoint[0], cPoint[1], cPoint[2]);
-    for(int i = 0; i<3; i++)
-    {
-        std::cout<<this->centralPoint[i]<<std::endl;
-    }
 
     glUniformMatrix4fv(this->modelLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->modelMatrix)[0]));
 }
@@ -204,10 +207,6 @@ void geometry::translate(GLfloat dx, GLfloat dy, GLfloat dz)
 
     this->modelMatrix = translation*this->modelMatrix;
 
-    for(int i = 0; i<3; i++)
-    {
-        std::cout<<this->centralPoint[i]<<std::endl;
-    }
 
     glUniformMatrix4fv(this->modelLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->modelMatrix)[0]));
 }
@@ -412,8 +411,9 @@ icosahedron::icosahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usag
          7, 11,  10 //20 v
     };
 
-    this->scale(size/2.0f, size/2.0f, size/2.0f);
-    this->translate(center[0], center[1], center[2]);
+    //this->scale(size/2.0f, size/2.0f, size/2.0f);
+    //this->translate(center[0], center[1], center[2]);
+    this->subdivide(0,0);
 
      //Seleciona o array de vértices da forma corrente.
     glBindVertexArray(this->VAO);
@@ -429,4 +429,158 @@ icosahedron::icosahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usag
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
 }
+
+
+
+
+std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLfloat> &vertices, std::vector<bool> &visited, GLfloat radius)
+{
+    
+    radius = 1.902f;
+    std::vector<int> newTriangles;
+    vec3 v1 (vertices[(*it)*3], vertices[((*it)*3)+1],vertices[((*it)*3)+2]);
+    vec3 v2 (vertices[(*(it+1))*3], vertices[((*(it+1))*3)+1],vertices[((*(it+1))*3)+2]);
+    vec3 v3 (vertices[(*(it+2))*3], vertices[((*(it+2))*3)+1],vertices[((*(it+2))*3)+2]);
+
+    
+
+    vec3 v12 = (((v2 + v1)).normalize()*radius); //v12
+    vec3 v23 = (((v3 + v2)).normalize()*radius); //v23
+    vec3 v31 = (((v1 + v3)).normalize()*radius); //v31
+    
+    v12.print();
+    std::cout<<std::endl;
+    v23.print();
+    std::cout<<std::endl;
+    v31.print();
+    std::cout<<std::endl;
+    
+    int index1 = 0;
+    int index2 = 0;
+    int index3 = 0;
+
+
+    if(visited[(*it)] && visited[*(it+1)])
+    {
+        for(int i = 0; i< vertices.size(); i+=3)
+        {
+            if(floatCmp(vertices[i], v12(0,0))&&floatCmp(vertices[i+1], v12(1,0)) && floatCmp(vertices[i+2], v12(2,0)))
+            {
+                index1 = i/3;
+                break;
+            }
+        }
+    }
+
+    if(!index1)
+    {
+        index1 = vertices.size()/3;
+        for(int i = 0; i<3; i++)
+            vertices.push_back(v12(i,0));
+        visited.push_back(1);
+    }
+
+    if(visited[*(it+1)] && visited[*(it+2)])
+    {
+        for(int i = 0; i< vertices.size(); i+=3)
+        {
+            if(floatCmp(vertices[i], v23(0,0))&&floatCmp(vertices[i+1], v23(1,0)) && floatCmp(vertices[i+2], v23(2,0)))
+            {
+                index2 = i/3;
+                break;
+            }
+        }
+    }
+    if(!index2)
+    {
+        index2 = vertices.size()/3;
+        for(int i = 0; i<3; i++)
+            vertices.push_back(v23(i,0));
+        visited.push_back(1);
+    }
+
+    if(visited[*(it+2)] && visited[*(it)])
+    {
+        for(int i = 0; i< vertices.size(); i+=3)
+        {
+            if(floatCmp(vertices[i], v31(0,0)) && floatCmp(vertices[i+1], v31(1,0)) && floatCmp(vertices[i+2], v31(2,0)))
+            {
+                index3 = i/3;
+                break;
+            }
+        }
+    }
+    
+    if(!index3)
+    {
+        index3 = vertices.size()/3;
+        for(int i = 0; i<3; i++)
+            vertices.push_back(v31(i,0));
+        visited.push_back(1);
+    }
+    
+    newTriangles.push_back(*it);
+    newTriangles.push_back(index1);
+    newTriangles.push_back(index3);
+
+    newTriangles.push_back(index1);
+    newTriangles.push_back(*(it+1));
+    newTriangles.push_back(index2);
+
+    newTriangles.push_back(index1);
+    newTriangles.push_back(index2);
+    newTriangles.push_back(index3);
+
+    newTriangles.push_back(index2);
+    newTriangles.push_back(*(it+2));
+    newTriangles.push_back(index3);
+
+    visited[*it] = true;
+    visited[*(it+1)] = true;
+    visited[*(it+2)] = true;
+
+  
+    return newTriangles;
+}
+
+void icosahedron::subdivide(int times, GLfloat radius)
+{
+    std::vector<bool> visited (this->vertices.size()/3, false);
+    std::vector<int> newTriangles;
+
+    std::vector<int>::iterator it = this->indices.begin();
+
+    for(it = this->indices.begin(); it != this->indices.end(); it+=3)
+    {
+        std::vector<int> aux = triangleDivision(it, this->vertices, visited, radius);
+        newTriangles.insert(newTriangles.end(),aux.begin(), aux.end());
+    }
+
+    indices = newTriangles;
+     //Seleciona o array de vértices da forma corrente.
+    /*glBindVertexArray(this->VAO);
+
+    
+     //Transfere os dados para o buffer de objetos.
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, (this->vertices).size()*sizeof(GLfloat),&(this->vertices[0]));
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, (this->indices.size())*sizeof(int), &(this->indices[0]));
+
+    //Aponta os atributos de vértice.
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
+
+    std::cout<<"Tamanho"<<this->vertices.size()<<std::endl;
+    
+    for(int i =0; i<indices.size(); i+=3)
+    {
+        std::cout<<indices[i]<<" "<<indices[i+1]<<" "<<indices[i+2]<<std::endl;
+    }*/
+}
+
+
+
+//sphere::sphere(GLfloat size, std::vector<GLfloat> &center, GLenum usage) : geometry(usage);
 

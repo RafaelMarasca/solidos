@@ -221,21 +221,11 @@ vec3 vec3::normalize()
     GLfloat y = this->matrixElements[1];
     GLfloat z = this->matrixElements[2];
 
-    GLfloat norm = sqrtf(x*x + y*y + z*z);
+    GLfloat norm = sqrt(x*x + y*y + z*z);
 
     v(0,0) = x/norm;
     v(1,0) = y/norm;
     v(2,0) = z/norm;
 
     return v;
-}
-
-
-void vec3::print()
-{
-    std::vector<GLfloat>::iterator it;
-    for(it = this->matrixElements.begin(); it != this->matrixElements.end(); it++)
-    {
-        std::cout<<(*it)<<std::endl;
-    }
 }

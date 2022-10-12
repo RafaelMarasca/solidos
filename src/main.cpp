@@ -19,12 +19,12 @@ geometry* geo2 = nullptr;
 
 void rotate(int value)
 {
-    geo->rotate(15, Z_AXIS);
-    geo2->rotate(15,Z_AXIS);
-    geo->rotate(7, Y_AXIS);
-    geo2->rotate(7,Y_AXIS);
-    geo->rotate(30, X_AXIS);
-    geo2->rotate(30,X_AXIS);
+    geo->rotate(15, Y_AXIS);
+    geo2->rotate(15,Y_AXIS);
+    //geo->rotate(7, Y_AXIS);
+    //geo2->rotate(7,Y_AXIS);
+    //geo->rotate(30, X_AXIS);
+    //geo2->rotate(30,X_AXIS);
 
     glutPostRedisplay();
 }
@@ -38,7 +38,7 @@ void draw()
     geo->draw();
     glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
     geo2->draw();
-    glutTimerFunc(100,rotate, 0); 
+    glutTimerFunc(500,rotate, 0); 
     glutSwapBuffers();
 }
 
@@ -57,6 +57,8 @@ int main(int argc, char**argv)
     glutDisplayFunc(draw);
     glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
                     GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+    glPointSize(3.0f);
     glEnable(GL_CULL_FACE);
     //glCullFace(GL_FRONT);
    // glFrontFace(GL_CCW);  
@@ -74,20 +76,23 @@ int main(int argc, char**argv)
 
     std::vector<GLfloat> c= {0.0f, 0.0f, 0.0f};
 
-    geo =  new icosahedron(0.5, c);//new cube(0.5f, c);
+    geo =  new icosahedron(2.0f, c);//new cube(0.5f, c);
 
     geo->rotate(-45.0,Y_AXIS);
     geo->rotate(45.0, X_AXIS);
     geo->translate(0.0f,0.0f,-5.0f);
     geo->setProjection(90.0f);
 
-    geo2 =  new icosahedron(0.55, c);//new cube(0.5f, c);
+    //dynamic_cast<icosahedron*>(geo)->subdivide(0,1.0f);
+
+    geo2 =  new icosahedron(2.0f, c);//new cube(0.5f, c);
     geo2->setColor(1.0f,0.0f,0.0f);
 
     geo2->rotate(-45.0,Y_AXIS);
     geo2->rotate(45.0, X_AXIS);
     geo2->translate(0.0f,0.0f,-5.0f);
     geo2->setProjection(90.0f);
+    //dynamic_cast<icosahedron*>(geo2)->subdivide(0,1.0f);
     //geo->rotate(45,Z);
 
     glutMainLoop(); //Roda o loop principal da janela
