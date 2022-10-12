@@ -29,8 +29,6 @@ class matrix
     public:
 
         static matrix eye(unsigned int order); //Função estática que retorna uma matriz identidade
-        
-
 
         matrix(unsigned rowNumber, unsigned colNumber); //Construtor para a classe matrix
         matrix(unsigned rowNumber, unsigned colNumber,std::vector<GLfloat>);

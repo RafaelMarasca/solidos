@@ -29,13 +29,9 @@ const std::string vertexShaderSource =
         "uniform mat4 model;\n"
         "uniform mat4 view;\n"
         "uniform mat4 projection;\n"
-        "uniform mat4 transform;\n"
-        "smooth out vec4 vertexColor;\n"
         "layout (location = 0) in vec3 pos;\n"
-        "layout (location = 1) in vec4 color;\n"
         "void main(){\n"
         "gl_Position = projection*view*model*vec4(pos*0.9999f, 1.0f);\n"
-        "vertexColor = color;\n"
         "}\n";
 
 /**
@@ -44,10 +40,10 @@ const std::string vertexShaderSource =
  */
 const std::string fragmentShaderSource = 
         "#version 330 core\n"
-        "smooth in vec4 vertexColor;\n"
+        "uniform vec4 color;\n"
         "out vec4 FragColor;\n"
         "void main(){\n"
-        "FragColor = vertexColor;\n"
+        "FragColor = color;\n"
         "}\n";
 
 class geometry
@@ -73,8 +69,9 @@ class geometry
 
         std::vector<GLfloat> centralPoint; //Ponto central da forma
         std::vector<GLfloat> vertices; //Vetor de vértices da forma
-        std::vector<int> indices;
         std::vector<GLfloat> color;
+        std::vector<int> indices;
+        
 
         GLuint colorLoc;
         GLuint modelLoc;
@@ -94,6 +91,7 @@ class geometry
 
         void setProjection(GLfloat FOV, GLfloat ar = 1.0f);
         void setView(matrix &);
+        void setColor(GLfloat r, GLfloat g,  GLfloat b);
 
         //virtual void setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f); //Setter para a cor do objeto.
         //virtual void resetColor();
@@ -106,9 +104,19 @@ class cube : public geometry
 {
 
     public:
-        cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage = GL_DYNAMIC_DRAW);
+        cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
 
 };
+
+class isocahedron : public geometry
+{
+
+    public:
+        isocahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
+};
+
+
+
 
 
 

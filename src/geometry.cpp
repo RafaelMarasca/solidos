@@ -38,9 +38,15 @@ geometry::geometry(std::vector<GLfloat> &vertices, std::vector<int> &indices, st
     this->indices = indices;
     this->centralPoint = centralPoint;
     this->usage = usage;
-    
     this->color = {GEOMETRY_R, GEOMETRY_G, GEOMETRY_B, 1.0f};
-
+    
+    /*for(int i = 0; i<vertices.size()/3; i++)
+    {
+        this->color.push_back(GEOMETRY_R);
+        this->color.push_back(GEOMETRY_G);
+        this->color.push_back(GEOMETRY_B);
+        this->color.push_back(1.0f); 
+    }*/
 
     if(geometry::program == nullptr)
         geometry::program = new shaderProgram(vertexShaderSource, fragmentShaderSource);
@@ -60,7 +66,6 @@ geometry::geometry(GLenum usage)
 
     this->centralPoint = {0.0f, 0.0f, 0.0f};
     this->usage = usage;
-    
     this->color = {GEOMETRY_R, GEOMETRY_G, GEOMETRY_B, 1.0f};
 
 
@@ -96,10 +101,10 @@ void geometry::draw()
 {
     this->program->use();
     glBindVertexArray(this->VAO);
-    //glUniform4fv(this->colorLoc, 1, &(this->color[0]));
+    glUniform4fv(this->colorLoc, 1, &(this->color[0]));
     glUniformMatrix4fv(this->modelLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->modelMatrix)[0]));
     glUniformMatrix4fv(this->viewLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->viewMatrix)[0]));
-    //glUniformMatrix4fv(this->projectionLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->projectionMatrix)[0]));
+    glUniformMatrix4fv(this->projectionLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->projectionMatrix)[0]));
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, (void*)0);
 }
 
@@ -128,11 +133,11 @@ void geometry::setup()
 
     //Inicia o uso do programa de shader e seta a cor inicial da forma.
     this->program->use();
-    //this->colorLoc = this->program->getLoc("color");
+    this->colorLoc = this->program->getLoc("color");
     this->modelLoc = this->program->getLoc("model");
     this->viewLoc = this->program->getLoc("view");
     this->projectionLoc = this->program->getLoc("projection");
-    //glUniform4fv(this->colorLoc, 1, &(this->color[0]));
+    glUniform4fv(this->colorLoc, 1, &(this->color[0]));
     glUniformMatrix4fv(this->modelLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->modelMatrix)[0]));
     glUniformMatrix4fv(this->viewLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->viewMatrix)[0]));
     glUniformMatrix4fv(this->projectionLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->projectionMatrix)[0]));
@@ -265,9 +270,33 @@ void geometry::setView(matrix &view)
     glUniformMatrix4fv(this->viewLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->viewMatrix)[0]));
 }
 
+
+void geometry::setColor(GLfloat r, GLfloat g, GLfloat b)
+{
+    this->color[0] = r;
+    this->color[1] = g;
+    this->color[2] = b;
+}
+
 cube::cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage): geometry(usage)
 {
 
+    this->vertices = 
+    {
+        //Face frontal
+         1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f, 
+
+        //Face traseira
+         1.0f,  1.0f,  -1.0f,
+        -1.0f,  1.0f,  -1.0f,
+        -1.0f, -1.0f,  -1.0f,
+         1.0f, -1.0f,  -1.0f,
+    };
+
+    /*
     this->vertices = 
     {
         //Face frontal
@@ -289,7 +318,7 @@ cube::cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage): geometry(u
          0.0f,  0.0f,   0.0f, 1.0f, //Preto
          1.0f, -1.0f,  -1.0f,
          1.0f,  0.0f,   0.0f, 1.0f, //Vermelho
-    };
+    };*/
 
     this->indices = 
     {
@@ -319,6 +348,7 @@ cube::cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage): geometry(u
     };
 
     this->scale(size/2.0f, size/2.0f, size/2.0f);
+    this->translate(center[0], center[1], center[2]);
 
      //Seleciona o array de vértices da forma corrente.
     glBindVertexArray(this->VAO);
@@ -332,7 +362,71 @@ cube::cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage): geometry(u
 
     //Aponta os atributos de vértice.
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7*sizeof(GLfloat), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
+   // glEnableVertexAttribArray(1);
+    //glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
 }
+
+
+isocahedron::isocahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usage): geometry(usage)
+{
+    GLfloat gr = (1+sqrt(5))/2.0f;
+
+    this->vertices = 
+    {
+         0.0f,   gr,  1.0f, //0
+         0.0f,   gr, -1.0f, //1
+         0.0f,  -gr,  1.0f, //2
+         0.0f,  -gr, -1.0f, //3
+         1.0f,  0.0f,   gr, //4
+        -1.0f,  0.0f,   gr, //5
+         1.0f,  0.0f,  -gr, //6
+        -1.0f,  0.0f,  -gr, //7
+           gr,  1.0f, 0.0f, //8
+           gr, -1.0f, 0.0f, //9
+          -gr,  1.0f, 0.0f, //10
+          -gr, -1.0f, 0.0f  //11
+    };
+
+    this->indices = 
+    {
+         0,  5,  4, //1
+         0,  4,  8, //2
+         0,  8,  1, //3
+         0,  1, 10, //4
+         0, 10,  5, //5
+         5,  2,  4, //6
+         4,  2,  9, //7
+         9,  6,  8, //8
+         3,  6,  7, //9
+         7,  1, 10, //10
+        10, 11,  5, //11
+         5, 11,  2, //12
+         2,  3,  9, //13 
+         2, 11,  3, //14
+         3,  7, 11, //15
+         1,  6,  7, //16
+         1,  8,  6, //17
+         3,  6,  9, //18
+         4,  9,  8, //19
+         7, 11,  10 //20
+    };
+
+    this->scale(size/2.0f, size/2.0f, size/2.0f);
+    this->translate(center[0], center[1], center[2]);
+
+     //Seleciona o array de vértices da forma corrente.
+    glBindVertexArray(this->VAO);
+
+    //Transfere os dados para o buffer de objetos.
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferData(GL_ARRAY_BUFFER, (this->vertices.size())*sizeof(GLfloat),&(this->vertices[0]), usage);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (this->indices.size())*sizeof(int), &(this->indices[0]), usage);
+
+    //Aponta os atributos de vértice.
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
+}
+
