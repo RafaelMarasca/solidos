@@ -76,7 +76,7 @@ int main(int argc, char**argv)
 
     std::vector<GLfloat> c= {0.0f, 0.0f, 0.0f};
 
-    geo =  new icosahedron(2.0f, c);//new cube(0.5f, c);
+    geo =  new icosphere(1.0f, c, 5);//new cube(0.5f, c);
 
     geo->rotate(-45.0,Y_AXIS);
     geo->rotate(45.0, X_AXIS);
@@ -85,7 +85,7 @@ int main(int argc, char**argv)
 
     //dynamic_cast<icosahedron*>(geo)->subdivide(0,1.0f);
 
-    geo2 =  new icosahedron(2.0f, c);//new cube(0.5f, c);
+    geo2 =  new icosphere(1.02f, c, 5);//new icosahedron(2.0f, c);//new cube(0.5f, c);
     geo2->setColor(1.0f,0.0f,0.0f);
 
     geo2->rotate(-45.0,Y_AXIS);

@@ -110,18 +110,19 @@ class cube : public geometry
 
 class icosahedron : public geometry
 {
-
     public:
         icosahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usage = GL_DYNAMIC_DRAW);
-        void subdivide(int times, GLfloat radius);
+        
 };
 
 
 
-class sphere : public geometry
+class icosphere : public geometry
 {
     public:
-        sphere(GLfloat size, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
+        icosphere(GLfloat radius, std::vector<GLfloat> &center, int depth = 3, GLenum usage = GL_DYNAMIC_DRAW);
+        void subdivide(int depth);
+
 };
 
 

@@ -411,9 +411,8 @@ icosahedron::icosahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usag
          7, 11,  10 //20 v
     };
 
-    //this->scale(size/2.0f, size/2.0f, size/2.0f);
-    //this->translate(center[0], center[1], center[2]);
-    this->subdivide(0,0);
+    this->scale(size/2.0f, size/2.0f, size/2.0f);
+    this->translate(center[0], center[1], center[2]);
 
      //Seleciona o array de vértices da forma corrente.
     glBindVertexArray(this->VAO);
@@ -433,10 +432,10 @@ icosahedron::icosahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usag
 
 
 
-std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLfloat> &vertices, std::vector<bool> &visited, GLfloat radius)
+std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLfloat> &vertices, std::vector<bool> &visited)
 {
     
-    radius = 1.902f;
+    GLfloat radius = 1.902f;
     std::vector<int> newTriangles;
     vec3 v1 (vertices[(*it)*3], vertices[((*it)*3)+1],vertices[((*it)*3)+2]);
     vec3 v2 (vertices[(*(it+1))*3], vertices[((*(it+1))*3)+1],vertices[((*(it+1))*3)+2]);
@@ -447,13 +446,7 @@ std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLf
     vec3 v12 = (((v2 + v1)).normalize()*radius); //v12
     vec3 v23 = (((v3 + v2)).normalize()*radius); //v23
     vec3 v31 = (((v1 + v3)).normalize()*radius); //v31
-    
-    v12.print();
-    std::cout<<std::endl;
-    v23.print();
-    std::cout<<std::endl;
-    v31.print();
-    std::cout<<std::endl;
+
     
     int index1 = 0;
     int index2 = 0;
@@ -543,44 +536,93 @@ std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLf
     return newTriangles;
 }
 
-void icosahedron::subdivide(int times, GLfloat radius)
+void icosphere::subdivide(int depth)
 {
-    std::vector<bool> visited (this->vertices.size()/3, false);
-    std::vector<int> newTriangles;
-
-    std::vector<int>::iterator it = this->indices.begin();
-
-    for(it = this->indices.begin(); it != this->indices.end(); it+=3)
+    while(depth)
     {
-        std::vector<int> aux = triangleDivision(it, this->vertices, visited, radius);
-        newTriangles.insert(newTriangles.end(),aux.begin(), aux.end());
+        std::vector<bool> visited (this->vertices.size()/3, false);
+        std::vector<int> newTriangles;
+
+        std::vector<int>::iterator it = this->indices.begin();
+
+        for(it = this->indices.begin(); it != this->indices.end(); it+=3)
+        {
+            std::vector<int> aux = triangleDivision(it, this->vertices, visited);
+            newTriangles.insert(newTriangles.end(),aux.begin(), aux.end());
+        }
+
+        indices = newTriangles;
+        depth--;
     }
-
-    indices = newTriangles;
-     //Seleciona o array de vértices da forma corrente.
-    /*glBindVertexArray(this->VAO);
-
     
-     //Transfere os dados para o buffer de objetos.
+
+    //Seleciona o array de vértices da forma corrente.
+    glBindVertexArray(this->VAO);
+
+    //Transfere os dados para o buffer de objetos.
     glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, (this->vertices).size()*sizeof(GLfloat),&(this->vertices[0]));
+    glBufferData(GL_ARRAY_BUFFER, (this->vertices.size())*sizeof(GLfloat),&(this->vertices[0]), usage);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, (this->indices.size())*sizeof(int), &(this->indices[0]));
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (this->indices.size())*sizeof(int), &(this->indices[0]), usage);
 
     //Aponta os atributos de vértice.
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
 
-    std::cout<<"Tamanho"<<this->vertices.size()<<std::endl;
-    
-    for(int i =0; i<indices.size(); i+=3)
-    {
-        std::cout<<indices[i]<<" "<<indices[i+1]<<" "<<indices[i+2]<<std::endl;
-    }*/
 }
 
 
 
-//sphere::sphere(GLfloat size, std::vector<GLfloat> &center, GLenum usage) : geometry(usage);
+icosphere::icosphere(GLfloat radius, std::vector<GLfloat> &center, int depth, GLenum usage) : geometry(usage)
+{
+
+    GLfloat gr = (1+sqrt(5))/2.0f;
+    GLfloat scaleFactor = sqrt(gr*gr +1);
+
+    this->vertices = 
+    {
+         0.0f,   gr,  1.0f, //0
+         0.0f,   gr, -1.0f, //1
+         0.0f,  -gr,  1.0f, //2
+         0.0f,  -gr, -1.0f, //3
+         1.0f,  0.0f,   gr, //4
+        -1.0f,  0.0f,   gr, //5
+         1.0f,  0.0f,  -gr, //6
+        -1.0f,  0.0f,  -gr, //7
+           gr,  1.0f, 0.0f, //8
+           gr, -1.0f, 0.0f, //9
+          -gr,  1.0f, 0.0f, //10
+          -gr, -1.0f, 0.0f  //11
+    };
+
+    this->indices = 
+    {
+         0,  5,  4, //1 v
+         0,  4,  8, //2 v
+         0,  8,  1, //3 v
+         0,  1, 10, //4 v
+         0, 10,  5, //5 v 
+         5,  2,  4, //6 v 
+         4,  2,  9, //7 v 
+         9,  6,  8, //8 v
+         3,  7,  6, //9 v
+         7, 10,  1, //10 v
+        10, 11,  5, //11 v
+         5, 11,  2, //12 v
+         2,  3,  9, //13  v
+         2, 11,  3, //14 v
+         3,  11, 7, //15 v
+         1,  6,  7, //16 v
+         1,  8,  6, //17 v
+         6,  9,  3, //18 v
+         4,  9,  8, //19 v
+         7, 11,  10 //20 v
+    };
+
+
+    this->subdivide(depth);
+    this->scale(radius/scaleFactor, radius/scaleFactor, radius/scaleFactor);
+    this->translate(center[0], center[1], center[2]);
+}
 
