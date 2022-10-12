@@ -368,7 +368,7 @@ cube::cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage): geometry(u
 }
 
 
-isocahedron::isocahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usage): geometry(usage)
+icosahedron::icosahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usage): geometry(usage)
 {
     GLfloat gr = (1+sqrt(5))/2.0f;
 
@@ -390,26 +390,26 @@ isocahedron::isocahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usag
 
     this->indices = 
     {
-         0,  5,  4, //1
-         0,  4,  8, //2
-         0,  8,  1, //3
-         0,  1, 10, //4
-         0, 10,  5, //5
-         5,  2,  4, //6
-         4,  2,  9, //7
-         9,  6,  8, //8
-         3,  6,  7, //9
-         7,  1, 10, //10
-        10, 11,  5, //11
-         5, 11,  2, //12
-         2,  3,  9, //13 
-         2, 11,  3, //14
-         3,  7, 11, //15
-         1,  6,  7, //16
-         1,  8,  6, //17
-         3,  6,  9, //18
-         4,  9,  8, //19
-         7, 11,  10 //20
+         0,  5,  4, //1 v
+         0,  4,  8, //2 v
+         0,  8,  1, //3 v
+         0,  1, 10, //4 v
+         0, 10,  5, //5 v 
+         5,  2,  4, //6 v 
+         4,  2,  9, //7 v 
+         9,  6,  8, //8 v
+         3,  7,  6, //9 v
+         7, 10,  1, //10 v
+        10, 11,  5, //11 v
+         5, 11,  2, //12 v
+         2,  3,  9, //13  v
+         2, 11,  3, //14 v
+         3,  11, 7, //15 v
+         1,  6,  7, //16 v
+         1,  8,  6, //17 v
+         6,  9,  3, //18 v
+         4,  9,  8, //19 v
+         7, 11,  10 //20 v
     };
 
     this->scale(size/2.0f, size/2.0f, size/2.0f);

@@ -19,8 +19,12 @@ geometry* geo2 = nullptr;
 
 void rotate(int value)
 {
-    geo->rotate(15, Y_AXIS);
-    geo2->rotate(15,Y_AXIS);
+    geo->rotate(15, Z_AXIS);
+    geo2->rotate(15,Z_AXIS);
+    geo->rotate(7, Y_AXIS);
+    geo2->rotate(7,Y_AXIS);
+    geo->rotate(30, X_AXIS);
+    geo2->rotate(30,X_AXIS);
 
     glutPostRedisplay();
 }
@@ -53,7 +57,7 @@ int main(int argc, char**argv)
     glutDisplayFunc(draw);
     glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
                     GLUT_ACTION_GLUTMAINLOOP_RETURNS);
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
     //glCullFace(GL_FRONT);
    // glFrontFace(GL_CCW);  
     glEnable(GL_DEPTH_TEST);
@@ -70,14 +74,14 @@ int main(int argc, char**argv)
 
     std::vector<GLfloat> c= {0.0f, 0.0f, 0.0f};
 
-    geo =  new isocahedron(0.5, c);//new cube(0.5f, c);
+    geo =  new icosahedron(0.5, c);//new cube(0.5f, c);
 
     geo->rotate(-45.0,Y_AXIS);
     geo->rotate(45.0, X_AXIS);
     geo->translate(0.0f,0.0f,-5.0f);
     geo->setProjection(90.0f);
 
-    geo2 =  new isocahedron(0.55, c);//new cube(0.5f, c);
+    geo2 =  new icosahedron(0.55, c);//new cube(0.5f, c);
     geo2->setColor(1.0f,0.0f,0.0f);
 
     geo2->rotate(-45.0,Y_AXIS);

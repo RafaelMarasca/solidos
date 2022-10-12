@@ -108,11 +108,11 @@ class cube : public geometry
 
 };
 
-class isocahedron : public geometry
+class icosahedron : public geometry
 {
 
     public:
-        isocahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
+        icosahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
 };
 
 
