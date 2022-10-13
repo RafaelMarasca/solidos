@@ -38,11 +38,18 @@ void draw()
     geo->draw();
     glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
     geo2->draw();
-    glutTimerFunc(500,rotate, 0); 
+    glutTimerFunc(100,rotate, 0); 
     glutSwapBuffers();
 }
 
-
+void teste(unsigned char key, int x, int y)
+{
+    if(key ==32)
+    {
+        //dynamic_cast<icosphere*>(geo)->subdivide(1);
+        //dynamic_cast<icosphere*>(geo2)->subdivide(1);
+    }
+}
 
 
 int main(int argc, char**argv)
@@ -58,10 +65,11 @@ int main(int argc, char**argv)
     glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
                     GLUT_ACTION_GLUTMAINLOOP_RETURNS);
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+    glutKeyboardFunc(teste);
     glPointSize(3.0f);
     glEnable(GL_CULL_FACE);
-    //glCullFace(GL_FRONT);
-   // glFrontFace(GL_CCW);  
+    glCullFace(GL_FRONT);
+    glFrontFace(GL_CCW);  
     glEnable(GL_DEPTH_TEST);
     
     //glClearDepth(1.0f);
@@ -76,7 +84,7 @@ int main(int argc, char**argv)
 
     std::vector<GLfloat> c= {0.0f, 0.0f, 0.0f};
 
-    geo =  new icosphere(1.0f, c, 5);//new cube(0.5f, c);
+    geo =  new torus(0.48f,1.0f,c);//new icosphere(1.0f, c, 5);//new cube(0.5f, c);
 
     geo->rotate(-45.0,Y_AXIS);
     geo->rotate(45.0, X_AXIS);
@@ -85,7 +93,7 @@ int main(int argc, char**argv)
 
     //dynamic_cast<icosahedron*>(geo)->subdivide(0,1.0f);
 
-    geo2 =  new icosphere(1.02f, c, 5);//new icosahedron(2.0f, c);//new cube(0.5f, c);
+    geo2 = new torus(0.50f,1.01f,c);// new icosphere(1.02f, c, 5);//new icosahedron(2.0f, c);//new cube(0.5f, c);
     geo2->setColor(1.0f,0.0f,0.0f);
 
     geo2->rotate(-45.0,Y_AXIS);

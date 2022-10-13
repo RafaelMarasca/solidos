@@ -125,6 +125,13 @@ class icosphere : public geometry
 
 };
 
+class torus : public geometry
+{
+    public:
+        torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
+
+};
+
 
 
 

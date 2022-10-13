@@ -453,7 +453,7 @@ std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLf
     int index3 = 0;
 
 
-    if(visited[(*it)] && visited[*(it+1)])
+    /*if(visited[(*it)] && visited[*(it+1)])
     {
         for(int i = 0; i< vertices.size(); i+=3)
         {
@@ -463,7 +463,7 @@ std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLf
                 break;
             }
         }
-    }
+    }*/
 
     if(!index1)
     {
@@ -473,7 +473,7 @@ std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLf
         visited.push_back(1);
     }
 
-    if(visited[*(it+1)] && visited[*(it+2)])
+    /*if(visited[*(it+1)] && visited[*(it+2)])
     {
         for(int i = 0; i< vertices.size(); i+=3)
         {
@@ -483,7 +483,7 @@ std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLf
                 break;
             }
         }
-    }
+    }*/
     if(!index2)
     {
         index2 = vertices.size()/3;
@@ -492,7 +492,7 @@ std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLf
         visited.push_back(1);
     }
 
-    if(visited[*(it+2)] && visited[*(it)])
+    /*if(visited[*(it+2)] && visited[*(it)])
     {
         for(int i = 0; i< vertices.size(); i+=3)
         {
@@ -502,7 +502,7 @@ std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLf
                 break;
             }
         }
-    }
+    }*/
     
     if(!index3)
     {
@@ -626,3 +626,97 @@ icosphere::icosphere(GLfloat radius, std::vector<GLfloat> &center, int depth, GL
     this->translate(center[0], center[1], center[2]);
 }
 
+#define HDIV 16
+#define VDIV 16
+#define HRES 2*M_PI/float(HDIV)
+#define VRES 2*M_PI/float(VDIV)
+
+torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &center, GLenum usage): geometry(usage)
+{
+    GLfloat theta = 0.0f;
+    GLfloat phi = 0.0f;
+    GLfloat r = discRadius;
+    GLfloat R = circleRadius;
+    GLfloat x,y,z;
+    //x = (r*cos(phi)+R)*cos(theta)
+    //z = (r*cos(phi)+R)*sin(theta)
+    //y = r*sin(phi)    
+    std::vector<int> tmpIndex;
+    for(int j = 0; j<VDIV; j++)
+    {
+        for(int i = 0; i<HDIV; i++)
+        {
+            theta = i*HRES;
+            phi = j*VRES;
+
+            x = (r*cos(phi)+R)*cos(theta);
+            y =  r*sin(phi);
+            z = (r*cos(phi)+R)*sin(theta);
+
+            tmpIndex.push_back(this->vertices.size()/3);
+            
+            this->vertices.push_back(x);
+            this->vertices.push_back(y);
+            this->vertices.push_back(z);
+            
+            theta = (1+i)*HRES;
+
+            x = (r*cos(phi)+R)*cos(theta);
+            y =  r*sin(phi);
+            z = (r*cos(phi)+R)*sin(theta);
+            
+            tmpIndex.push_back(this->vertices.size()/3);
+
+            this->vertices.push_back(x);
+            this->vertices.push_back(y);
+            this->vertices.push_back(z);
+
+            theta = i*HRES;
+            phi = (j+1)*VRES;
+
+            x = (r*cos(phi)+R)*cos(theta);
+            y =  r*sin(phi);
+            z = (r*cos(phi)+R)*sin(theta);
+            
+            tmpIndex.push_back(this->vertices.size()/3);
+            
+            this->vertices.push_back(x);
+            this->vertices.push_back(y);
+            this->vertices.push_back(z);
+
+            theta = (i+1)*HRES;
+
+            x = (r*cos(phi)+R)*cos(theta);
+            y =  r*sin(phi);
+            z = (r*cos(phi)+R)*sin(theta);
+            
+            tmpIndex.push_back(this->vertices.size()/3);
+            
+            this->vertices.push_back(x);
+            this->vertices.push_back(y);
+            this->vertices.push_back(z);
+
+            tmpIndex.push_back(tmpIndex[2]);
+            tmpIndex.push_back(tmpIndex[1]);
+
+            this->indices.insert(this->indices.end(), tmpIndex.begin(), tmpIndex.end());
+            tmpIndex.clear();
+        }
+    }
+
+
+    //Seleciona o array de vértices da forma corrente.
+    glBindVertexArray(this->VAO);
+
+    //Transfere os dados para o buffer de objetos.
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferData(GL_ARRAY_BUFFER, (this->vertices.size())*sizeof(GLfloat),&(this->vertices[0]), usage);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (this->indices.size())*sizeof(int), &(this->indices[0]), usage);
+
+    //Aponta os atributos de vértice.
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
+
+}
