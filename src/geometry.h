@@ -51,13 +51,14 @@ class geometry
 
     private:
         static unsigned int geometryCount;
-        static shaderProgram* program;
         void setup();
 
 
     protected:
         bool wireFrame;
         
+        static shaderProgram* program;
+
         GLuint VAO;
         GLuint VBO;
         GLuint EBO;
@@ -92,6 +93,7 @@ class geometry
         void setProjection(GLfloat FOV, GLfloat ar = 1.0f);
         void setView(matrix &);
         void setColor(GLfloat r, GLfloat g,  GLfloat b);
+        
 
         //virtual void setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f); //Setter para a cor do objeto.
         //virtual void resetColor();

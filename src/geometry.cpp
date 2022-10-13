@@ -46,14 +46,6 @@ geometry::geometry(std::vector<GLfloat> &vertices, std::vector<int> &indices, st
     this->centralPoint = centralPoint;
     this->usage = usage;
     this->color = {GEOMETRY_R, GEOMETRY_G, GEOMETRY_B, 1.0f};
-    
-    /*for(int i = 0; i<vertices.size()/3; i++)
-    {
-        this->color.push_back(GEOMETRY_R);
-        this->color.push_back(GEOMETRY_G);
-        this->color.push_back(GEOMETRY_B);
-        this->color.push_back(1.0f); 
-    }*/
 
     if(geometry::program == nullptr)
         geometry::program = new shaderProgram(vertexShaderSource, fragmentShaderSource);
@@ -99,8 +91,8 @@ geometry::~geometry()
     
     //Libera a memória associadas aos buffers criados para a forma corrente.
     glDeleteBuffers(1,&(this->VBO));
-    glDeleteVertexArrays(1,&(this->VAO));
     glDeleteBuffers(1, &(this->EBO));
+    glDeleteVertexArrays(1,&(this->VAO));
 }
 
     
@@ -113,6 +105,8 @@ void geometry::draw()
     glUniformMatrix4fv(this->viewLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->viewMatrix)[0]));
     glUniformMatrix4fv(this->projectionLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->projectionMatrix)[0]));
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, (void*)0);
+    glBindVertexArray(this->VAO);
+    glUseProgram(0);
 }
 
 void geometry::setup()
@@ -216,9 +210,9 @@ void geometry::scale(GLfloat sx, GLfloat sy, GLfloat sz)
 {
 
     matrix scale = matrix::eye(4);
-    scale(0,3) = sx;
-    scale(1,3) = sy;
-    scale(2,3) = sz;
+    scale(0,0) = sx;
+    scale(1,1) = sy;
+    scale(2,2) = sz;
 
     matrix cMatrix = matrix(4,1);
     cMatrix(0,0) = this->centralPoint[0];
@@ -248,12 +242,6 @@ void geometry::setProjection(GLfloat FOV, GLfloat ar)
     this->projectionMatrix(2,3) = 2*nearZ*farZ/(nearZ-farZ);
     this->projectionMatrix(3,2) = -1.0f;
     this->projectionMatrix(3,3) = 0.0f;
-    /*aux(0,0) = 1.0f/tan(rad);
-    aux(1,1) = 1.0f/tan(rad);
-    aux(2,2) = (nearZ + farZ)/(nearZ-farZ);
-    aux(2,3) = 2*nearZ*farZ/(nearZ-farZ);
-    aux(3,2) = -1.0f;
-    aux(3,3) = 0.0f; */  
 
     /*this->projectionMatrix = glm::perspective(glm::radians(90.0f), 600.0f / 600.0f, 0.1f,
 100.0f);*/

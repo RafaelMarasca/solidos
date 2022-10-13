@@ -9,6 +9,7 @@
 #include"geometry.h"
 #include"GL/glew.h"
 #include"GL/freeglut.h"
+#include"axis.h"
 #include<iostream>
 #include<glm/glm.hpp>
 
@@ -16,11 +17,13 @@
 
 geometry* geo = nullptr;
 geometry* geo2 = nullptr;
+geometry* geo3 = nullptr;
 
 void rotate(int value)
 {
     geo->rotate(15, Y_AXIS);
     geo2->rotate(15,Y_AXIS);
+    geo3->rotate(15, Y_AXIS);
     //geo->rotate(7, Y_AXIS);
     //geo2->rotate(7,Y_AXIS);
     //geo->rotate(30, X_AXIS);
@@ -35,10 +38,11 @@ void draw()
     glClearColor(0.784f,0.784f,0.784f, 1.0f); //Determina a cor de limpeza do buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Limpa o buffer com a cor determinada
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    geo3->draw();
     geo->draw();
     glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
     geo2->draw();
-    glutTimerFunc(100,rotate, 0); 
+    glutTimerFunc(300,rotate, 0); 
     glutSwapBuffers();
 }
 
@@ -68,12 +72,10 @@ int main(int argc, char**argv)
     glutKeyboardFunc(teste);
     glPointSize(3.0f);
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
-    glFrontFace(GL_CCW);  
     glEnable(GL_DEPTH_TEST);
     
     //glClearDepth(1.0f);
-    //glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LESS);
 
     //Inicializa o GLEW
     if(glewInit() != GLEW_OK)
@@ -84,24 +86,32 @@ int main(int argc, char**argv)
 
     std::vector<GLfloat> c= {0.0f, 0.0f, 0.0f};
 
-    geo =  new torus(0.48f,1.0f,c);//new icosphere(1.0f, c, 5);//new cube(0.5f, c);
+    geo = new cube(0.5f, c);
 
     geo->rotate(-45.0,Y_AXIS);
-    geo->rotate(45.0, X_AXIS);
-    geo->translate(0.0f,0.0f,-5.0f);
+    //geo->rotate(45.0, X_AXIS);
+    geo->translate(0.0f,0.0f,-3.0f);
     geo->setProjection(90.0f);
 
     //dynamic_cast<icosahedron*>(geo)->subdivide(0,1.0f);
 
-    geo2 = new torus(0.50f,1.01f,c);// new icosphere(1.02f, c, 5);//new icosahedron(2.0f, c);//new cube(0.5f, c);
+    geo2 = new cube(0.5f, c);
     geo2->setColor(1.0f,0.0f,0.0f);
 
     geo2->rotate(-45.0,Y_AXIS);
-    geo2->rotate(45.0, X_AXIS);
-    geo2->translate(0.0f,0.0f,-5.0f);
+    //geo2->rotate(45.0, X_AXIS);
+    geo2->translate(0.0f,0.0f,-3.0f);
     geo2->setProjection(90.0f);
     //dynamic_cast<icosahedron*>(geo2)->subdivide(0,1.0f);
     //geo->rotate(45,Z);
+
+    geo3 = new axis();// new icosphere(1.02f, c, 5);//new icosahedron(2.0f, c);//new cube(0.5f, c);
+    geo3->setColor(0.0f,1.0f,0.0f);
+
+    geo3->rotate(-45.0,Y_AXIS);
+    //geo3->rotate(45.0, X_AXIS);
+    geo3->translate(0.0f,0.0f,-3.0f);
+    geo3->setProjection(90.0f);
 
     glutMainLoop(); //Roda o loop principal da janela
 
