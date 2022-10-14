@@ -678,6 +678,8 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
         }
     }
 
+    this->translate(center[0], center[1], center[2]);
+
 
     //Seleciona o array de vértices da forma corrente.
     glBindVertexArray(this->VAO);

@@ -89,7 +89,7 @@ class window
         void closePopUp(); //Fecha o popUp.
 
         void setMenu(int ID, menuState = VISIBLE); //Seta o menu atual.
-        void addSpline(int pointNum, int order, inputType t); //Adiciona uma B-Spline
+        void addShape(geometry* shape); //Adiciona uma forma.
 
         frame* getMenu(); //Getter para o menu atual.
         

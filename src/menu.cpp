@@ -16,8 +16,8 @@ frame* newShapeMenu()
     menu->addButton(1,0,1,4,1,"Cubo");
     menu->addButton(2,0,1,4,2,"Esfera");
     menu->addButton(3,0,1,4,3,"Torus");
-    menu->addButton(4,0,1,4,4,"Isocaedro");
-    menu->addClickFunction(menuClick0); //Adiciona a função chamada ao clicar em um elemento do menu 0
+    menu->addButton(4,0,1,4,4,"Icosaedro");
+    menu->addClickFunction(menuClickShape); //Adiciona a função chamada ao clicar em um elemento do menu 0
     
     menu->generate(); //Gera o menu
 
@@ -30,7 +30,7 @@ frame* newShapeMenu()
  * @param ID : ID do elemento que gerou o evento de clique.
  */
 
-void menuClick0(int ID)
+void menuClickShape(int ID)
 {
     window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
     if(w)
@@ -94,21 +94,25 @@ void menuClick0(int ID)
             }break;*/
 
             case 1:
+                w->setWaiting(1);
                 w->getMenu()->clear(); //Limpa os dados do menu
                 w->setMenu(1); //Seta o menu atual para o menu de adição de pontos
             break;
 
             case 2:
+                w->setWaiting(1);
                 w->getMenu()->clear(); //Limpa os dados do menu
                 w->setMenu(2); //Seta o menu atual para o menu de adição de pontos
             break;
 
             case 3:
+                w->setWaiting(1);
                 w->getMenu()->clear(); //Limpa os dados do menu
                 w->setMenu(3); //Seta o menu atual para o menu de adição de pontos
             break;
             
             case 4:
+                w->setWaiting(1);
                 w->getMenu()->clear(); //Limpa os dados do menu
                 w->setMenu(4); //Seta o menu atual para o menu de adição de pontos
             break;
@@ -255,7 +259,7 @@ void menuClick4(int ID)
 }
 
 /**
- * @brief Handler para os cliques do menu 4 (menu de Adicao).
+ * @brief Handler para os cliques do menu de adição de Torus.
  * 
  * @param ID : ID do elemento que gerou o evento de clique.
  */
@@ -276,10 +280,299 @@ void menuClickTorus(int ID)
                 }
                 w->clearSelection(); //Desseleciona os objetos
             break;
+
+            case 13: //Botão Adicionar;
+            {
+                std::string xStr = (w->getMenu())->getTextInput(3); //Obtém o texto da caixa de texto 3.
+                std::string yStr = (w->getMenu())->getTextInput(5); //Obtém o texto da caixa de texto 5.
+                std::string zStr = (w->getMenu())->getTextInput(7); //Obtém o texto da caixa de texto 7.
+                std::string R1Str = (w->getMenu())->getTextInput(9); //Obtém o texto da caixa de texto 9.
+                std::string R2Str = (w->getMenu())->getTextInput(11); //Obtém o texto da caixa de texto 11.
+
+                if(xStr.size()!= 0 && yStr.size()!= 0) //Verifica se os dados são válidos
+                {
+                    GLfloat R1 = 0, R2 = 0;
+                    std::vector<GLfloat> center(3,0.0f);
+
+                    //Converte as strings para float.
+                    center[0] = stof(xStr);
+                    center[1] = stof(yStr);
+                    center[2] = stof(zStr);
+                    R1 = stof(R1Str);
+                    R2 = stof(R2Str);
+
+
+                    if(R1<0.0000f || R2<0.0000f)
+                    {
+                        w->showPopUp("Raio deve ser > 0");
+                    }else
+                    {
+                        if(std::fabs(center[0])>1  || std::fabs(center[1])>1 || std::fabs(center[2])>1) //Verifica se o desenho ficará fora da tela
+                        {
+                            w->showPopUp("O Desenho Ficara Fora da Tela!");
+                        }
+                        
+                        //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
+                        {
+                            //Caso não tenha colidido
+                        
+                            w->addShape(new torus(R1, R2, center));
+
+                            w->setWaiting(0); //Decrementa a variável de espera de entrada.
+
+                            w->getMenu()->clear(); //Limpa os dados do menu
+                            
+                            if(!w->getWaiting()) //Se não há espera por entrada
+                            {
+                                w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
+                                w->setMenu(0,HIDDEN); //Seta o menu como 0.
+                            }
+
+                            
+                        }//else{
+                            //Caso tenha havido colisão
+                            //w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
+                    // }
+                    }
+                }
+            }break;
         }
     }
 }
 
+
+/**
+ * @brief Handler para os cliques do menu de adição de Esfera.
+ * 
+ * @param ID : ID do elemento que gerou o evento de clique.
+ */
+void menuClickSphere(int ID)
+{
+    window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
+    if(w)
+    {
+        switch(ID)
+        {
+            case 10: //Botão Cancelar;
+                if(w->getWaiting())
+                {
+                    w->setWaiting(0); //Zera a flag de espera por entrada
+                    w->deleteShape(); //Remove o objeto corrente
+                    w->setMenu(0);//Seta o menu para 0.
+                    w->setInputType(NONE);
+                }
+                w->clearSelection(); //Desseleciona os objetos
+            break;
+
+            case 11: //Botão Adicionar;
+            {
+                std::string xStr = (w->getMenu())->getTextInput(3); //Obtém o texto da caixa de texto 3.
+                std::string yStr = (w->getMenu())->getTextInput(5); //Obtém o texto da caixa de texto 5.
+                std::string zStr = (w->getMenu())->getTextInput(7); //Obtém o texto da caixa de texto 7.
+                std::string rStr = (w->getMenu())->getTextInput(9); //Obtém o texto da caixa de texto 9.
+
+                if(xStr.size()!= 0 && yStr.size()!= 0) //Verifica se os dados são válidos
+                {
+                    GLfloat r = 0;
+                    std::vector<GLfloat> center(3,0.0f);
+
+                    //Converte as strings para float.
+                    center[0] = stof(xStr);
+                    center[1] = stof(yStr);
+                    center[2] = stof(zStr);
+                    r = stof(rStr);
+
+                    if(r<0.0000f)
+                    {
+                        w->showPopUp("Raio deve ser > 0");
+                    }else
+                    {
+                        if(std::fabs(center[0])>1  || std::fabs(center[1])>1 || std::fabs(center[2])>1) //Verifica se o desenho ficará fora da tela
+                        {
+                            w->showPopUp("O Desenho Ficara Fora da Tela!");
+                        }
+                        
+                        //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
+                        {
+                            //Caso não tenha colidido
+                        
+                            w->addShape(new icosphere(r, center));
+
+                            w->setWaiting(0); //Decrementa a variável de espera de entrada.
+
+                            w->getMenu()->clear(); //Limpa os dados do menu
+                            
+                            if(!w->getWaiting()) //Se não há espera por entrada
+                            {
+                                w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
+                                w->setMenu(0,HIDDEN); //Seta o menu como 0.
+                            }
+                        }//else{
+                            //Caso tenha havido colisão
+                            //w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
+                    // }
+                    }
+                }
+            }break;
+        }
+    }
+}
+
+
+/**
+ * @brief Handler para os cliques do menu de adição de Cubo.
+ * 
+ * @param ID : ID do elemento que gerou o evento de clique.
+ */
+void menuClickCube(int ID)
+{
+    window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
+    if(w)
+    {
+        switch(ID)
+        {
+            case 10: //Botão Cancelar;
+                if(w->getWaiting())
+                {
+                    w->setWaiting(0); //Zera a flag de espera por entrada
+                    w->deleteShape(); //Remove o objeto corrente
+                    w->setMenu(0);//Seta o menu para 0.
+                    w->setInputType(NONE);
+                }
+                w->clearSelection(); //Desseleciona os objetos
+            break;
+
+            case 11: //Botão Adicionar;
+            {
+                std::string xStr = (w->getMenu())->getTextInput(3); //Obtém o texto da caixa de texto 3.
+                std::string yStr = (w->getMenu())->getTextInput(5); //Obtém o texto da caixa de texto 5.
+                std::string zStr = (w->getMenu())->getTextInput(7); //Obtém o texto da caixa de texto 7.
+                std::string edgeStr = (w->getMenu())->getTextInput(9); //Obtém o texto da caixa de texto 9.
+
+                if(xStr.size()!= 0 && yStr.size()!= 0) //Verifica se os dados são válidos
+                {
+                    GLfloat edge = 0;
+                    std::vector<GLfloat> center(3,0.0f);
+
+                    //Converte as strings para float.
+                    center[0] = stof(xStr);
+                    center[1] = stof(yStr);
+                    center[2] = stof(zStr);
+                    edge = stof(edgeStr);
+
+                    if(edge<0.0000f)
+                    {
+                        w->showPopUp("Aresta deve ser > 0");
+                    }else
+                    {
+                        if(std::fabs(center[0])>1  || std::fabs(center[1])>1 || std::fabs(center[2])>1) //Verifica se o desenho ficará fora da tela
+                        {
+                            w->showPopUp("O Desenho Ficara Fora da Tela!");
+                        }
+                        
+                        //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
+                        {
+                            //Caso não tenha colidido
+                        
+                            w->addShape(new cube(edge, center));
+
+                            w->setWaiting(0); //Decrementa a variável de espera de entrada.
+
+                            w->getMenu()->clear(); //Limpa os dados do menu
+                            
+                            if(!w->getWaiting()) //Se não há espera por entrada
+                            {
+                                w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
+                                w->setMenu(0,HIDDEN); //Seta o menu como 0.
+                            }
+                        }//else{
+                            //Caso tenha havido colisão
+                            //w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
+                    // }
+                    }
+                }
+            }break;
+        }
+    }
+}
+
+
+/**
+ * @brief Handler para os cliques do menu de adição de Icosaedro.
+ * 
+ * @param ID : ID do elemento que gerou o evento de clique.
+ */
+void menuClickIcosahedron(int ID)
+{
+    window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
+    if(w)
+    {
+        switch(ID)
+        {
+            case 10: //Botão Cancelar;
+                if(w->getWaiting())
+                {
+                    w->setWaiting(0); //Zera a flag de espera por entrada
+                    w->deleteShape(); //Remove o objeto corrente
+                    w->setMenu(0);//Seta o menu para 0.
+                    w->setInputType(NONE);
+                }
+                w->clearSelection(); //Desseleciona os objetos
+            break;
+
+            case 11: //Botão Adicionar;
+            {
+                std::string xStr = (w->getMenu())->getTextInput(3); //Obtém o texto da caixa de texto 3.
+                std::string yStr = (w->getMenu())->getTextInput(5); //Obtém o texto da caixa de texto 5.
+                std::string zStr = (w->getMenu())->getTextInput(7); //Obtém o texto da caixa de texto 7.
+                std::string edgeStr = (w->getMenu())->getTextInput(9); //Obtém o texto da caixa de texto 9.
+
+                if(xStr.size()!= 0 && yStr.size()!= 0) //Verifica se os dados são válidos
+                {
+                    GLfloat edge = 0;
+                    std::vector<GLfloat> center(3,0.0f);
+
+                    //Converte as strings para float.
+                    center[0] = stof(xStr);
+                    center[1] = stof(yStr);
+                    center[2] = stof(zStr);
+                    edge = stof(edgeStr);
+
+                    if(edge<0.0000f)
+                    {
+                        w->showPopUp("Aresta deve ser > 0");
+                    }else
+                    {
+                        if(std::fabs(center[0])>1  || std::fabs(center[1])>1 || std::fabs(center[2])>1) //Verifica se o desenho ficará fora da tela
+                        {
+                            w->showPopUp("O Desenho Ficara Fora da Tela!");
+                        }
+                        
+                        //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
+                        {
+                            //Caso não tenha colidido
+                        
+                            w->addShape(new icosahedron(edge, center));
+
+                            w->setWaiting(0); //Decrementa a variável de espera de entrada.
+
+                            w->getMenu()->clear(); //Limpa os dados do menu
+                            
+                            if(!w->getWaiting()) //Se não há espera por entrada
+                            {
+                                w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
+                                w->setMenu(0,HIDDEN); //Seta o menu como 0.
+                            }
+                        }//else{
+                            //Caso tenha havido colisão
+                            //w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
+                    // }
+                    }
+                }
+            }break;
+        }
+    }
+}
 
 /**
  * @brief Cria o menu 1 (menu de adição de pontos)
@@ -383,7 +676,7 @@ frame* newSphere()
     menu->addButton(6,0,1,2,10,"Cancelar",red);
     menu->addButton(6,1,1,2,11,"Adicionar");
     
-    menu->addClickFunction(menuClick4); //Adiciona a função chamada ao se clicar no menu
+    menu->addClickFunction(menuClickSphere); //Adiciona a função chamada ao se clicar no menu
     
     menu->generate(); //Gera o menu
 
@@ -414,7 +707,7 @@ frame* newCube()
     menu->addButton(6,0,1,2,10,"Cancelar",red);
     menu->addButton(6,1,1,2,11,"Adicionar");
     
-    menu->addClickFunction(menuClick4); //Adiciona a função chamada ao se clicar no menu
+    menu->addClickFunction(menuClickCube); //Adiciona a função chamada ao se clicar no menu
     
     menu->generate(); //Gera o menu
 
@@ -478,7 +771,7 @@ frame* newIcosahedron()
     menu->addButton(6,0,1,2,10,"Cancelar",red);
     menu->addButton(6,1,1,2,11,"Adicionar");
     
-    menu->addClickFunction(menuClick4); //Adiciona a função chamada ao se clicar no menu
+    menu->addClickFunction(menuClickIcosahedron); //Adiciona a função chamada ao se clicar no menu
     
     menu->generate(); //Gera o menu
 

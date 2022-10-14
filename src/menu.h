@@ -5,11 +5,14 @@
 
 typedef enum{SPHERE, CUBE, ICOSAHEDRON, TORUS} shape;
 
-void menuClick0(int ID);
+void menuClickShape(int ID);
 void menuClick1(int ID);
 void menuClick2(int ID);
 void menuClick3(int ID);
 void menuClick4(int ID);
+void menuClickCube(int ID);
+void menuClickSphere(int ID);
+void menuClickIsocahedron(int ID);
 void menuClickTorus(int ID);
 
 frame* newShapeMenu();

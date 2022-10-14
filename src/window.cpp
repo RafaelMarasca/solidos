@@ -28,18 +28,15 @@ int yLast;
 
 
 /**
- * @brief Cria uma B-Spline
+ * @brief Adiciona uma forma à cena.
  * 
- * @param pointNum Número de pontos
- * @param order Ordem dos polinômios
- * @param t Tipo de entrada
+ * @param shape Ponteiro para a forma a ser adicionada 
  */
-void window::addSpline(int pointNum, int order, inputType t)
+void window::addShape(geometry* shape)
 {
-    this->inType = t;
-    this->waitingInput = pointNum;
-    //this->selectedShapeID  = this->vision->addObject(new );
-    this->selectedShape = this->vision->getObject(this->selectedShapeID).second;
+    this->vision->addObject(shape);
+    shape->setView(this->cam->getView());
+    shape->setProjection(this->cam->getProjection());
 }
 
 
@@ -341,9 +338,6 @@ void window::deleteShape()
             this->selectedShapeID = 0;
             this->clearSelection();
 		}
-    }else
-    {
-        throw std::string("Nenhum objeto Selecionado.");
     }
 }
 
