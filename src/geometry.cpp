@@ -251,7 +251,7 @@ void geometry::setProjection(GLfloat FOV, GLfloat ar)
     //glUniformMatrix4fv(this->projectionLoc, 1, GL_FALSE, glm::value_ptr(this->projectionMatrix));
 }
 
-void geometry::setView(matrix &view)
+void geometry::setView(const matrix &view)
 {
     this->viewMatrix = view;
     glUniformMatrix4fv(this->viewLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->viewMatrix)[0]));
@@ -457,7 +457,7 @@ std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLf
     {
         index1 = vertices.size()/3;
         for(int i = 0; i<3; i++)
-            vertices.push_back(v12(i,0));
+            vertices.push_back(v12(i));
         visited.push_back(1);
     }
 
@@ -476,7 +476,7 @@ std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLf
     {
         index2 = vertices.size()/3;
         for(int i = 0; i<3; i++)
-            vertices.push_back(v23(i,0));
+            vertices.push_back(v23(i));
         visited.push_back(1);
     }
 
@@ -496,7 +496,7 @@ std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLf
     {
         index3 = vertices.size()/3;
         for(int i = 0; i<3; i++)
-            vertices.push_back(v31(i,0));
+            vertices.push_back(v31(i));
         visited.push_back(1);
     }
     

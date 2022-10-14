@@ -19,6 +19,21 @@
 axis::axis():geometry(GL_STATIC_DRAW)
 {
 
+     /*this->vertices = 
+    {
+        //Face frontal
+         1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+         1.0f, -1.0f,  1.0f, 
+
+        //Face traseira
+         1.0f,  1.0f,  -1.0f,
+        -1.0f,  1.0f,  -1.0f,
+        -1.0f, -1.0f,  -1.0f,
+         1.0f, -1.0f,  -1.0f,
+    };*/
+
     GLfloat initX, initY, initZ;
     initX = initY = initZ = -10*AXIS_TICK_SPACING;
 
@@ -122,6 +137,33 @@ axis::axis():geometry(GL_STATIC_DRAW)
         this->indices.push_back(tempIndex[2]);
     }
 
+     /*this->indices = 
+    {
+        //Face frontal
+        0, 1, 2,
+        2, 3, 0,
+
+        //Face direita
+        0, 3, 7,
+        7, 4, 0,
+
+        //Face Traseira
+        4, 7, 6,
+        6, 5, 4,
+
+        //Face Esquerda
+        5, 6, 2,
+        2, 1, 5,
+
+        //Face Superior
+        5, 1, 0,
+        0, 4, 5,
+
+        //Face Inferior
+        2, 6, 7,
+        7, 3, 2
+    };*/
+
     glBindVertexArray(this->VAO);
 
     //Transfere os dados para o buffer de objetos.
@@ -139,6 +181,8 @@ axis::axis():geometry(GL_STATIC_DRAW)
 void axis::draw()
 {
     this->program->use();
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_FRONT);
     glBindVertexArray(this->VAO);
     glUniform4fv(this->colorLoc, 1, &(this->color[0]));
     glUniformMatrix4fv(this->modelLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->modelMatrix)[0]));
@@ -146,5 +190,6 @@ void axis::draw()
     glUniformMatrix4fv(this->projectionLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->projectionMatrix)[0]));
     glDrawElements(GL_LINES, this->indices.size(), GL_UNSIGNED_INT, (void*)0);
     glBindVertexArray(this->VAO);
+    //glCullFace(GL_BACK);
     glUseProgram(0);
 }

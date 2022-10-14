@@ -221,11 +221,42 @@ vec3 vec3::normalize()
     GLfloat y = this->matrixElements[1];
     GLfloat z = this->matrixElements[2];
 
-    GLfloat norm = sqrt(x*x + y*y + z*z);
+    GLfloat norm = sqrtf(x*x + y*y + z*z);
 
-    v(0,0) = x/norm;
-    v(1,0) = y/norm;
-    v(2,0) = z/norm;
+    v(0) = x/norm;
+    v(1) = y/norm;
+    v(2) = z/norm;
 
     return v;
+}
+
+
+void vec3::print()
+{
+    std::vector<GLfloat>::iterator it;
+    for(it = this->matrixElements.begin(); it != this->matrixElements.end(); it++)
+    {
+        std::cout<<(*it)<<std::endl;
+    }
+}
+
+/**
+ * @brief Sobrecarga do operador função - acessa o elemento da linha row da matriz
+ * 
+ * @param row : número da linha a ser acessada
+ * @return * GLfloat& 
+ */
+GLfloat& vec3::operator()(unsigned int row)
+{
+    return this->matrixElements[row];
+}
+
+vec3 vec3::crossProduct(const vec3 &v1, const vec3 &v2)
+{
+    vec3 aux;
+    aux(0) = v1.matrixElements[1]*v2.matrixElements[2] - v1.matrixElements[2]*v2.matrixElements[1];
+    aux(1) = -(v1.matrixElements[0]*v2.matrixElements[2] - v1.matrixElements[2]*v2.matrixElements[0]);
+    aux(2) = v1.matrixElements[0]*v2.matrixElements[1] - v1.matrixElements[1]*v2.matrixElements[0];
+
+    return aux;
 }

@@ -10,25 +10,40 @@
 #include"GL/glew.h"
 #include"GL/freeglut.h"
 #include"axis.h"
+#include"camera.h"
 #include<iostream>
 #include<glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 
 
 geometry* geo = nullptr;
 geometry* geo2 = nullptr;
 geometry* geo3 = nullptr;
+vec3 pos(0.0f,0.0f,3.0f);
+    vec3 target(0.0f, 0.0f, 0.0f);
+    vec3 up(0.0f, 1.0f, 0.0f);
+camera cam(pos,target,up);
+
+
+
 
 void rotate(int value)
 {
-    geo->rotate(15, Y_AXIS);
-    geo2->rotate(15,Y_AXIS);
-    geo3->rotate(15, Y_AXIS);
+    static GLfloat rot = 15;
+    //cam.rotate(15.0f, 0.0f);
+    cam.rotate(0.0f, 15.0f);
+    geo->setView((cam.getLookAt()));
+    geo2->setView((cam.getLookAt()));
+    geo3->setView((cam.getLookAt()));
+    //geo->rotate(15, Y_AXIS);
+    //geo2->rotate(15,Y_AXIS);
+    //geo3->rotate(15, Y_AXIS);
     //geo->rotate(7, Y_AXIS);
     //geo2->rotate(7,Y_AXIS);
     //geo->rotate(30, X_AXIS);
     //geo2->rotate(30,X_AXIS);
-
+    //rot+=15;
     glutPostRedisplay();
 }
 
@@ -38,11 +53,11 @@ void draw()
     glClearColor(0.784f,0.784f,0.784f, 1.0f); //Determina a cor de limpeza do buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Limpa o buffer com a cor determinada
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-    geo3->draw();
     geo->draw();
     glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
     geo2->draw();
-    glutTimerFunc(300,rotate, 0); 
+    geo3->draw();
+    //glutTimerFunc(500,rotate, 0); 
     glutSwapBuffers();
 }
 
@@ -55,6 +70,41 @@ void teste(unsigned char key, int x, int y)
     }
 }
 
+int xLast = 0, yLast = 0;
+int flag = 0;
+
+void mouseMove(int x, int y)
+{
+    if(flag)
+    {
+        cam.mouseMap(xLast-x, yLast-y, 600, 600);
+        geo->setView((cam.getLookAt()));
+        geo2->setView((cam.getLookAt()));
+        geo3->setView((cam.getLookAt()));
+        xLast = x;
+        yLast = y;
+    }
+    glutPostRedisplay();
+}
+
+void mouse(int button, int state, int x, int y)
+{
+    if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    {
+
+        flag = 1;
+        xLast = x;
+        yLast = y;
+    }
+
+    if(button == GLUT_LEFT_BUTTON && state == GLUT_UP)
+    {
+
+        flag = 0;
+    }
+    
+
+}
 
 int main(int argc, char**argv)
 {
@@ -69,7 +119,9 @@ int main(int argc, char**argv)
     glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
                     GLUT_ACTION_GLUTMAINLOOP_RETURNS);
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+    glutMotionFunc(mouseMove);
     glutKeyboardFunc(teste);
+    glutMouseFunc(mouse);
     glPointSize(3.0f);
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
@@ -85,32 +137,42 @@ int main(int argc, char**argv)
     }
 
     std::vector<GLfloat> c= {0.0f, 0.0f, 0.0f};
-
+    
+    
+    //cam.rotate(45.0f, 0.0f);
     geo = new cube(0.5f, c);
-
-    geo->rotate(-45.0,Y_AXIS);
+    geo->setView(cam.getLookAt());
+    //geo->rotate(-45.0,Y_AXIS);
     //geo->rotate(45.0, X_AXIS);
-    geo->translate(0.0f,0.0f,-3.0f);
+   // geo->translate(0.0f,0.0f,-3.0f);
     geo->setProjection(90.0f);
 
     //dynamic_cast<icosahedron*>(geo)->subdivide(0,1.0f);
 
+    cam.getLookAt().print();
+    std::cout<<"----------------------"<<std::endl;
+    std::cout<<glm::to_string(glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), 
+  		   glm::vec3(0.0f, 0.0f, 0.0f), 
+  		   glm::vec3(0.0f, 1.0f, 0.0f)))<<std::endl;
+
     geo2 = new cube(0.5f, c);
     geo2->setColor(1.0f,0.0f,0.0f);
+    geo2->setView((cam.getLookAt()));
 
-    geo2->rotate(-45.0,Y_AXIS);
+    //geo2->rotate(-45.0,Y_AXIS);
     //geo2->rotate(45.0, X_AXIS);
-    geo2->translate(0.0f,0.0f,-3.0f);
+    //geo2->translate(0.0f,0.0f,-3.0f);
     geo2->setProjection(90.0f);
     //dynamic_cast<icosahedron*>(geo2)->subdivide(0,1.0f);
     //geo->rotate(45,Z);
 
     geo3 = new axis();// new icosphere(1.02f, c, 5);//new icosahedron(2.0f, c);//new cube(0.5f, c);
     geo3->setColor(0.0f,1.0f,0.0f);
+    geo3->setView((cam.getLookAt()));
 
-    geo3->rotate(-45.0,Y_AXIS);
+    //geo3->rotate(-45.0,Y_AXIS);
     //geo3->rotate(45.0, X_AXIS);
-    geo3->translate(0.0f,0.0f,-3.0f);
+    //geo3->translate(0.0f,0.0f,-3.0f);
     geo3->setProjection(90.0f);
 
     glutMainLoop(); //Roda o loop principal da janela

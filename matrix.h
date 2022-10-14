@@ -40,7 +40,6 @@ class matrix
 		GLfloat& operator() (unsigned int row, unsigned int col); //Sobrecarga do operador função 
         operator GLfloat*(); //Sobrecarga do operador de cast  para GLfloat*
         operator std::vector<GLfloat>(); //Sobrecarga do operador de cast para std::vector<GLfloat>
-        
 
         unsigned int getColNumber() const; //Getter para o número de colunas da matriz
         unsigned int getRowNumber() const; //Getter para o número de linhas da matriz
@@ -57,7 +56,12 @@ class vec3 :public matrix
         vec3 operator* (const GLfloat);
         vec3& operator*= (const GLfloat scalar);
 
+        GLfloat& operator() (unsigned int row); //Sobrecarga do operador função 
+
         vec3 normalize();
+        static vec3 crossProduct(const vec3 &v1, const vec3 &v2);
+
+        void print();
 
 };
 

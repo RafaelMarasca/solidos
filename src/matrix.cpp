@@ -90,11 +90,12 @@ matrix matrix::operator*(matrix& m)
  * 
  * @param m : Uma nova matriz igual a m.
  */
-void matrix::operator= (const matrix &m) 
+matrix& matrix::operator= (const matrix &m) 
 { 
 	this->matrixElements = m.matrixElements; 
 	this->rowNumber = m.rowNumber;
 	this->colNumber = m.colNumber;
+    return *this;
 }
         
 /**
@@ -223,9 +224,9 @@ vec3 vec3::normalize()
 
     GLfloat norm = sqrtf(x*x + y*y + z*z);
 
-    v(0,0) = x/norm;
-    v(1,0) = y/norm;
-    v(2,0) = z/norm;
+    v(0) = x/norm;
+    v(1) = y/norm;
+    v(2) = z/norm;
 
     return v;
 }
@@ -238,4 +239,47 @@ void vec3::print()
     {
         std::cout<<(*it)<<std::endl;
     }
+}
+
+/**
+ * @brief Sobrecarga do operador função - acessa o elemento da linha row da matriz
+ * 
+ * @param row : número da linha a ser acessada
+ * @return * GLfloat& 
+ */
+GLfloat& vec3::operator()(unsigned int row)
+{
+    return this->matrixElements[row];
+}
+
+vec3 vec3::crossProduct(const vec3 &v1, const vec3 &v2)
+{
+    vec3 aux;
+    aux(0) = v1.matrixElements[1]*v2.matrixElements[2] - v1.matrixElements[2]*v2.matrixElements[1];
+    aux(1) = -(v1.matrixElements[0]*v2.matrixElements[2] - v1.matrixElements[2]*v2.matrixElements[0]);
+    aux(2) = v1.matrixElements[0]*v2.matrixElements[1] - v1.matrixElements[1]*v2.matrixElements[0];
+
+    return aux;
+}
+
+
+void matrix::print()
+{
+    std::cout<<"Printando..."<<std::endl;
+    for(int i = 0; i<this->rowNumber; i++)
+    {
+        for(int j = 0; j<this->colNumber; j++)
+            std::cout<<(*this)(i,j)<<" ";
+        std::cout<<std::endl;
+    }
+}
+
+
+GLfloat vec3::dotProduct(const vec3 &v1, const vec3 &v2)
+{
+   
+   return v1.matrixElements[0]*v2.matrixElements[0] +
+          v1.matrixElements[1]*v2.matrixElements[1] +
+          v1.matrixElements[2]*v2.matrixElements[2];
+    
 }
