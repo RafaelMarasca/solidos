@@ -228,23 +228,9 @@ void geometry::scale(GLfloat sx, GLfloat sy, GLfloat sz)
 
 
 
-void geometry::setProjection(GLfloat FOV, GLfloat ar)
+void geometry::setProjection(matrix projectionMatrix)
 {
-    GLfloat rad = FOV*M_PI/360.0f;
-    GLfloat nearZ= 0.1f;
-    GLfloat farZ = 100.0f;
-
-    //matrix aux = matrix::eye(4);
-
-    this->projectionMatrix(0,0) = 1.0f/(tan(rad)*ar);
-    this->projectionMatrix(1,1) = 1.0f/tan(rad);
-    this->projectionMatrix(2,2) = (nearZ + farZ)/(nearZ-farZ);
-    this->projectionMatrix(2,3) = 2*nearZ*farZ/(nearZ-farZ);
-    this->projectionMatrix(3,2) = -1.0f;
-    this->projectionMatrix(3,3) = 0.0f;
-
-    /*this->projectionMatrix = glm::perspective(glm::radians(90.0f), 600.0f / 600.0f, 0.1f,
-100.0f);*/
+    this->projectionMatrix = projectionMatrix;
     
 
     glUniformMatrix4fv(this->projectionLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->projectionMatrix)[0]));

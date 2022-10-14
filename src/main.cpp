@@ -33,9 +33,9 @@ void rotate(int value)
     static GLfloat rot = 15;
     //cam.rotate(15.0f, 0.0f);
     cam.rotate(0.0f, 15.0f);
-    geo->setView((cam.getLookAt()));
-    geo2->setView((cam.getLookAt()));
-    geo3->setView((cam.getLookAt()));
+    geo->setView((cam.getView()));
+    geo2->setView((cam.getView()));
+    geo3->setView((cam.getView()));
     //geo->rotate(15, Y_AXIS);
     //geo2->rotate(15,Y_AXIS);
     //geo3->rotate(15, Y_AXIS);
@@ -63,11 +63,25 @@ void draw()
 
 void teste(unsigned char key, int x, int y)
 {
-    if(key ==32)
+    if(key == 43)
     {
-        //dynamic_cast<icosphere*>(geo)->subdivide(1);
-        //dynamic_cast<icosphere*>(geo2)->subdivide(1);
+        cam.zoom(-10);
+        geo->setProjection(cam.getProjection());
+        geo2->setProjection(cam.getProjection());
+        geo3->setProjection(cam.getProjection());
+        std::cout<<"maisss";
     }
+
+    if(key == 45)
+    {
+        cam.zoom(10);
+        geo->setProjection(cam.getProjection());
+        geo2->setProjection(cam.getProjection());
+        geo3->setProjection(cam.getProjection());
+        std::cout<<"menos";
+    }
+
+    glutPostRedisplay();
 }
 
 int xLast = 0, yLast = 0;
@@ -78,9 +92,9 @@ void mouseMove(int x, int y)
     if(flag)
     {
         cam.mouseMap(xLast-x, yLast-y, 600, 600);
-        geo->setView((cam.getLookAt()));
-        geo2->setView((cam.getLookAt()));
-        geo3->setView((cam.getLookAt()));
+        geo->setView((cam.getView()));
+        geo2->setView((cam.getView()));
+        geo3->setView((cam.getView()));
         xLast = x;
         yLast = y;
     }
@@ -141,39 +155,39 @@ int main(int argc, char**argv)
     
     //cam.rotate(45.0f, 0.0f);
     geo = new cube(0.5f, c);
-    geo->setView(cam.getLookAt());
+    geo->setView(cam.getView());
     //geo->rotate(-45.0,Y_AXIS);
     //geo->rotate(45.0, X_AXIS);
    // geo->translate(0.0f,0.0f,-3.0f);
-    geo->setProjection(90.0f);
+    geo->setProjection(cam.getProjection());
 
     //dynamic_cast<icosahedron*>(geo)->subdivide(0,1.0f);
 
-    cam.getLookAt().print();
-    std::cout<<"----------------------"<<std::endl;
-    std::cout<<glm::to_string(glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), 
-  		   glm::vec3(0.0f, 0.0f, 0.0f), 
-  		   glm::vec3(0.0f, 1.0f, 0.0f)))<<std::endl;
+    //cam.getView().print();
+    //std::cout<<"----------------------"<<std::endl;
+    //std::cout<<glm::to_string(glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), 
+  		   //glm::vec3(0.0f, 0.0f, 0.0f), 
+  		   //glm::vec3(0.0f, 1.0f, 0.0f)))<<std::endl;
 
     geo2 = new cube(0.5f, c);
     geo2->setColor(1.0f,0.0f,0.0f);
-    geo2->setView((cam.getLookAt()));
+    geo2->setView((cam.getView()));
 
     //geo2->rotate(-45.0,Y_AXIS);
     //geo2->rotate(45.0, X_AXIS);
     //geo2->translate(0.0f,0.0f,-3.0f);
-    geo2->setProjection(90.0f);
+    geo2->setProjection(cam.getProjection());
     //dynamic_cast<icosahedron*>(geo2)->subdivide(0,1.0f);
     //geo->rotate(45,Z);
 
     geo3 = new axis();// new icosphere(1.02f, c, 5);//new icosahedron(2.0f, c);//new cube(0.5f, c);
     geo3->setColor(0.0f,1.0f,0.0f);
-    geo3->setView((cam.getLookAt()));
+    geo3->setView((cam.getView()));
 
     //geo3->rotate(-45.0,Y_AXIS);
     //geo3->rotate(45.0, X_AXIS);
     //geo3->translate(0.0f,0.0f,-3.0f);
-    geo3->setProjection(90.0f);
+    geo3->setProjection(cam.getProjection());
 
     glutMainLoop(); //Roda o loop principal da janela
 

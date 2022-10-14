@@ -4,14 +4,15 @@
 #include "matrix.h"
 #include <cmath>
 
-camera::camera(vec3 cameraPos, vec3 target, vec3 upVec)
+camera::camera(vec3 cameraPos, vec3 target, vec3 upVec, GLfloat fov, GLfloat aspectRatio)
 {
-    this->setLookAt(cameraPos,target, upVec);
+    this->lookAt(cameraPos,target, upVec);
+    this->perspective(fov, aspectRatio);
 }
 
-void camera::setLookAt(vec3 cameraPos, vec3 target, vec3 upVec)
+void camera::lookAt(vec3 cameraPos, vec3 target, vec3 upVec)
 {
-    this->lookAt = matrix::eye(4);
+    this->viewMatrix = matrix::eye(4);
 
     this->cameraPos = cameraPos;
     this->target = target;
@@ -22,35 +23,35 @@ void camera::setLookAt(vec3 cameraPos, vec3 target, vec3 upVec)
     this->up = vec3::crossProduct(dir,right).normalize();
 
 
-    this->lookAt(0,0) = right(0);
-    this->lookAt(0,1) = right(1);
-    this->lookAt(0,2) = right(2);
-    this->lookAt(1,0) = up(0);
-    this->lookAt(1,1) = up(1);
-    this->lookAt(1,2) = up(2);
-    this->lookAt(2,0) = dir(0);
-    this->lookAt(2,1) = dir(1);
-    this->lookAt(2,2) = dir(2);
+    this->viewMatrix(0,0) = right(0);
+    this->viewMatrix(0,1) = right(1);
+    this->viewMatrix(0,2) = right(2);
+    this->viewMatrix(1,0) = up(0);
+    this->viewMatrix(1,1) = up(1);
+    this->viewMatrix(1,2) = up(2);
+    this->viewMatrix(2,0) = dir(0);
+    this->viewMatrix(2,1) = dir(1);
+    this->viewMatrix(2,2) = dir(2);
 
 
-    this->lookAt(0,3) = vec3::dotProduct(right, cameraPos);
-    this->lookAt(1,3) = vec3::dotProduct(up, cameraPos);
-    this->lookAt(2,3) = -vec3::dotProduct(dir, cameraPos);
+    this->viewMatrix(0,3) = vec3::dotProduct(right, cameraPos);
+    this->viewMatrix(1,3) = vec3::dotProduct(up, cameraPos);
+    this->viewMatrix(2,3) = -vec3::dotProduct(dir, cameraPos);
 }
 
-matrix camera::getLookAt()
+matrix camera::getView()
 {
-    return this->lookAt;
+    return this->viewMatrix;
 }
 
 void camera::setPos(vec3 cameraPos)
 {
-    this->setLookAt(cameraPos, this->target, this->up);
+    this->lookAt(cameraPos, this->target, this->up);
 }
 
 void camera::setTarget(vec3 target)
 {
-    this->setLookAt(this->cameraPos, target, this->up);
+    this->lookAt(this->cameraPos, target, this->up);
 }
 
 void camera::rotate(GLfloat theta, GLfloat phi)
@@ -59,8 +60,6 @@ void camera::rotate(GLfloat theta, GLfloat phi)
     phi = phi*M_PI/180.0f;
 
     vec3 newPos;
-
-
     
     matrix rot = matrix::eye(4);
     matrix aux = matrix(4,1);
@@ -110,7 +109,7 @@ void camera::rotate(GLfloat theta, GLfloat phi)
     newPos(2) = aux(2,0);
 
     //this->lookAt = this->lookAt*aux;
-    this->setLookAt(newPos, this->target, upv);
+    this->lookAt(newPos, this->target, upv);
 
 }
 
@@ -120,4 +119,39 @@ void camera::mouseMap(GLfloat dx, GLfloat dy, GLfloat vpHeight, GLfloat vpWidth)
     GLfloat dTheta = 360.0f/vpWidth;
     GLfloat dPhi = 180.0f/vpHeight;
     this->rotate(dTheta*dx, dPhi*dy);
+}
+
+void camera::perspective(GLfloat FOV, GLfloat ar)
+{
+    GLfloat rad = FOV*M_PI/360.0f;
+    GLfloat nearZ= 0.1f;
+    GLfloat farZ = 100.0f;
+
+    this->fov = FOV;
+    this->ar = ar;
+
+    this->projectionMatrix = matrix::eye(4);
+
+    this->projectionMatrix(0,0) = 1.0f/(tan(rad)*ar);
+    this->projectionMatrix(1,1) = 1.0f/tan(rad);
+    this->projectionMatrix(2,2) = (nearZ + farZ)/(nearZ-farZ);
+    this->projectionMatrix(2,3) = 2*nearZ*farZ/(nearZ-farZ);
+    this->projectionMatrix(3,2) = -1.0f;
+    this->projectionMatrix(3,3) = 0.0f;
+}
+
+matrix camera::getProjection()
+{
+    return this->projectionMatrix;
+}
+
+
+void camera::zoom(GLfloat fovInc)
+{
+    if(fov + fovInc >150 || fov + fovInc <30)
+        return;
+
+    this->fov += fovInc;
+
+    this->perspective(fov, this->ar);
 }

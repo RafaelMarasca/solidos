@@ -90,7 +90,7 @@ class geometry
         void translate(GLfloat dx, GLfloat dy, GLfloat dz);
         void scale(GLfloat sx, GLfloat sy, GLfloat sz);
 
-        void setProjection(GLfloat FOV, GLfloat ar = 1.0f);
+        void setProjection(matrix projectionMatrix);
         void setView(const matrix &viewMatrix);
         void setColor(GLfloat r, GLfloat g,  GLfloat b);
         
