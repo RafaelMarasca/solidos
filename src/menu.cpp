@@ -174,7 +174,6 @@ void menuClick1(int ID)
                 if(w->getWaiting())
                 {
                     w->setWaiting(0); //Zera a flag de espera por entrada
-                    w->deleteShape(); //Remove o objeto corrente
                     w->setMenu(0);//Seta o menu para 0.
                     w->setInputType(NONE);
                 }
@@ -248,7 +247,6 @@ void menuClick4(int ID)
                 if(w->getWaiting())
                 {
                     w->setWaiting(0); //Zera a flag de espera por entrada
-                    w->deleteShape(); //Remove o objeto corrente
                     w->setMenu(0);//Seta o menu para 0.
                     w->setInputType(NONE);
                 }
@@ -274,7 +272,6 @@ void menuClickTorus(int ID)
                 if(w->getWaiting())
                 {
                     w->setWaiting(0); //Zera a flag de espera por entrada
-                    w->deleteShape(); //Remove o objeto corrente
                     w->setMenu(0);//Seta o menu para 0.
                     w->setInputType(NONE);
                 }
@@ -302,7 +299,7 @@ void menuClickTorus(int ID)
                     R2 = stof(R2Str);
 
 
-                    if(R1<0.0000f || R2<0.0000f)
+                    if(R1<0.0001f || R2<0.0001f)
                     {
                         w->showPopUp("Raio deve ser > 0");
                     }else
@@ -357,7 +354,6 @@ void menuClickSphere(int ID)
                 if(w->getWaiting())
                 {
                     w->setWaiting(0); //Zera a flag de espera por entrada
-                    w->deleteShape(); //Remove o objeto corrente
                     w->setMenu(0);//Seta o menu para 0.
                     w->setInputType(NONE);
                 }
@@ -435,7 +431,6 @@ void menuClickCube(int ID)
                 if(w->getWaiting())
                 {
                     w->setWaiting(0); //Zera a flag de espera por entrada
-                    w->deleteShape(); //Remove o objeto corrente
                     w->setMenu(0);//Seta o menu para 0.
                     w->setInputType(NONE);
                 }
@@ -513,7 +508,6 @@ void menuClickIcosahedron(int ID)
                 if(w->getWaiting())
                 {
                     w->setWaiting(0); //Zera a flag de espera por entrada
-                    w->deleteShape(); //Remove o objeto corrente
                     w->setMenu(0);//Seta o menu para 0.
                     w->setInputType(NONE);
                 }
