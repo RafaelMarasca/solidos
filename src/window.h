@@ -15,7 +15,6 @@
 #include<GL/freeglut.h>
 #include"scene.h"
 #include"geometry.h"
-#include<atomic>
 #include<string>
 #include<vector>
 #include<map>
@@ -65,6 +64,8 @@ class window
 
         unsigned int selectedShapeID; //ID da forma selecionada.
 
+        sceneIterator selIterator;
+
         int waitingInput; //Quantidade de entradas que a janela está esperando.
         int width,height; //Altura e largura da tela.
         int currentMenu; //ID do menu atual.
@@ -104,7 +105,8 @@ class window
 
         static void draw(); //Método para desenhar os objetos da cena.
         static void mouseClick(int button, int state,int x, int y); //Método chamado ao clicar na tela.
-        static void keyp(unsigned char, int x, int y); //Método chamado ao pressionar uma tecla.
+        static void keyp(unsigned char key, int x, int y); //Método chamado ao pressionar uma tecla.
+        static void specialKeyp(int key, int x, int y); //Método chamado ao pressionar uma tecla especial.
         static void resize(int w, int h); //Método chamado ao redimensionar a tela.
         static void mouseMove(int x, int y); //Método para lidar com o movimento do mouse.
 };

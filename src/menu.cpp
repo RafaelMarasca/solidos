@@ -382,7 +382,7 @@ void menuClickSphere(int ID)
                     center[2] = stof(zStr);
                     r = stof(rStr);
 
-                    if(r<0.0000f)
+                    if(r<0.0001f)
                     {
                         w->showPopUp("Raio deve ser > 0");
                     }else
@@ -460,7 +460,7 @@ void menuClickCube(int ID)
                     center[2] = stof(zStr);
                     edge = stof(edgeStr);
 
-                    if(edge<0.0000f)
+                    if(edge<0.0001f)
                     {
                         w->showPopUp("Aresta deve ser > 0");
                     }else
@@ -538,7 +538,7 @@ void menuClickIcosahedron(int ID)
                     center[2] = stof(zStr);
                     edge = stof(edgeStr);
 
-                    if(edge<0.0000f)
+                    if(edge<0.0001f)
                     {
                         w->showPopUp("Aresta deve ser > 0");
                     }else

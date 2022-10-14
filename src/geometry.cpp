@@ -244,11 +244,20 @@ void geometry::setView(const matrix &view)
 }
 
 
-void geometry::setColor(GLfloat r, GLfloat g, GLfloat b)
+void geometry::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 {
     this->color[0] = r;
     this->color[1] = g;
     this->color[2] = b;
+    this->color[3] = a; 
+}
+
+void geometry::resetColor()
+{
+    this->color[0] = GEOMETRY_R;
+    this->color[1] = GEOMETRY_G;
+    this->color[2] = GEOMETRY_B;
+    this->color[3] = 1.0f; 
 }
 
 cube::cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage): geometry(usage)

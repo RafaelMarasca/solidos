@@ -92,7 +92,8 @@ class geometry
 
         void setProjection(matrix projectionMatrix);
         void setView(const matrix &viewMatrix);
-        void setColor(GLfloat r, GLfloat g,  GLfloat b);
+        void setColor(GLfloat r, GLfloat g,  GLfloat b, GLfloat a = 1.0f);
+        void resetColor();
         
 
         //virtual void setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f); //Setter para a cor do objeto.

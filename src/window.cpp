@@ -64,7 +64,7 @@ void window::keyp(unsigned char key, int x, int y)
                 w->inType = NONE; //Seta o tipo de entrada pra NONE
                 w->setMenu(0); //Seta o menu corrente como 0
             }
-            //w->clearSelection(); //Desseleciona os objetos
+            w->clearSelection(); //Desseleciona os objetos
         break;
     
         //Tecla DEL
@@ -104,6 +104,42 @@ void window::keyp(unsigned char key, int x, int y)
     glutPostRedisplay(); //Requere que a tela seja redesenhada.
 }
 
+void window::specialKeyp(int key, int x, int y)
+{
+    window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
+
+    if(w->vision->end() != w->vision->begin())
+    {
+        if(key == GLUT_KEY_RIGHT)
+        {
+            w->selIterator++;
+            
+            if(!w->selectedShape || w->selIterator == w->vision->end())
+            {
+                w->selIterator = w->vision->begin();
+            }
+            
+            w->select(w->vision->getObject((*(w->selIterator)).first));
+        }
+
+        if(key == GLUT_KEY_LEFT)
+        {
+            
+            if(!w->selectedShape || w->selIterator == w->vision->begin())
+            {
+                w->selIterator = w->vision->end();
+            }
+
+            w->selIterator--;
+            w->select(w->vision->getObject((*w->selIterator).first));
+            
+        }
+    }
+    glutPostRedisplay();
+}
+
+
+
 /**
  * @brief Construtor da classe Window
  * 
@@ -125,12 +161,15 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     glutDisplayFunc(window::draw);
     glutMouseFunc(window::mouseClick);
     glutMotionFunc(window::mouseMove);
+    glutSpecialFunc(window::specialKeyp);
     glutKeyboardFunc(keyp);
     glutReshapeFunc(window::resize);
     glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
                     GLUT_ACTION_GLUTMAINLOOP_RETURNS);
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glutSetWindowData(this);
     /*glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     glPointSize(7);
@@ -154,6 +193,7 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     this->height = height; //Inicializa a altura da tela
     this->selectedShape = nullptr; //Inicializa a forma selecionada como NULL (Nenhuma forma selecionada)
     this->selectedShapeID = 0; //Inicializa o ID de forma selecionada como 0 (Nenhuma forma selecionada)
+    this->selIterator = this->vision->begin();
    
     //Inicializa os menus
     this->menu[0] = newShapeMenu();
@@ -163,8 +203,15 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     this->menu[4] = newIcosahedron();  
     this->menu[5] = newOptMenu();
     this->menu[6] = newPopUp();
-    
+
     this->currentMenu = 0;
+    std::vector<GLfloat> c= {0.0f, 0.0f, 0.0f};
+
+    this->addShape(new cube(0.2, c));
+    c[0] = 0.5;
+    this->addShape(new cube(0.2, c));
+    c[0] = -0.5;
+    this->addShape(new cube(0.2, c));
 }
 
 
@@ -349,19 +396,19 @@ void window::deleteShape()
 void window::select(std::pair<unsigned int, geometry*> obj)
 {
     if(this->selectedShape)
-        //this->selectedShape->resetColor(); //Muda a cor da forma desselecionada
+        this->selectedShape->resetColor(); //Muda a cor da forma desselecionada
     if((this->selectedShape = obj.second))
         this->selectedShape->setColor(SELECTION_R, SELECTION_G, SELECTION_B); //Muda a cora da nova forma selecionada
+    
     this->selectedShapeID = obj.first;
     
     if(obj.second == nullptr)
         this->setMenu(0,HIDDEN);
-    else
-        this->setMenu(2,HIDDEN);
+    //else
+       // this->setMenu(2,HIDDEN);
 
     glutPostRedisplay(); //Requere que a tela seja redesenhada.
 }
-
 
 /**
  * @brief Limpa a forma selecionada
@@ -372,6 +419,7 @@ void window::clearSelection()
     this->select(std::pair<unsigned int, geometry*>{0,nullptr});
 
     this->setMenu(0,HIDDEN); //Seta o menu corrente para 0.
+    this->selIterator = this->vision->begin();
 
     glutPostRedisplay(); //Requere que a tela seja redesenhada.
 }
@@ -493,11 +541,10 @@ void window::showPopUp(const char* text)
     //Armazena os dados do menu corrente
     this->tempMenu.first = currentMenu;
     this->tempMenu.second = this->menu[this->currentMenu]->visible();  
-    
-    std::cout<<"clicado";
+
     //Seta o menu atual como popup
     this->setMenu(6);
-    textDisp* t = dynamic_cast<textDisp*>(this->menu[3]->getElement(1));
+    textDisp* t = dynamic_cast<textDisp*>(this->menu[6]->getElement(1));
     //Altera o texto do popup
     if(t)
         t->setText(text);

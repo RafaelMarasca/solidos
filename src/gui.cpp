@@ -181,7 +181,7 @@ frame::frame(GLfloat height, GLfloat width, int numVertical, int numHorizontal, 
     this->elementHeight = (height-((numVertical+1)*this->vGap))/numVertical;
     this->elementWidth = (width-((numHorizontal+1)*this->hGap))/numHorizontal;
 
-    this->setColor(FRAME_R, FRAME_G, FRAME_B);
+    this->setColor(FRAME_R, FRAME_G, FRAME_B,0.8f);
 
     this->elements = std::vector<std::vector<guiElement*>> (numVertical, std::vector<guiElement*>());
 }
