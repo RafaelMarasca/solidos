@@ -33,7 +33,7 @@ scene::~scene()
  */
 void scene::draw()
 {
-    this->theAxis->draw();
+    //this->theAxis->draw();
     
     for(std::map<unsigned int,geometry*>::iterator it = this->objects.begin(); it != this->objects.end(); it++)
     {

@@ -29,6 +29,7 @@ int mouseFlag = 0; //Verifica se o mouse esta sendo pressionado.
  * 
  * @param ID : ID do elemento que gerou o evento de clique.
  */
+
 void window::menuClick0(int ID)
 {
     window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
@@ -125,7 +126,7 @@ void window::menuClick1(int ID)
                          w->showPopUp("O Desenho Ficara Fora da Tela!");
                     }
                     
-                   /* if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
+                    //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
                     {
                         //Caso não tenha colidido
                     
@@ -138,10 +139,10 @@ void window::menuClick1(int ID)
                             w->inType = NONE; //Seta o tipo de entrada para nenhuma
                             w->setMenu(0,HIDDEN); //Seta o menu como 0.
                         }
-                    }else*/{
+                    }//else{
                         //Caso tenha havido colisão
-                        w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
-                    }
+                        //w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
+                   // }
                 }
             }break;
         
@@ -223,11 +224,11 @@ void window::addSpline(int pointNum, int order, inputType t)
 
 
 /**
- * @brief Cria o menu 0 (menu de criação de B-Spline)
+ * @brief Cria o menu 0 (menu de criação de formas)
  * 
  * @return frame* ponteiro para o menu criado
  */
-frame* newSplineMenu()
+frame* newShapeMenu()
 {
     frame* menu = new frame(1.0f, 1.0f, 6, 4, -0.5, 0.5); //Cria o frame
 
@@ -300,6 +301,7 @@ frame* newOptMenu()
  * 
  * @return frame* ponteiro para o menu criado
  */
+
 frame* newPopUp()
 {
     frame* menu = new frame(0.5f, 1.2f, 2, 4, -0.6, 0.25, -1, 0.1); //Cria o frame do menu
@@ -339,7 +341,7 @@ void window::keyp(unsigned char key, int x, int y)
                 w->inType = NONE; //Seta o tipo de entrada pra NONE
                 w->setMenu(0); //Seta o menu corrente como 0
             }
-            w->clearSelection(); //Desseleciona os objetos
+            //w->clearSelection(); //Desseleciona os objetos
         break;
     
         //Tecla DEL
@@ -355,6 +357,7 @@ void window::keyp(unsigned char key, int x, int y)
 
         //Tecla Espaço
         case 32: //Exibe/Esconde o menu atual
+        //std::cout<<"Desenhando...."<<std::endl;
             if(w->menu[w->currentMenu]->visible())
                 w->menu[w->currentMenu]->hide();
             else
@@ -395,10 +398,10 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
                     GLUT_ACTION_GLUTMAINLOOP_RETURNS);
     glutSetWindowData(this);
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+    /*glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     glPointSize(7);
     glEnable(GL_LINE_SMOOTH);
-    glLineWidth(2);
+    glLineWidth(2);*/
 
     //Inicializa o GLEW
     if(glewInit() != GLEW_OK)
@@ -416,7 +419,7 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     this->selectedShapeID = 0; //Inicializa o ID de forma selecionada como 0 (Nenhuma forma selecionada)
    
     //Inicializa os menus
-    this->menu[0] = newSplineMenu();
+    this->menu[0] = newShapeMenu();
     this->menu[1] = newAddMenu();
     this->menu[2] = newOptMenu();
     this->menu[3] = newPopUp();
@@ -741,6 +744,7 @@ void window::showPopUp(const char* text)
     this->tempMenu.first = currentMenu;
     this->tempMenu.second = this->menu[this->currentMenu]->visible();  
     
+    std::cout<<"clicado";
     //Seta o menu atual como popup
     this->setMenu(3);
     textDisp* t = dynamic_cast<textDisp*>(this->menu[3]->getElement(1));
@@ -753,11 +757,13 @@ void window::showPopUp(const char* text)
  * @brief Fecha o popUp corrente
  * 
  */
+
 void window::closePopUp()
 {
     //Resgata o menu passado conforme salvo pela função showPopUp
     if(this->tempMenu.second)
-        this->setMenu(this->tempMenu.first, VISIBLE);
-    else
-        this->setMenu(this->tempMenu.first, HIDDEN);
+            this->setMenu(this->tempMenu.first, VISIBLE);
+        else
+            this->setMenu(this->tempMenu.first, HIDDEN);
+   
 }

@@ -150,6 +150,7 @@ void guiElement::setClicked(bool state)
  */
 void guiElement::draw()
 {
+   // std::cout<<"Desenhando...."<<std::endl;
     this->square::draw();
 }
 
@@ -232,9 +233,13 @@ void frame::draw()
 {
     if(this->isVisible)
     {
+        //std::cout<<"Desenhando...."<<std::endl;
         geometry::program->use();
-        glUniform3fv(this->colorLoc, 1, &(this->color[0]));
         glBindVertexArray(this->VAO);
+        glUniform4fv(this->colorLoc, 1, &(this->color[0]));
+        glUniformMatrix4fv(this->modelLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->modelMatrix)[0]));
+        glUniformMatrix4fv(this->viewLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->viewMatrix)[0]));
+        glUniformMatrix4fv(this->projectionLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->projectionMatrix)[0]));
         glDrawArrays(GL_TRIANGLE_FAN, 0, this->vertices.size()/3);
 
 

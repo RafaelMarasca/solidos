@@ -13,7 +13,7 @@
 #include"camera.h"
 #include<iostream>
 #include<glm/glm.hpp>
-#include <glm/gtx/string_cast.hpp>
+#include"window.h"
 
 
 
@@ -21,8 +21,8 @@ geometry* geo = nullptr;
 geometry* geo2 = nullptr;
 geometry* geo3 = nullptr;
 vec3 pos(0.0f,0.0f,3.0f);
-    vec3 target(0.0f, 0.0f, 0.0f);
-    vec3 up(0.0f, 1.0f, 0.0f);
+vec3 target(0.0f, 0.0f, 0.0f);
+vec3 up(0.0f, 1.0f, 0.0f);
 camera cam(pos,target,up);
 
 
@@ -119,7 +119,7 @@ void mouse(int button, int state, int x, int y)
     
 
 }
-
+/*
 int main(int argc, char**argv)
 {
 
@@ -194,5 +194,21 @@ int main(int argc, char**argv)
 
     delete geo;
     
+    return 0;
+}*/
+
+
+int main(int argc, char** argv)
+{
+    try{
+        //Cria uma janela com tamanho inicial 250x250
+        window a(600,600, std::string("Hello Curves").c_str(), &argc, argv);
+        //Inicializa a janela e a exibe na tela
+        a.init(); 
+    }catch(std::string b){
+        //Exibe as exceções no terminal
+        std::cout<<b<<std::endl;
+    };
+
     return 0;
 }
