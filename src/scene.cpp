@@ -14,6 +14,7 @@
 scene::scene()
 {
    this->theAxis = new axis;
+   this->theAxis->setColor(0.0f, 1.0f, 0.0f);
    this->nextID = 1;
 }
 
@@ -33,7 +34,7 @@ scene::~scene()
  */
 void scene::draw()
 {
-    //this->theAxis->draw();
+    this->theAxis->draw();
     
     for(std::map<unsigned int,geometry*>::iterator it = this->objects.begin(); it != this->objects.end(); it++)
     {
@@ -167,5 +168,26 @@ sceneIterator scene::begin()
 sceneIterator scene::end()
 {
     return this->objects.end();
+}
+
+/**
+ * @brief Atualiza as matrizes view e projection dos objetos da cena.
+ * 
+ * @param view Matriz view.
+ * @param projection Matrix de projeção.
+ */
+void scene::updateCam(const matrix &view, const matrix &projection)
+{
+    sceneIterator it = this->objects.begin();
+
+    for(it; it!=this->objects.end(); it++)
+    {
+        (*it).second->setProjection(projection);
+        (*it).second->setView(view);
+    }
+
+    this->theAxis->setProjection(projection);
+    this->theAxis->setView(view);
+
 }
 

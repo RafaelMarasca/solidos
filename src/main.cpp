@@ -16,7 +16,7 @@
 #include"window.h"
 
 
-
+/*
 geometry* geo = nullptr;
 geometry* geo2 = nullptr;
 geometry* geo3 = nullptr;
@@ -24,10 +24,10 @@ vec3 pos(0.0f,0.0f,3.0f);
 vec3 target(0.0f, 0.0f, 0.0f);
 vec3 up(0.0f, 1.0f, 0.0f);
 camera cam(pos,target,up);
+*/
 
 
-
-
+/*
 void rotate(int value)
 {
     static GLfloat rot = 15;
@@ -45,22 +45,22 @@ void rotate(int value)
     //geo2->rotate(30,X_AXIS);
     //rot+=15;
     glutPostRedisplay();
-}
-
+}*/
+/*
 void draw()
 {
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.784f,0.784f,0.784f, 1.0f); //Determina a cor de limpeza do buffer
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Limpa o buffer com a cor determinada
-    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    
     geo->draw();
     glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
     geo2->draw();
     geo3->draw();
     //glutTimerFunc(500,rotate, 0); 
     glutSwapBuffers();
-}
+}*/
 
+/*
 void teste(unsigned char key, int x, int y)
 {
     if(key == 43)
@@ -118,7 +118,7 @@ void mouse(int button, int state, int x, int y)
     }
     
 
-}
+}*/
 /*
 int main(int argc, char**argv)
 {
@@ -202,7 +202,7 @@ int main(int argc, char** argv)
 {
     try{
         //Cria uma janela com tamanho inicial 250x250
-        window a(600,600, std::string("Hello Curves").c_str(), &argc, argv);
+        window a(600,600, std::string("Hello Solids").c_str(), &argc, argv);
         //Inicializa a janela e a exibe na tela
         a.init(); 
     }catch(std::string b){

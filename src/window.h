@@ -21,6 +21,7 @@
 #include<map>
 #include<utility>
 #include"gui.h"
+#include"camera.h"
 
 
 /**
@@ -56,6 +57,7 @@ class window
     private:
         scene* vision; //Ponteiro para a cena da janela.
         geometry* selectedShape; //Ponteiro para a forma selecionada.
+        camera* cam;
 
         inputType inType; //Tipo de entrada atual.
 
@@ -91,10 +93,14 @@ class window
 
         frame* getMenu(); //Getter para o menu atual.
         
-        static void menuClick0(int ID); //Método para lidar com os cliques no menu0 (menu de adição de B-Spline)
-        static void menuClick1(int ID); //Método para lidar com os clicque no menu1 (menu de adição de pontos via teclado)
-        static void menuClick2(int ID); //Método para lidar com os clicque no menu2 (menu de alteração de opções da curva selecionada)
-        static void menuClick3(int ID); //Método para lidar com os clicque no menu3 (popUp)
+        int getWaiting();
+        void setWaiting(int waiting);
+        void decWaiting();
+
+        geometry* getSelectedShape();
+
+        void setInputType(inputType);
+        inputType getInputType();
 
         static void draw(); //Método para desenhar os objetos da cena.
         static void mouseClick(int button, int state,int x, int y); //Método chamado ao clicar na tela.

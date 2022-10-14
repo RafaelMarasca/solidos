@@ -17,6 +17,7 @@
 #include<GL/glew.h>
 #include"geometry.h"
 #include"axis.h"
+#include"matrix.h"
 
 //Definição do tipo iterator para a classe scene
 typedef std::map<unsigned int, geometry*>::iterator sceneIterator;
@@ -49,6 +50,8 @@ class scene
         unsigned int addObject(geometry* object); //Adiciona um objeto na cena.
        
         std::pair<unsigned int, geometry*> checkCollision(geometry* geo); //Verifica se há colisão de um objeto da cena com um objeto passado por argumento
+
+        void updateCam(const matrix &view, const matrix &projection);
 };
 
 

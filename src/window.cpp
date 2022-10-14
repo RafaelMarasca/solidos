@@ -20,191 +20,11 @@
 #include<vector>
 #include<cmath>
 #include"gui.h"
+#include"menu.h"
 
 int mouseFlag = 0; //Verifica se o mouse esta sendo pressionado. 
-
-
-/**
- * @brief Handler para os cliques no elemenstos do menu 0 (Menu de adição de B-Spline)
- * 
- * @param ID : ID do elemento que gerou o evento de clique.
- */
-
-void window::menuClick0(int ID)
-{
-    window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
-    if(w)
-    {
-        switch(ID)
-        {
-            case 5: //Botão de Mouse
-            {
-                std::string orderStr = (w->getMenu())->getTextInput(3); //Obtém o texto escrito na caixa 3
-                std::string pointNumStr = (w->getMenu())->getTextInput(1); //Obtém o texto escrito na caixa 1
-
-                if(orderStr.size()!=0 && pointNumStr.size() != 0) //Verifica se a ordem e o numero de pontos são válidos
-                {
-                    int order=0, pointNum=0;
-
-                    //Converte as strigs para inteiro
-                    order = stoi(orderStr);
-                    pointNum = stoi(pointNumStr);
-
-                    if(pointNum <= 0 || order <= 0) //Caso a entrada de uma das caixas seja <= 0
-                    {
-                        w->showPopUp("Entradas devem ser >0!"); 
-                    }else if(pointNum <= order) //Caso o número de pontos seja menor ou igual a ordem da curva
-                    {
-                        w->showPopUp("Numero de Pontos deve ser > Ordem!"); 
-                    }else //Caso esteja tudo em ordem
-                    {
-                        w->getMenu()->clear(); //Limpa os dados do menu
-                        w->getMenu()->hide(); //Esconde o menu
-                        w->addSpline(pointNum, order,MOUSE); //Chama o método de adição de spline
-                    }
-                }
-            }break;
-        
-            case 6: //Botão de Teclado
-            {
-                std::string orderStr = (w->getMenu())->getTextInput(3); //Obtém o texto escrito na caixa 3
-                std::string pointNumStr = (w->getMenu())->getTextInput(1); //Obtém o texto escrito na caixa 1
-
-                if(orderStr.size() != 0 && pointNumStr.size() != 0) //Verifica se a ordem e o numero de pontos são válidos
-                {
-                    int order=0, pointNum=0;
-
-                    //Converte as strings para inteiro
-                    order = stoi(orderStr);
-                    pointNum = stoi(pointNumStr);
-
-                    if(pointNum <= 0 || order <= 0) //Caso a entrada de uma das caixas seja <= 0
-                    {
-                        w->showPopUp("Entradas devem ser > 0!");
-                    }else if(pointNum <= order) //Caso o número de pontos seja menor ou igual a ordem da curva
-                    {
-                        w->showPopUp("Numero de Pontos deve ser > Ordem!");
-                    }else //Caso esteja tudo em ordem
-                    {
-                        w->getMenu()->clear(); //Limpa os dados do menu
-                        w->addSpline(pointNum,order,KEYBOARD); //Chama o método de adição de B-spline;
-                        w->setMenu(1); //Seta o menu atual para o menu de adição de pontos
-                    } 
-                }
-            }break;
-        }
-    }
-}
-
-/**
- * @brief Handler para os cliques do menu 1 (menu de adição de pontos).
- * 
- * @param ID : ID do elemento que gerou o evento de clique.
- */
-void window::menuClick1(int ID)
-{
-    window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
-    if(w)
-    {
-        switch(ID)
-        {
-            case 5: //Botão Adicionar
-            {
-                std::string xStr = (w->getMenu())->getTextInput(2); //Obtém o texto da caixa de texto 2.
-                std::string yStr = (w->getMenu())->getTextInput(4); //Obtém o texto da caixa de texto 4.
-
-                if(xStr.size()!= 0 && yStr.size()!= 0) //Verifica se os dados são válidos
-                {
-                    GLfloat x=0, y=0;
-
-                    //Converte as strings para float.
-                    x = stof(xStr);
-                    y = stof(yStr);
-
-                    if(std::fabs(x)>1  || std::fabs(y)>1) //Verifica se o desenho ficará fora da tela
-                    {
-                         w->showPopUp("O Desenho Ficara Fora da Tela!");
-                    }
-                    
-                    //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
-                    {
-                        //Caso não tenha colidido
-                    
-                        w->waitingInput --; //Decrementa a variável de espera de entrada.
-
-                        w->getMenu()->clear(); //Limpa os dados do menu
-                        
-                        if(!w->waitingInput) //Se não há espera por entrada
-                        {
-                            w->inType = NONE; //Seta o tipo de entrada para nenhuma
-                            w->setMenu(0,HIDDEN); //Seta o menu como 0.
-                        }
-                    }//else{
-                        //Caso tenha havido colisão
-                        //w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
-                   // }
-                }
-            }break;
-        
-            case 6: //Botão Cancelar;
-                if(w->waitingInput)
-                {
-                    w->waitingInput = 0; //Zera a flag de espera por entrada
-                    w->deleteShape(); //Remove o objeto corrente
-                    w->setMenu(0);//Seta o menu para 0.
-                    w->inType = NONE;
-                }
-                w->clearSelection(); //Desseleciona os objetos
-            break;
-        }
-    }
-}
-
-
-/**
- * @brief Handler para os cliques do menu 3 (menu de Opção).
- * 
- * @param ID : ID do elemento que gerou o evento de clique.
- */
-void window::menuClick2(int ID)
-{
-    window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
-    if(w)
-    {
-        if(w->selectedShape) //Verifica se alguma forma está selecionada
-        {
-            switch(ID)
-            {
-                case 2: //Botão de Visibilidade
-                {
-                   
-                }break;
-                
-                case 4: //Botão de Clamping/Unclamping
-                {
-                    
-                }break;
-            }
-        }
-    }
-}
-
-/**
- * @brief Handler para os cliques do menu 3 (menu de popUp).
- * 
- * @param ID : ID do elemento que gerou o evento de clique.
- */
-void window::menuClick3(int ID)
-{
-    window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
-    if(w)
-    {
-       if(ID == 0) //Botão OK
-       {
-            w->closePopUp(); //Fecha o popUp
-       }
-    }
-}
+int xLast;
+int yLast;
 
 
 /**
@@ -220,100 +40,6 @@ void window::addSpline(int pointNum, int order, inputType t)
     this->waitingInput = pointNum;
     //this->selectedShapeID  = this->vision->addObject(new );
     this->selectedShape = this->vision->getObject(this->selectedShapeID).second;
-}
-
-
-/**
- * @brief Cria o menu 0 (menu de criação de formas)
- * 
- * @return frame* ponteiro para o menu criado
- */
-frame* newShapeMenu()
-{
-    frame* menu = new frame(1.0f, 1.0f, 6, 4, -0.5, 0.5); //Cria o frame
-
-    //Adiciona os elementos de menu
-    menu->addText(0,0,1,4,0,"NOVA B-SPLINE");
-    menu->addTextInput(2,0,1,4,1);
-    menu->addText(1,0,1,4,2,"Quantidade de Pontos");
-    menu->addTextInput(4,0,1,4,3);
-    menu->addText(3,0,1,4,4,"Ordem");
-    menu->addButton(5,0,1,2,5,"Mouse");
-    menu->addButton(5,1,1,2,6,"Teclado");
-    menu->addClickFunction(window::menuClick0); //Adiciona a função chamada ao clicar em um elemento do menu 0
-    
-    menu->generate(); //Gera o menu
-
-    return menu;
-}
-
-/**
- * @brief Cria o menu 1 (menu de adição de pontos)
- * 
- * @return frame* ponteiro para o menu criado
- */
-frame* newAddMenu()
-{
-    frame* menu = new frame(0.5f, 1.0f, 4, 4, -0.5, 0.25); //Cria o frame do menu
-
-    std::vector<GLfloat> red = {BUTTON_RED_R, BUTTON_RED_G,BUTTON_RED_B};
-    
-    //Adiciona os elementos do menu
-    menu->addText(0,0,1,4,0,"ADICIONAR PONTOS");
-    menu->addText(1,0,1,1,1,"X");
-    menu->addTextInput(1,1,1,1,2);
-    menu->addText(1,2,1,1,3,"Y");
-    menu->addTextInput(1,3,1,1,4);
-    menu->addButton(3,0,1,2,6,"Cancelar",red);
-    menu->addButton(3,1,1,2,5,"Adicionar");
-    menu->addClickFunction(window::menuClick1); //Adiciona a função chamada ao se clicar no menu
-    
-    menu->generate(); //Gera o menu
-
-    return menu;
-}
-
-/**
- * @brief Cria o menu 2 (menu de Opção)
- * 
- * @return frame* ponteiro para o menu criado
- */
-frame* newOptMenu()
-{
-    frame* menu = new frame(0.5f, 1.0f, 3, 4, -0.5, 0.25); //Cria o frame do menu
-
-    //Adiciona os elementos do menu
-    menu->addText(0,0,1,4,0,"MODIFICAR CURVA");
-    menu->addText(1,0,1,3,1,"Mostrar PTS de Controle");
-    menu->addToggleButton(1,1,1,1,2,true);
-    menu->addText(2,0,1,3,3,"Prender B-Spline");
-    menu->addToggleButton(2,1,1,1,4,true);
-    menu->addClickFunction(window::menuClick2); //Adiciona a função chamada ao clicar em um elemento do menu 2
-    
-    menu->generate();//Gera o menu
-
-    return menu;
-}
-
-
-/**
- * @brief Cria o menu 3 (menu de popUp)
- * 
- * @return frame* ponteiro para o menu criado
- */
-
-frame* newPopUp()
-{
-    frame* menu = new frame(0.5f, 1.2f, 2, 4, -0.6, 0.25, -1, 0.1); //Cria o frame do menu
-    
-    //Adiciona os elementos do menu
-    menu->addButton(1,1,1,2,0,"OK");
-    menu->addText(0,0,1,4,1,"LOREM IPSUM AMET");
-    menu->addClickFunction(window::menuClick3);
-    
-    menu->generate();//Gera o menu
-
-    return menu;
 }
 
 
@@ -357,11 +83,20 @@ void window::keyp(unsigned char key, int x, int y)
 
         //Tecla Espaço
         case 32: //Exibe/Esconde o menu atual
-        //std::cout<<"Desenhando...."<<std::endl;
             if(w->menu[w->currentMenu]->visible())
                 w->menu[w->currentMenu]->hide();
             else
                 w->menu[w->currentMenu]->show();
+        break;
+
+        case 43:
+            w->cam->zoom(-10);
+            w->vision->updateCam(w->cam->getView(), w->cam->getProjection());
+        break;
+
+        case 45:
+            w->cam->zoom(10);
+            w->vision->updateCam(w->cam->getView(), w->cam->getProjection());
         break;
     }
 
@@ -397,6 +132,8 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     glutReshapeFunc(window::resize);
     glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
                     GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
     glutSetWindowData(this);
     /*glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     glPointSize(7);
@@ -411,6 +148,9 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     }
 
     this->vision= new scene; //Cria uma cena para exibição
+    this->cam = new camera(vec3(0.0f,0.0f,3.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f,1.0f,0.0f));
+    this->cam->rotate(45.0f, 0.0f);
+    this->vision->updateCam(cam->getView(), cam->getProjection());
     this->waitingInput = 0; //Inicializa a flag de espera de entrada em 0
     this->inType = NONE;  //Tipo de entrada
     this->width = width; //Inicializa a largura da tela
@@ -420,9 +160,13 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
    
     //Inicializa os menus
     this->menu[0] = newShapeMenu();
-    this->menu[1] = newAddMenu();
-    this->menu[2] = newOptMenu();
-    this->menu[3] = newPopUp();
+    this->menu[1] = newCube();
+    this->menu[2] = newSphere();
+    this->menu[3] = newTorus(); 
+    this->menu[4] = newIcosahedron();  
+    this->menu[5] = newOptMenu();
+    this->menu[6] = newPopUp();
+    
     this->currentMenu = 0;
 }
 
@@ -450,6 +194,7 @@ window::~window()
         delete (*itMenu).second; 
 
     delete this->vision; //Deleta a cena.
+    delete this->cam;
 }
 
 
@@ -461,10 +206,15 @@ void window::draw()
 {
     window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
 
-    glClearColor(0.784f,0.784f,0.784f, 1.0f); //Determina a cor de limpeza do buffer
-    glClear(GL_COLOR_BUFFER_BIT); //Limpa o buffer com a corr de background
+    glClearColor(0.784f,0.784f,0.784f, 1.0f); //Determina a cor de limpeza do buffer de cor
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Limpa o buffer de cor e o buffer de produndidade
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     w->vision->draw(); //Desenha a cena
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
     w->menu[w->currentMenu]->draw(); //Desenha o menu corrente.
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 
     glutSwapBuffers(); //Troca os buffers (Exibe na tela)
 }
@@ -516,6 +266,8 @@ void window::mouseClick(int button, int state,int x, int y)
                 if(mouseFlag == 0 && !w->waitingInput)
                 {
                     mouseFlag = 1; 
+                    xLast = x;
+                    yLast = y;
                 }
 
                 //Caso esteja sendo inserida uma forma via mouse
@@ -701,6 +453,10 @@ void window::mouseMove(int x, int y)
             ypos =  ((-2.0*float(y)/float(w->height)) + 1.0f)/w->aspectRatio;
         }
 
+        w->cam->mouseMap(xLast-x, yLast-y, 600, 600);
+        w->vision->updateCam(w->cam->getView(),w->cam->getProjection());
+        xLast = x;
+        yLast = y;
         glutPostRedisplay();
     }
 }
@@ -746,7 +502,7 @@ void window::showPopUp(const char* text)
     
     std::cout<<"clicado";
     //Seta o menu atual como popup
-    this->setMenu(3);
+    this->setMenu(6);
     textDisp* t = dynamic_cast<textDisp*>(this->menu[3]->getElement(1));
     //Altera o texto do popup
     if(t)
@@ -767,3 +523,64 @@ void window::closePopUp()
             this->setMenu(this->tempMenu.first, HIDDEN);
    
 }
+
+
+/**
+ * @brief Getter para o valor de espera de entrada.
+ * 
+ */
+int window::getWaiting()
+{
+    return this->waitingInput;
+}
+
+
+
+/**
+ * @brief Setter para o valor de espera de entrada.
+ * 
+ */
+void window::setWaiting(int waiting)
+{
+    this->waitingInput = waiting;
+}
+
+/**
+ * @brief Setter para o tipo de entrada.
+ * 
+ * @param in Tipo de entrada.
+ */
+void window::setInputType(inputType in)
+{
+    this->inType = in;
+}
+
+/**
+ * @brief Getter para o tipo de entrada atual;
+ * 
+ * @return inputType Tipo de entrada atual.
+ */
+inputType window::getInputType()
+{
+    return this->inType;
+}
+
+/**
+ * @brief Decrementa o valor de entrada atual.
+ * 
+ */
+void window::decWaiting()
+{
+    this->waitingInput--;
+}
+
+
+/**
+ * @brief Getter para a forma selecionada.
+ * 
+ */
+geometry* window::getSelectedShape()
+{
+    return this->selectedShape;
+}
+
