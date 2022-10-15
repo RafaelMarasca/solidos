@@ -916,7 +916,7 @@ void menuClickScale(int ID)
 
                     if(scale<0.0001f)
                     {
-                        w->showPopUp("Aresta deve ser > 0");
+                        w->showPopUp("Escala deve ser > 0");
                     }else
                     {
                         //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
