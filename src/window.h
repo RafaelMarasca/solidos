@@ -89,7 +89,7 @@ class window
         void showPopUp(const char* text); //Mostra um popUp.
         void closePopUp(); //Fecha o popUp.
 
-        void setMenu(int ID, menuState = VISIBLE); //Seta o menu atual.
+        void setMenu(int ID, menuState = VISIBLE, bool clear = 1); //Seta o menu atual.
         void addShape(geometry* shape); //Adiciona uma forma.
 
         frame* getMenu(); //Getter para o menu atual.

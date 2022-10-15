@@ -146,22 +146,40 @@ void menuClickOpt(int ID)
             {
                 case 2: //Botão de Aramado
                 {
-                    
+                    bool state = w->getMenu()->getState(ID);
+                    w->getSelectedShape()->setWireFrame(state);
+                    if(!(state || w->getMenu()->getState(4)))
+                    {
+                        w->getMenu()->setState(4,true);
+                        w->getSelectedShape()->setSolid(true);
+                    }
                 }break;
 
-                case 3: //Botão de Rotação
+                case 4: //Botão Sólido
+                {
+                    bool state = w->getMenu()->getState(ID);
+                    w->getSelectedShape()->setSolid(state);
+                    if(!(state || w->getMenu()->getState(2)))
+                    {
+                        w->getMenu()->setState(2,true);
+                        w->getSelectedShape()->setWireFrame(true);
+                    }
+                        
+                }break;
+
+                case 5: //Botão de Rotação
                 {
                     w->getMenu()->clear(); //Limpa os dados do menu
                     w->setMenu(7); //Seta o menu atual para o menu de adição de pontos
                 }break;
                 
-                case 4: //Botão de Translação
+                case 6: //Botão de Translação
                 {
                     w->getMenu()->clear(); //Limpa os dados do menu
                     w->setMenu(8); //Seta o menu atual para o menu de adição de pontos
                 }break;
 
-                case 5: //Botão de Escala
+                case 7: //Botão de Escala
                 {
                     w->getMenu()->clear(); //Limpa os dados do menu
                     w->setMenu(9); //Seta o menu atual para o menu de adição de pontos
@@ -568,15 +586,17 @@ frame* newAddMenu()
  */
 frame* newOptMenu()
 {
-    frame* menu = new frame(1.0f, 1.0f, 5, 4, -0.5, 0.5); //Cria o frame do menu
+    frame* menu = new frame(1.0f, 1.0f, 6, 4, -0.5, 0.5); //Cria o frame do menu
 
     //Adiciona os elementos do menu
     menu->addText(0,0,1,4,0,"MODIFICAR FORMA");
-    menu->addText(1,0,1,3,1,"Mostrar Aramado");
+    menu->addText(1,0,1,3,1,"Aramado");
     menu->addToggleButton(1,1,1,1,2,false);
-    menu->addButton(2,0,1,4,3,"Rotacionar");
-    menu->addButton(3,0,1,4,4,"Transladar");
-    menu->addButton(4,0,1,4,5,"Escalar");
+    menu->addText(2,0,1,3,3,"Solido");
+    menu->addToggleButton(2,1,1,1,4,true);
+    menu->addButton(3,0,1,4,5,"Rotacionar");
+    menu->addButton(4,0,1,4,6,"Transladar");
+    menu->addButton(5,0,1,4,7,"Escalar");
     menu->addClickFunction(menuClickOpt); //Adiciona a função chamada ao clicar em um elemento do menu
     
     menu->generate();//Gera o menu

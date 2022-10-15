@@ -17,6 +17,11 @@
 #define GEOMETRY_G 0.341f
 #define GEOMETRY_B 0.486f 
 
+//Cor inicial do Aramado
+#define WF_R 1.000f
+#define WF_G 0.000f
+#define WF_B 0.000f 
+
 typedef enum {X_AXIS=0, Y_AXIS, Z_AXIS}AXIS;
 
 
@@ -56,6 +61,7 @@ class geometry
 
     protected:
         bool wireFrame;
+        bool solid;
         
         static shaderProgram* program;
 
@@ -65,12 +71,12 @@ class geometry
 
         matrix modelMatrix;
         matrix viewMatrix;
-        //glm::mat4 projectionMatrix;
         matrix projectionMatrix;
 
         std::vector<GLfloat> centralPoint; //Ponto central da forma
         std::vector<GLfloat> vertices; //Vetor de vértices da forma
         std::vector<GLfloat> color;
+        std::vector<GLfloat> wireFrameColor;
         std::vector<int> indices;
         
 
@@ -93,12 +99,13 @@ class geometry
         void setProjection(matrix projectionMatrix);
         void setView(const matrix &viewMatrix);
         void setColor(GLfloat r, GLfloat g,  GLfloat b, GLfloat a = 1.0f);
-        void resetColor();
         
+        void setWireFrame(bool state);
+        void setSolid(bool state);
+        bool getWireFrameState();
+        bool getSolidState();
 
-        //virtual void setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f); //Setter para a cor do objeto.
-        //virtual void resetColor();
-
+        virtual void resetColor();
         virtual void draw(); //Método virtual puro para desenho da forma.
 
 };
@@ -132,7 +139,6 @@ class torus : public geometry
 {
     public:
         torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
-
 };
 
 

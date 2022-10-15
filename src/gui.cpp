@@ -410,6 +410,14 @@ bool frame::getState(int ID)
     }
 }
 
+bool frame::setState(int ID, bool state)
+{
+    toggleButton* t = dynamic_cast<toggleButton*>(this->getElement(ID));
+    
+    if(t)
+        t->setState(state);
+}
+
 /**
  * @brief Limpa os dados do frame e seus elementos associados
  * 

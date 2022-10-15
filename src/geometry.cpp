@@ -36,6 +36,7 @@ bool floatCmp(GLfloat a, GLfloat b)
 geometry::geometry(std::vector<GLfloat> &vertices, std::vector<int> &indices, std::vector<GLfloat> &centralPoint, GLenum usage)
 {
     this->wireFrame = 0;
+    this->solid = 1;
 
     this->modelMatrix = matrix::eye(4);
     this->viewMatrix = matrix::eye(4);
@@ -46,6 +47,7 @@ geometry::geometry(std::vector<GLfloat> &vertices, std::vector<int> &indices, st
     this->centralPoint = centralPoint;
     this->usage = usage;
     this->color = {GEOMETRY_R, GEOMETRY_G, GEOMETRY_B, 1.0f};
+    this->wireFrameColor = {WF_R, WF_G, WF_B, 1.0f};
 
     if(geometry::program == nullptr)
         geometry::program = new shaderProgram(vertexShaderSource, fragmentShaderSource);
@@ -58,6 +60,7 @@ geometry::geometry(std::vector<GLfloat> &vertices, std::vector<int> &indices, st
 geometry::geometry(GLenum usage)
 {
     this->wireFrame = 0;
+    this->solid = 1;
 
     this->modelMatrix = matrix::eye(4);
     this->viewMatrix = matrix::eye(4);
@@ -66,7 +69,7 @@ geometry::geometry(GLenum usage)
     this->centralPoint = {0.0f, 0.0f, 0.0f};
     this->usage = usage;
     this->color = {GEOMETRY_R, GEOMETRY_G, GEOMETRY_B, 1.0f};
-
+    this->wireFrameColor = {WF_R, WF_G, WF_B, 1.0f};
 
     if(geometry::program == nullptr)
         geometry::program = new shaderProgram(vertexShaderSource, fragmentShaderSource);
@@ -100,11 +103,31 @@ void geometry::draw()
 {
     this->program->use();
     glBindVertexArray(this->VAO);
+    
     glUniform4fv(this->colorLoc, 1, &(this->color[0]));
     glUniformMatrix4fv(this->modelLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->modelMatrix)[0]));
     glUniformMatrix4fv(this->viewLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->viewMatrix)[0]));
     glUniformMatrix4fv(this->projectionLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->projectionMatrix)[0]));
-    glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, (void*)0);
+    
+    if(this->solid)
+    {
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonOffset(2.0f, 2.0f);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, (void*)0);
+
+        glDisable(GL_POLYGON_OFFSET_FILL);
+    }
+
+    if(this->wireFrame)
+    {
+        glUniform4fv(this->colorLoc, 1, &(this->wireFrameColor[0]));
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, (void*)0);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+    
     glBindVertexArray(this->VAO);
     glUseProgram(0);
 }
@@ -250,6 +273,11 @@ void geometry::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
     this->color[1] = g;
     this->color[2] = b;
     this->color[3] = a; 
+
+    this->wireFrameColor[0] = r;
+    this->wireFrameColor[1] = g;
+    this->wireFrameColor[2] = b;
+    this->wireFrameColor[3] = a; 
 }
 
 void geometry::resetColor()
@@ -258,6 +286,11 @@ void geometry::resetColor()
     this->color[1] = GEOMETRY_G;
     this->color[2] = GEOMETRY_B;
     this->color[3] = 1.0f; 
+
+    this->wireFrameColor[0] = WF_R;
+    this->wireFrameColor[1] = WF_G;
+    this->wireFrameColor[2] = WF_B;
+    this->wireFrameColor[3] = 1.0f; 
 }
 
 cube::cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage): geometry(usage)
@@ -703,5 +736,24 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
     //Aponta os atributos de vértice.
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
+}
 
+void geometry::setWireFrame(bool state)
+{
+    this->wireFrame = state;
+}
+
+void geometry::setSolid(bool state)
+{
+    this->solid = state;
+}
+
+bool geometry::getWireFrameState()
+{
+    return this->wireFrame;
+}
+
+bool geometry::getSolidState()
+{
+    return this->solid;
 }
