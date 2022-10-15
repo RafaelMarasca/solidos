@@ -203,6 +203,9 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     this->menu[4] = newIcosahedron();  
     this->menu[5] = newOptMenu();
     this->menu[6] = newPopUp();
+    this->menu[7] = newRotMenu();
+    this->menu[8] = newTransMenu();
+    this->menu[9] = newScaleMenu();
 
     this->currentMenu = 0;
     std::vector<GLfloat> c= {0.0f, 0.0f, 0.0f};
@@ -404,8 +407,8 @@ void window::select(std::pair<unsigned int, geometry*> obj)
     
     if(obj.second == nullptr)
         this->setMenu(0,HIDDEN);
-    //else
-       // this->setMenu(2,HIDDEN);
+    else
+        this->setMenu(5,HIDDEN);
 
     glutPostRedisplay(); //Requere que a tela seja redesenhada.
 }
@@ -561,8 +564,7 @@ void window::closePopUp()
     if(this->tempMenu.second)
             this->setMenu(this->tempMenu.first, VISIBLE);
         else
-            this->setMenu(this->tempMenu.first, HIDDEN);
-   
+            this->setMenu(this->tempMenu.first, HIDDEN); 
 }
 
 
@@ -574,7 +576,6 @@ int window::getWaiting()
 {
     return this->waitingInput;
 }
-
 
 
 /**

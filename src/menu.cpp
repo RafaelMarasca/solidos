@@ -17,6 +17,7 @@ frame* newShapeMenu()
     menu->addButton(2,0,1,4,2,"Esfera");
     menu->addButton(3,0,1,4,3,"Torus");
     menu->addButton(4,0,1,4,4,"Icosaedro");
+
     menu->addClickFunction(menuClickShape); //Adiciona a função chamada ao clicar em um elemento do menu 0
     
     menu->generate(); //Gera o menu
@@ -37,62 +38,6 @@ void menuClickShape(int ID)
     {
         switch(ID)
         {
-            /*case 5: //Botão de Mouse
-            {
-                std::string orderStr = (w->getMenu())->getTextInput(3); //Obtém o texto escrito na caixa 3
-                std::string pointNumStr = (w->getMenu())->getTextInput(1); //Obtém o texto escrito na caixa 1
-
-                if(orderStr.size()!=0 && pointNumStr.size() != 0) //Verifica se a ordem e o numero de pontos são válidos
-                {
-                    int order=0, pointNum=0;
-
-                    //Converte as strigs para inteiro
-                    order = stoi(orderStr);
-                    pointNum = stoi(pointNumStr);
-
-                    if(pointNum <= 0 || order <= 0) //Caso a entrada de uma das caixas seja <= 0
-                    {
-                        w->showPopUp("Entradas devem ser >0!"); 
-                    }else if(pointNum <= order) //Caso o número de pontos seja menor ou igual a ordem da curva
-                    {
-                        w->showPopUp("Numero de Pontos deve ser > Ordem!"); 
-                    }else //Caso esteja tudo em ordem
-                    {
-                        w->getMenu()->clear(); //Limpa os dados do menu
-                        w->getMenu()->hide(); //Esconde o menu
-                        w->addSpline(pointNum, order,MOUSE); //Chama o método de adição de spline
-                    }
-                }
-            }break;*/
-        
-            /*case 6: //Botão de Teclado
-            {
-                std::string orderStr = (w->getMenu())->getTextInput(3); //Obtém o texto escrito na caixa 3
-                std::string pointNumStr = (w->getMenu())->getTextInput(1); //Obtém o texto escrito na caixa 1
-
-                if(orderStr.size() != 0 && pointNumStr.size() != 0) //Verifica se a ordem e o numero de pontos são válidos
-                {
-                    int order=0, pointNum=0;
-
-                    //Converte as strings para inteiro
-                    order = stoi(orderStr);
-                    pointNum = stoi(pointNumStr);
-
-                    if(pointNum <= 0 || order <= 0) //Caso a entrada de uma das caixas seja <= 0
-                    {
-                        w->showPopUp("Entradas devem ser > 0!");
-                    }else if(pointNum <= order) //Caso o número de pontos seja menor ou igual a ordem da curva
-                    {
-                        w->showPopUp("Numero de Pontos deve ser > Ordem!");
-                    }else //Caso esteja tudo em ordem
-                    {
-                        w->getMenu()->clear(); //Limpa os dados do menu
-                        w->addSpline(pointNum,order,KEYBOARD); //Chama o método de adição de B-spline;
-                        w->setMenu(1); //Seta o menu atual para o menu de adição de pontos
-                    } 
-                }
-            }break;*/
-
             case 1:
                 w->setWaiting(1);
                 w->getMenu()->clear(); //Limpa os dados do menu
@@ -186,11 +131,11 @@ void menuClick1(int ID)
 
 
 /**
- * @brief Handler para os cliques do menu 3 (menu de Opção).
+ * @brief Handler para os cliques do menu de Opção.
  * 
  * @param ID : ID do elemento que gerou o evento de clique.
  */
-void menuClick2(int ID)
+void menuClickOpt(int ID)
 {
     window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
     if(w)
@@ -199,14 +144,27 @@ void menuClick2(int ID)
         {
             switch(ID)
             {
-                case 2: //Botão de Visibilidade
-                {
-                   
-                }break;
-                
-                case 4: //Botão de Clamping/Unclamping
+                case 2: //Botão de Aramado
                 {
                     
+                }break;
+
+                case 3: //Botão de Rotação
+                {
+                    w->getMenu()->clear(); //Limpa os dados do menu
+                    w->setMenu(7); //Seta o menu atual para o menu de adição de pontos
+                }break;
+                
+                case 4: //Botão de Translação
+                {
+                    w->getMenu()->clear(); //Limpa os dados do menu
+                    w->setMenu(8); //Seta o menu atual para o menu de adição de pontos
+                }break;
+
+                case 5: //Botão de Escala
+                {
+                    w->getMenu()->clear(); //Limpa os dados do menu
+                    w->setMenu(9); //Seta o menu atual para o menu de adição de pontos
                 }break;
             }
         }
@@ -219,7 +177,7 @@ void menuClick2(int ID)
  * 
  * @param ID : ID do elemento que gerou o evento de clique.
  */
-void menuClick3(int ID)
+void menuClickPopUp(int ID)
 {
     window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
     if(w)
@@ -604,22 +562,108 @@ frame* newAddMenu()
 }
 
 /**
- * @brief Cria o menu 2 (menu de Opção)
+ * @brief Cria o menu de Opção.
  * 
- * @return frame* ponteiro para o menu criado
+ * @return frame* ponteiro para o menu criado.
  */
 frame* newOptMenu()
 {
-    frame* menu = new frame(0.5f, 1.0f, 3, 4, -0.5, 0.25); //Cria o frame do menu
+    frame* menu = new frame(1.0f, 1.0f, 5, 4, -0.5, 0.5); //Cria o frame do menu
 
     //Adiciona os elementos do menu
-    menu->addText(0,0,1,4,0,"MODIFICAR CURVA");
-    menu->addText(1,0,1,3,1,"Mostrar PTS de Controle");
-    menu->addToggleButton(1,1,1,1,2,true);
-    menu->addText(2,0,1,3,3,"Prender B-Spline");
-    menu->addToggleButton(2,1,1,1,4,true);
-    menu->addClickFunction(menuClick2); //Adiciona a função chamada ao clicar em um elemento do menu 2
+    menu->addText(0,0,1,4,0,"MODIFICAR FORMA");
+    menu->addText(1,0,1,3,1,"Mostrar Aramado");
+    menu->addToggleButton(1,1,1,1,2,false);
+    menu->addButton(2,0,1,4,3,"Rotacionar");
+    menu->addButton(3,0,1,4,4,"Transladar");
+    menu->addButton(4,0,1,4,5,"Escalar");
+    menu->addClickFunction(menuClickOpt); //Adiciona a função chamada ao clicar em um elemento do menu
     
+    menu->generate();//Gera o menu
+
+    return menu;
+}
+
+/**
+ * @brief Cria o menu de Rotação.
+ * 
+ * @return frame* ponteiro para o menu criado.
+ */
+frame* newRotMenu()
+{
+    frame* menu = new frame(0.5f, 1.0f, 3, 4, -0.5, 0.25); //Cria o frame do menu
+
+    std::vector<GLfloat> red = {BUTTON_RED_R, BUTTON_RED_G,BUTTON_RED_B};
+
+    //Adiciona os elementos do menu
+    menu->addText(0,0,1,4,0,"ROTACIONAR");
+
+    menu->addText(1,0,1,2,1,"Angulo");
+    menu->addTextInput(1,1,1,2,2);
+
+    menu->addButton(2,0,1,2,3,"Cancelar",red);
+    menu->addButton(2,1,1,2,4,"Confirmar");
+
+    menu->addClickFunction(menuClickRot); //Adiciona a função chamada ao clicar em um elemento do menu
+
+    menu->generate();//Gera o menu
+
+    return menu;
+}
+
+/**
+ * @brief Cria o menu de Translação.
+ * 
+ * @return frame* ponteiro para o menu criado.
+ */
+frame* newTransMenu()
+{
+    frame* menu = new frame(0.8f, 1.0f, 5, 4, -0.5, 0.4); //Cria o frame do menu
+
+    std::vector<GLfloat> red = {BUTTON_RED_R, BUTTON_RED_G,BUTTON_RED_B};
+
+    //Adiciona os elementos do menu
+    menu->addText(0,0,1,4,0,"TRANSLADAR");
+
+    menu->addText(1,0,1,2,1,"DX");
+    menu->addTextInput(1,1,1,2,2);
+    menu->addText(2,0,1,2,3,"DY");
+    menu->addTextInput(2,1,1,2,4);
+    menu->addText(3,0,1,2,5,"DZ");
+    menu->addTextInput(3,1,1,2,6);
+
+    menu->addButton(4,0,1,2,7,"Cancelar",red);
+    menu->addButton(4,1,1,2,8,"Confirmar");
+    
+     menu->addClickFunction(menuClickTrans); //Adiciona a função chamada ao clicar em um elemento do menu
+
+    menu->generate();//Gera o menu
+
+    return menu;
+}
+
+/**
+ * @brief Cria o menu de Escala.
+ * 
+ * @return frame* ponteiro para o menu criado.
+ */
+frame* newScaleMenu()
+{
+    frame* menu = new frame(0.5f, 1.0f, 3, 4, -0.5, 0.25); //Cria o frame do menu
+
+    std::vector<GLfloat> red = {BUTTON_RED_R, BUTTON_RED_G,BUTTON_RED_B};
+
+    //Adiciona os elementos do menu
+    menu->addText(0,0,1,4,0,"ESCALAR");
+
+    menu->addText(1,0,1,2,1,"Escala");
+    menu->addTextInput(1,1,1,2,2);
+
+    menu->addButton(2,0,1,2,3,"Cancelar",red);
+    menu->addButton(2,1,1,2,4,"Confirmar");
+
+    menu->addClickFunction(menuClickScale); //Adiciona a função chamada ao clicar em um elemento do menu
+
     menu->generate();//Gera o menu
 
     return menu;
@@ -639,7 +683,7 @@ frame* newPopUp()
     //Adiciona os elementos do menu
     menu->addButton(1,1,1,2,0,"OK");
     menu->addText(0,0,1,4,1,"LOREM IPSUM AMET");
-    menu->addClickFunction(menuClick3);
+    menu->addClickFunction(menuClickPopUp);
     
     menu->generate();//Gera o menu
 
@@ -770,6 +814,129 @@ frame* newIcosahedron()
     menu->generate(); //Gera o menu
 
     return menu;
+}
+
+void menuClickRot(int ID)
+{
+    window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
+    if(w)
+    {
+        switch(ID)
+        {
+            case 4: //Botão Rodar
+            {
+                std::string angleStr = (w->getMenu())->getTextInput(2); //Obtém o texto da caixa de texto 2.
+
+                if(angleStr.size()!= 0) //Verifica se os dados são válidos
+                {
+                    GLfloat angle = 0.0f;
+
+                    //Converte as strings para float.
+                    angle = stof(angleStr);
+
+                    //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
+                    {
+                        //Caso não tenha colidido
+                    
+                        geometry* geo = w->getSelectedShape();
+                        geo->rotate(angle,Y_AXIS);
+
+                        w->getMenu()->clear(); //Limpa os dados do menu
+                        w->setMenu(5, HIDDEN);//Seta o menu para 5.
+                    }
+                }
+            }break;
+        
+            case 3: //Botão Cancelar;
+                w->setMenu(5);//Seta o menu para 5.
+            break;
+        }
+    }
+}
+
+void menuClickTrans(int ID)
+{
+    window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
+    if(w)
+    {
+        switch(ID)
+        {
+            case 8: //Botão Transladar
+            {
+                std::string dxStr = (w->getMenu())->getTextInput(2); //Obtém o texto da caixa de texto 2.
+                std::string dyStr = (w->getMenu())->getTextInput(4); //Obtém o texto da caixa de texto 2.
+                std::string dzStr = (w->getMenu())->getTextInput(6); //Obtém o texto da caixa de texto 2.
+
+                if(dxStr.size()!= 0 && dyStr.size()!= 0 && dzStr.size()!= 0) //Verifica se os dados são válidos
+                {
+                    GLfloat dx = 0.0f, dy = 0.0f, dz = 0.0f;
+
+                    //Converte as strings para float.
+                    dx = stof(dxStr);
+                    dy = stof(dyStr);
+                    dz = stof(dzStr);
+
+                    //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
+                    {
+                        //Caso não tenha colidido
+                    
+                        geometry* geo = w->getSelectedShape();
+                        geo->translate(dx, dy, dz);
+
+                        w->getMenu()->clear(); //Limpa os dados do menu
+                        w->setMenu(5, HIDDEN);//Seta o menu para 5.
+                    }
+                }
+            }break;
+        
+            case 7: //Botão Cancelar;
+                w->setMenu(5);//Seta o menu para 5.
+            break;
+        }
+    }
+}
+
+void menuClickScale(int ID)
+{
+    window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
+    if(w)
+    {
+        switch(ID)
+        {
+            case 4: //Botão Escala
+            {
+                std::string scaleStr = (w->getMenu())->getTextInput(2); //Obtém o texto da caixa de texto 2.
+
+                if(scaleStr.size()!= 0) //Verifica se os dados são válidos
+                {
+                    GLfloat scale = 0.0f;
+
+                    //Converte as strings para float.
+                    scale = stof(scaleStr);
+
+                    if(scale<0.0001f)
+                    {
+                        w->showPopUp("Aresta deve ser > 0");
+                    }else
+                    {
+                        //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
+                        {
+                            //Caso não tenha colidido
+                            geometry* geo = w->getSelectedShape();
+                            geo->scale(scale, scale, scale);
+
+                            w->getMenu()->clear(); //Limpa os dados do menu
+                            w->setMenu(5, HIDDEN);//Seta o menu para 5.
+                        }
+                    }
+                }
+            }break;
+        
+            case 3: //Botão Cancelar;
+                w->setMenu(5);//Seta o menu para 5.
+            break;
+        }
+    }
 }
 
 
