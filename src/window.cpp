@@ -536,6 +536,7 @@ frame* window::getMenu()
  * 
  * @param ID : ID do menu que será corrente 
  * @param state : Estado inicial do menu (HIDDEN/ VISIBLE) - DEFAULT: VISIBLE
+ * @param clear : true - Limpa os dados do menu / false - Não limpa os dados do menu.
  */
 void window::setMenu(int ID, menuState state, bool clear)
 {

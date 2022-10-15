@@ -410,7 +410,7 @@ bool frame::getState(int ID)
     }
 }
 
-bool frame::setState(int ID, bool state)
+void frame::setState(int ID, bool state)
 {
     toggleButton* t = dynamic_cast<toggleButton*>(this->getElement(ID));
     
