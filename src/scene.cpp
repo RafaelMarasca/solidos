@@ -140,16 +140,16 @@ std::pair<unsigned int, geometry*> scene::getObject(unsigned int id)
  * @return true : caso haja colisão com o objeto passado por argumento
  * @return false : caso haja colisão com o objeto passado pr argumento
  */
-/*std::pair<unsigned int, geometry*> scene::checkCollision(geometry* geo)
+bool scene::checkCollision(geometry* geo)
 {
 	
 	for(std::map<unsigned int,geometry*>::iterator it = this->objects.begin(); it != this->objects.end(); it++)
     {
         if(it->second->collision(geo))
-			return *it;
+			return true;
     }
-    return std::pair<unsigned int, geometry*>(0,nullptr);;
-}*/
+    return false;
+}
 /**
  * @brief Iterator para o início da cena
  * 

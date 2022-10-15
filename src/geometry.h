@@ -58,8 +58,9 @@ class geometry
         static unsigned int geometryCount;
         void setup();
 
-
     protected:
+        void setupCollisionBox();
+
         bool wireFrame;
         bool solid;
         
@@ -78,6 +79,9 @@ class geometry
         std::vector<GLfloat> color;
         std::vector<GLfloat> wireFrameColor;
         std::vector<int> indices;
+
+        matrix collisionLB;
+        matrix collisionRT;
         
 
         GLuint colorLoc;
@@ -105,6 +109,9 @@ class geometry
         bool getWireFrameState();
         bool getSolidState();
 
+        virtual bool collision(GLfloat x, GLfloat y, GLfloat z);
+        virtual bool collision(geometry* other);
+
         virtual void resetColor();
         virtual void draw(); //Método virtual puro para desenho da forma.
 
@@ -112,17 +119,21 @@ class geometry
 
 class cube : public geometry
 {
-
     public:
         cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
-
 };
+
+class hexahedron : public geometry
+{
+    public:
+        hexahedron(GLfloat xSize, GLfloat ySize, GLfloat zSize, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
+};
+
 
 class icosahedron : public geometry
 {
     public:
         icosahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usage = GL_DYNAMIC_DRAW);
-        
 };
 
 
@@ -132,7 +143,6 @@ class icosphere : public geometry
     public:
         icosphere(GLfloat radius, std::vector<GLfloat> &center, int depth = 3, GLenum usage = GL_DYNAMIC_DRAW);
         void subdivide(int depth);
-
 };
 
 class torus : public geometry
@@ -141,7 +151,10 @@ class torus : public geometry
         torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
 };
 
+class boundBox : public geometry
+{
 
+};
 
 
 

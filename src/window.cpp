@@ -228,7 +228,8 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     c[0] = 0.5;
     this->addShape(new cube(0.2, c));
     c[0] = -0.5;
-    this->addShape(new cube(0.2, c));
+    this->addShape(new hexahedron(0.3,0.5,0.2, c));
+
 }
 
 
@@ -652,4 +653,8 @@ geometry* window::getSelectedShape()
     return this->selectedShape;
 }
 
+scene* window::getScene()
+{
+    return this->vision;
+}
 

@@ -39,7 +39,6 @@ class scene
         ~scene(); //Destrutor para a classe scene
 
         std::pair<unsigned int, geometry*> getObject(unsigned int id); //Getter para um objeto da cena.
-        std::pair<unsigned int, geometry*> checkCollision(float x, float y); //Checa colisão entre um objeto da cena e um ponto da tela
 
         geometry* removeObject(unsigned int id); //Remove um objeto da cena
        
@@ -49,7 +48,7 @@ class scene
         void draw(); //Desenha todos os objetos da cena
         unsigned int addObject(geometry* object); //Adiciona um objeto na cena.
        
-        std::pair<unsigned int, geometry*> checkCollision(geometry* geo); //Verifica se há colisão de um objeto da cena com um objeto passado por argumento
+        bool checkCollision(geometry* geo); //Verifica se há colisão de um objeto da cena com um objeto passado por argumento
 
         void updateCam(const matrix &view, const matrix &projection);
 };

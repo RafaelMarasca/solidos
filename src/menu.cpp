@@ -285,11 +285,11 @@ void menuClickTorus(int ID)
                             w->showPopUp("O Desenho Ficara Fora da Tela!");
                         }
                         
-                        //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
+                        torus* newTorus = new torus(R1, R2, center);
+
+                        if(!(w->getScene()->checkCollision(newTorus))) //Verifica se o ponto adicionado colidiu com outro ponto
                         {
                             //Caso não tenha colidido
-                        
-                            w->addShape(new torus(R1, R2, center));
 
                             w->setWaiting(0); //Decrementa a variável de espera de entrada.
 
@@ -302,10 +302,11 @@ void menuClickTorus(int ID)
                             }
 
                             
-                        }//else{
+                        }else{
                             //Caso tenha havido colisão
-                            //w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
-                    // }
+                            w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
+                            delete newTorus;
+                        }
                     }
                 }
             }break;
@@ -364,11 +365,11 @@ void menuClickSphere(int ID)
                             w->showPopUp("O Desenho Ficara Fora da Tela!");
                         }
                         
-                        //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
+                        icosphere* newSphere = new icosphere(r, center);
+
+                        if(!(w->getScene()->checkCollision(newSphere))) //Verifica se o ponto adicionado colidiu com outro ponto
                         {
                             //Caso não tenha colidido
-                        
-                            w->addShape(new icosphere(r, center));
 
                             w->setWaiting(0); //Decrementa a variável de espera de entrada.
 
@@ -379,10 +380,11 @@ void menuClickSphere(int ID)
                                 w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0.
                             }
-                        }//else{
+                        }else{
                             //Caso tenha havido colisão
-                            //w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
-                    // }
+                            w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
+                            delete newSphere;
+                        }
                     }
                 }
             }break;
@@ -441,11 +443,13 @@ void menuClickCube(int ID)
                             w->showPopUp("O Desenho Ficara Fora da Tela!");
                         }
                         
-                        //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
+                        cube* newCube = new cube(edge, center);
+
+                        if(!(w->getScene()->checkCollision(newCube))) //Verifica se o ponto adicionado colidiu com outro ponto
                         {
                             //Caso não tenha colidido
                         
-                            w->addShape(new cube(edge, center));
+                            w->addShape(newCube);
 
                             w->setWaiting(0); //Decrementa a variável de espera de entrada.
 
@@ -456,10 +460,11 @@ void menuClickCube(int ID)
                                 w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0.
                             }
-                        }//else{
+                        }else{
                             //Caso tenha havido colisão
-                            //w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
-                    // }
+                            w->showPopUp("Colisão Detectada!"); //Mostra o popUp de ponto repetido 
+                            delete newCube;
+                        }
                     }
                 }
             }break;
@@ -518,11 +523,11 @@ void menuClickIcosahedron(int ID)
                             w->showPopUp("O Desenho Ficara Fora da Tela!");
                         }
                         
-                        //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
+                        icosahedron* newIcosahedron = new icosahedron(edge, center);
+
+                        if(!(w->getScene()->checkCollision(newIcosahedron))) //Verifica se o ponto adicionado colidiu com outro ponto
                         {
                             //Caso não tenha colidido
-                        
-                            w->addShape(new icosahedron(edge, center));
 
                             w->setWaiting(0); //Decrementa a variável de espera de entrada.
 
@@ -533,10 +538,11 @@ void menuClickIcosahedron(int ID)
                                 w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0.
                             }
-                        }//else{
+                        }else{
                             //Caso tenha havido colisão
-                            //w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
-                    // }
+                            w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
+                            delete newIcosahedron;
+                        }
                     }
                 }
             }break;

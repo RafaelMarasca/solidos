@@ -100,6 +100,8 @@ class window
 
         geometry* getSelectedShape();
 
+        scene* getScene();
+
         void setInputType(inputType);
         inputType getInputType();
 

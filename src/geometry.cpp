@@ -49,6 +49,9 @@ geometry::geometry(std::vector<GLfloat> &vertices, std::vector<int> &indices, st
     this->color = {GEOMETRY_R, GEOMETRY_G, GEOMETRY_B, 1.0f};
     this->wireFrameColor = {WF_R, WF_G, WF_B, 1.0f};
 
+    this->collisionLB = matrix(4,1);
+    this->collisionRT = matrix(4,1);
+
     if(geometry::program == nullptr)
         geometry::program = new shaderProgram(vertexShaderSource, fragmentShaderSource);
 
@@ -70,6 +73,9 @@ geometry::geometry(GLenum usage)
     this->usage = usage;
     this->color = {GEOMETRY_R, GEOMETRY_G, GEOMETRY_B, 1.0f};
     this->wireFrameColor = {WF_R, WF_G, WF_B, 1.0f};
+
+    this->collisionLB = matrix(4,1);
+    this->collisionRT = matrix(4,1);
 
     if(geometry::program == nullptr)
         geometry::program = new shaderProgram(vertexShaderSource, fragmentShaderSource);
@@ -101,6 +107,7 @@ geometry::~geometry()
     
 void geometry::draw()
 {
+
     this->program->use();
     glBindVertexArray(this->VAO);
     
@@ -108,7 +115,7 @@ void geometry::draw()
     glUniformMatrix4fv(this->modelLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->modelMatrix)[0]));
     glUniformMatrix4fv(this->viewLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->viewMatrix)[0]));
     glUniformMatrix4fv(this->projectionLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->projectionMatrix)[0]));
-    
+
     if(this->solid)
     {
         glEnable(GL_POLYGON_OFFSET_FILL);
@@ -202,7 +209,10 @@ void geometry::rotate(GLfloat degrees, AXIS a)
     }
 
     this->modelMatrix = rotation*this->modelMatrix;
+
     this->translate(cPoint[0], cPoint[1], cPoint[2]);
+
+    this->setupCollisionBox();
 
     glUniformMatrix4fv(this->modelLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->modelMatrix)[0]));
 }
@@ -223,7 +233,7 @@ void geometry::translate(GLfloat dx, GLfloat dy, GLfloat dz)
     this->centralPoint = std::vector<GLfloat>(translation*cMatrix);
 
     this->modelMatrix = translation*this->modelMatrix;
-
+    this->setupCollisionBox();
 
     glUniformMatrix4fv(this->modelLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->modelMatrix)[0]));
 }
@@ -245,6 +255,7 @@ void geometry::scale(GLfloat sx, GLfloat sy, GLfloat sz)
 
     this->centralPoint = std::vector<GLfloat>(scale*cMatrix);
     this->modelMatrix = scale*this->modelMatrix;
+    this->setupCollisionBox();
 
     glUniformMatrix4fv(this->modelLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->modelMatrix)[0]));
 }
@@ -570,7 +581,6 @@ void icosphere::subdivide(int depth)
         indices = newTriangles;
         depth--;
     }
-    
 
     //Seleciona o array de vértices da forma corrente.
     glBindVertexArray(this->VAO);
@@ -636,8 +646,8 @@ icosphere::icosphere(GLfloat radius, std::vector<GLfloat> &center, int depth, GL
          7, 11,  10 //20 v
     };
 
-
     this->subdivide(depth);
+
     this->scale(radius/scaleFactor, radius/scaleFactor, radius/scaleFactor);
     this->translate(center[0], center[1], center[2]);
 }
@@ -722,7 +732,6 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
 
     this->translate(center[0], center[1], center[2]);
 
-
     //Seleciona o array de vértices da forma corrente.
     glBindVertexArray(this->VAO);
 
@@ -756,4 +765,172 @@ bool geometry::getWireFrameState()
 bool geometry::getSolidState()
 {
     return this->solid;
+}
+
+void geometry::setupCollisionBox()
+{
+    GLfloat minX, maxX, minY, maxY, minZ, maxZ; 
+    std::vector<GLfloat>::iterator it;
+
+    this->collisionRT = matrix(4,1);
+    this->collisionLB = matrix(4,1);
+
+    maxX = maxY = maxZ = std::numeric_limits<float>::lowest();
+    minX = minY = minZ = std::numeric_limits<float>::max();
+
+    matrix aux(4,1);
+
+    for(it = this->vertices.begin(); it!= this->vertices.end(); it+=3)
+    {
+        aux(0,0) = *it;
+        aux(1,0) = *(it+1);
+        aux(2,0) = *(it+2);
+        aux(3,0) = 1.0f;
+
+        aux = this->modelMatrix*aux;
+
+        if(aux(0,0)<minX)
+        {
+            minX = aux(0,0);
+        }
+        if(aux(0,0)>maxX)
+        {
+            maxX = aux(0,0);
+        }
+
+        if(aux(1,0)<minY)
+        {
+            minY = aux(1,0);
+        }
+        if(aux(1,0)>maxY)
+        {
+            maxY = aux(1,0);
+        }
+
+        if(aux(2,0)<minZ)
+        {
+            minZ = aux(2,0);
+        }
+        
+        if(aux(2,0)>maxZ)
+        {
+            maxZ = aux(2,0);
+        }
+    }
+
+    this->collisionLB(0,0) = minX;
+    this->collisionLB(1,0) = minY;
+    this->collisionLB(2,0) = minZ;
+    this->collisionLB(3,0) = 1;
+
+    this->collisionRT(0,0) = maxX;
+    this->collisionRT(1,0) = maxY;
+    this->collisionRT(2,0) = maxZ;
+    this->collisionRT(3,0) = 1;
+}
+
+bool geometry::collision(GLfloat x, GLfloat y, GLfloat z)
+{
+    return(x>collisionLB(0,0) && x<this->collisionRT(0,0) 
+            && y>collisionLB(1,0) && y<this->collisionRT(1,0) 
+            && z>collisionLB(2,0) && z<this->collisionRT(2,0));
+}
+
+bool geometry::collision(geometry* other)
+{
+
+    return (this->collisionLB(0,0) < other->collisionRT(0,0)
+            && this->collisionLB(1,0) < other->collisionRT(1,0)
+            && this->collisionLB(2,0) < other->collisionRT(2,0)
+            && this->collisionRT(0,0) > other->collisionLB(0,0)
+            && this->collisionRT(1,0) > other->collisionLB(1,0)
+            && this->collisionRT(2,0) > other->collisionLB(2,0));
+}
+
+hexahedron::hexahedron(GLfloat xSize, GLfloat ySize, GLfloat zSize, std::vector<GLfloat> &center, GLenum usage) :geometry(usage)
+{
+    this->vertices = 
+    {
+        //Face frontal
+         xSize,  ySize,  zSize,
+        -xSize,  ySize,  zSize,
+        -xSize, -ySize,  zSize,
+         xSize, -ySize,  zSize, 
+
+        //Face traseira
+         xSize,  ySize,  -zSize,
+        -xSize,  ySize,  -zSize,
+        -xSize, -ySize,  -zSize,
+         xSize, -ySize,  -zSize,
+    };
+
+    /*
+    this->vertices = 
+    {
+        //Face frontal
+         1.0f,  1.0f,  1.0f,
+         1.0f,  1.0f,  1.0f, 1.0f, //Branco
+        -1.0f,  1.0f,  1.0f,
+         0.0f,  1.0f,  1.0f, 1.0f, //Ciano
+        -1.0f, -1.0f,  1.0f,
+         0.0f,  0.0f,  1.0f, 1.0f, //Azul
+         1.0f, -1.0f,  1.0f, 
+         1.0f,  0.0f,  1.0f, 1.0f, //Magenta
+
+        //Face traseira
+         1.0f,  1.0f,  -1.0f,
+         1.0f,  1.0f,   0.0f, 1.0f, //Amarelo
+        -1.0f,  1.0f,  -1.0f,
+         0.0f,  1.0f,   0.0f, 1.0f, //Verde
+        -1.0f, -1.0f,  -1.0f,
+         0.0f,  0.0f,   0.0f, 1.0f, //Preto
+         1.0f, -1.0f,  -1.0f,
+         1.0f,  0.0f,   0.0f, 1.0f, //Vermelho
+    };*/
+
+    this->indices = 
+    {
+        //Face frontal
+        0, 1, 2,
+        2, 3, 0,
+
+        //Face direita
+        0, 3, 7,
+        7, 4, 0,
+
+        //Face Traseira
+        4, 7, 6,
+        6, 5, 4,
+
+        //Face Esquerda
+        5, 6, 2,
+        2, 1, 5,
+
+        //Face Superior
+        5, 1, 0,
+        0, 4, 5,
+
+        //Face Inferior
+        2, 6, 7,
+        7, 3, 2
+    };
+
+    this->scale(0.5f, 0.5f, 0.5f);
+    this->translate(center[0], center[1], center[2]);
+
+     //Seleciona o array de vértices da forma corrente.
+    glBindVertexArray(this->VAO);
+
+    //Transfere os dados para o buffer de objetos.
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferData(GL_ARRAY_BUFFER, (this->vertices.size())*sizeof(GLfloat),&(this->vertices[0]), usage);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (this->indices.size())*sizeof(int), &(this->indices[0]), usage);
+
+    //Aponta os atributos de vértice.
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
+   // glEnableVertexAttribArray(1);
+    //glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
 }
