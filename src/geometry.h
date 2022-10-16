@@ -59,10 +59,10 @@ class geometry
         void setup();
 
     protected:
-        //void setupCollisionBox();
+        void setupCollisionBox();
 
-        //bool wireFrame;
-        //bool solid;
+        bool wireFrame;
+        bool solid;
         
         static shaderProgram* program;
 
@@ -73,14 +73,15 @@ class geometry
         matrix modelMatrix;
         matrix viewMatrix;
         matrix projectionMatrix;
+
         
         std::vector<GLfloat> vertices; //Vetor de vértices da forma
         std::vector<GLfloat> color;
-        //std::vector<GLfloat> wireFrameColor;
+        std::vector<GLfloat> wireFrameColor;
         std::vector<int> indices;
 
-        //matrix collisionLB;
-        //matrix collisionRT;
+        matrix collisionLB;
+        matrix collisionRT;
         
 
         GLuint colorLoc;
@@ -99,96 +100,43 @@ class geometry
         geometry(GLenum usage = GL_STATIC_DRAW);
         virtual ~geometry(); //Destrutor para geometry
 
-        //void rotate(GLfloat degrees, AXIS a);
-        //void translate(GLfloat dx, GLfloat dy, GLfloat dz);
-        //void scale(GLfloat sx, GLfloat sy, GLfloat sz);
+        void rotate(GLfloat degrees, AXIS a);
+        void translate(GLfloat dx, GLfloat dy, GLfloat dz);
+        void scale(GLfloat sx, GLfloat sy, GLfloat sz);
 
-        virtual void setProjection(const matrix &projectionMatrix);
-        virtual void setView(const matrix &viewMatrix);
-        virtual void setColor(GLfloat r, GLfloat g,  GLfloat b, GLfloat a = 1.0f);
+        void setProjection(matrix projectionMatrix);
+        void setView(const matrix &viewMatrix);
+        void setColor(GLfloat r, GLfloat g,  GLfloat b, GLfloat a = 1.0f);
         
-        //void setWireFrame(bool state);
-        //void setSolid(bool state);
-        //bool getWireFrameState();
-        //bool getSolidState();
+        void setWireFrame(bool state);
+        void setSolid(bool state);
+        bool getWireFrameState();
+        bool getSolidState();
 
         virtual bool collision(GLfloat x, GLfloat y, GLfloat z);
         virtual bool collision(geometry* other);
 
         virtual void resetColor();
-        virtual void draw() = 0; 
+        virtual void draw(); 
 
         void print();
 
 };
 
-
-class boundBox : public geometry
-{
-    private:
-        vec3 max;
-        vec3 min;
-
-    public:
-
-        boundBox();
-
-        void update(std::vector<GLfloat> &v, std::vector<GLfloat> &center , matrix &model);
-        void updateVertices();
-        vec3 getMax();
-        vec3 getMin();
-        void draw();
-
-};
-
-class solid : public geometry
-{
-
-    protected:
-        bool isWireFrame;
-        bool isSolid;
-        boundBox* box;
-        std::vector<GLfloat> wireFrameColor;
-
-    public:
-        solid(std::vector<GLfloat> &vertices, std::vector<int> &indices, std::vector<GLfloat> &centralPoint, GLenum usage = GL_STATIC_DRAW); //Construtor para solid
-        solid(GLenum usage = GL_STATIC_DRAW);
-        ~solid();
-
-        void setWireFrame(bool state);
-        void setSolid(bool state);
-
-        bool getWireFrameState();
-        bool getSolidState();
-
-        virtual void setProjection(const matrix &projectionMatrix);
-        virtual void setView(const matrix &viewMatrix);
-
-        void rotate(GLfloat degrees, AXIS a);
-        void translate(GLfloat dx, GLfloat dy, GLfloat dz);
-        void scale(GLfloat sx, GLfloat sy, GLfloat sz);
-
-        bool collision(GLfloat x, GLfloat y, GLfloat z);
-        bool collision(solid* other);
-
-        virtual void draw();
-};
-
-
-class cube : public solid
+class cube : public geometry
 {
     public:
         cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
 };
 
-class hexahedron : public solid
+class hexahedron : public geometry
 {
     public:
         hexahedron(GLfloat xSize, GLfloat ySize, GLfloat zSize, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
 };
 
 
-class icosahedron : public solid
+class icosahedron : public geometry
 {
     public:
         icosahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usage = GL_DYNAMIC_DRAW);
@@ -196,23 +144,18 @@ class icosahedron : public solid
 
 
 
-class icosphere : public solid
+class icosphere : public geometry
 {
     public:
         icosphere(GLfloat radius, std::vector<GLfloat> &center, int depth = 3, GLenum usage = GL_DYNAMIC_DRAW);
         void subdivide(int depth);
 };
 
-class torus : public solid
+class torus : public geometry
 {
     public:
         torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
 };
-
-
-
-
-
 
 
 

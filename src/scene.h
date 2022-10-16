@@ -20,7 +20,7 @@
 #include"matrix.h"
 
 //Definição do tipo iterator para a classe scene
-typedef std::map<unsigned int, solid*>::iterator sceneIterator;
+typedef std::map<unsigned int, geometry*>::iterator sceneIterator;
 
 /**
  * @brief Classe scene - Uma cena é um conjunto de objetos geométricos a 
@@ -30,7 +30,7 @@ typedef std::map<unsigned int, solid*>::iterator sceneIterator;
 class scene
 {
     private:
-        std::map<unsigned int,solid*> objects; //Mapa de formas geométricas com seus respectivos IDs
+        std::map<unsigned int,geometry*> objects; //Mapa de formas geométricas com seus respectivos IDs
         axis* theAxis; //Ponteiro para o eixo
         unsigned int nextID; //Valor que define o ID a ser atribuído à próxima forma a ser inserida na cena
 
@@ -38,17 +38,17 @@ class scene
         scene(); //Construtor para a classe scene
         ~scene(); //Destrutor para a classe scene
 
-        std::pair<unsigned int, solid*> getObject(unsigned int id); //Getter para um objeto da cena.
+        std::pair<unsigned int, geometry*> getObject(unsigned int id); //Getter para um objeto da cena.
 
-        solid* removeObject(unsigned int id); //Remove um objeto da cena
+        geometry* removeObject(unsigned int id); //Remove um objeto da cena
        
         sceneIterator begin(); //Retorna um iterator para o elemento inicial da cena
         sceneIterator end(); //Retorna um iterator para o elemento final da cena
 
         void draw(); //Desenha todos os objetos da cena
-        unsigned int addObject(solid* object); //Adiciona um objeto na cena.
+        unsigned int addObject(geometry* object); //Adiciona um objeto na cena.
        
-        bool checkCollision(solid* geo); //Verifica se há colisão de um objeto da cena com um objeto passado por argumento
+        bool checkCollision(geometry* geo); //Verifica se há colisão de um objeto da cena com um objeto passado por argumento
 
         void updateCam(const matrix &view, const matrix &projection);
 };
