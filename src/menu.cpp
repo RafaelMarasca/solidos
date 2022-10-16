@@ -65,70 +65,6 @@ void menuClickShape(int ID)
     }
 }
 
-/**
- * @brief Handler para os cliques do menu 1 (menu de adição de pontos).
- * 
- * @param ID : ID do elemento que gerou o evento de clique.
- */
-void menuClick1(int ID)
-{
-    window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
-    if(w)
-    {
-        switch(ID)
-        {
-            case 5: //Botão Adicionar
-            {
-                std::string xStr = (w->getMenu())->getTextInput(2); //Obtém o texto da caixa de texto 2.
-                std::string yStr = (w->getMenu())->getTextInput(4); //Obtém o texto da caixa de texto 4.
-
-                if(xStr.size()!= 0 && yStr.size()!= 0) //Verifica se os dados são válidos
-                {
-                    GLfloat x=0, y=0;
-
-                    //Converte as strings para float.
-                    x = stof(xStr);
-                    y = stof(yStr);
-
-                    if(std::fabs(x)>1  || std::fabs(y)>1) //Verifica se o desenho ficará fora da tela
-                    {
-                         w->showPopUp("O Desenho Ficara Fora da Tela!");
-                    }
-                    
-                    //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
-                    {
-                        //Caso não tenha colidido
-                    
-                        w->decWaiting(); //Decrementa a variável de espera de entrada.
-
-                        w->getMenu()->clear(); //Limpa os dados do menu
-                        
-                        if(!w->getWaiting()) //Se não há espera por entrada
-                        {
-                            w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
-                            w->setMenu(0,HIDDEN); //Seta o menu como 0.
-                        }
-                    }//else{
-                        //Caso tenha havido colisão
-                        //w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
-                   // }
-                }
-            }break;
-        
-            case 6: //Botão Cancelar;
-                if(w->getWaiting())
-                {
-                    w->setWaiting(0); //Zera a flag de espera por entrada
-                    w->setMenu(0);//Seta o menu para 0.
-                    w->setInputType(NONE);
-                }
-                w->clearSelection(); //Desseleciona os objetos
-            break;
-        }
-    }
-}
-
-
 
 /**
  * @brief Handler para os cliques do menu de Opção.
@@ -207,30 +143,6 @@ void menuClickPopUp(int ID)
     }
 }
 
-/**
- * @brief Handler para os cliques do menu 4 (menu de Adicao).
- * 
- * @param ID : ID do elemento que gerou o evento de clique.
- */
-void menuClick4(int ID)
-{
-    window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
-    if(w)
-    {
-        switch(ID)
-        {
-            case 10: //Botão Cancelar;
-                if(w->getWaiting())
-                {
-                    w->setWaiting(0); //Zera a flag de espera por entrada
-                    w->setMenu(0);//Seta o menu para 0.
-                    w->setInputType(NONE);
-                }
-                w->clearSelection(); //Desseleciona os objetos
-            break;
-        }
-    }
-}
 
 /**
  * @brief Handler para os cliques do menu de adição de Torus.
@@ -280,16 +192,18 @@ void menuClickTorus(int ID)
                         w->showPopUp("Raio deve ser > 0");
                     }else
                     {
-                        if(std::fabs(center[0])>1  || std::fabs(center[1])>1 || std::fabs(center[2])>1) //Verifica se o desenho ficará fora da tela
-                        {
-                            w->showPopUp("O Desenho Ficara Fora da Tela!");
-                        }
                         
                         torus* newTorus = new torus(R1, R2, center);
 
                         if(!(w->getScene()->checkCollision(newTorus))) //Verifica se o ponto adicionado colidiu com outro ponto
                         {
                             //Caso não tenha colidido
+
+
+                            //if(w->getCam()->isInFrostrum(newTorus->)) //Verifica se o desenho ficará fora da tela
+                            {
+                                w->showPopUp("O Desenho Ficara Fora da Tela!");
+                            }
 
                             w->setWaiting(0); //Decrementa a variável de espera de entrada.
 
@@ -304,7 +218,7 @@ void menuClickTorus(int ID)
                             
                         }else{
                             //Caso tenha havido colisão
-                            w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
+                            w->showPopUp("Colisão Detectada!"); //Mostra o popUp de ponto repetido 
                             delete newTorus;
                         }
                     }
@@ -382,7 +296,7 @@ void menuClickSphere(int ID)
                             }
                         }else{
                             //Caso tenha havido colisão
-                            w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 
+                            w->showPopUp("Colisão Detectada!"); //Mostra o popUp de ponto repetido 
                             delete newSphere;
                         }
                     }
@@ -550,40 +464,6 @@ void menuClickIcosahedron(int ID)
     }
 }
 
-/**
- * @brief Cria o menu 1 (menu de adição de pontos)
- * 
- * @return frame* ponteiro para o menu criado
- */
-frame* newAddMenu()
-{
-    frame* menu = new frame(1.2f, 1.0f, 7, 4, -0.5, 0.5); //Cria o frame do menu
-
-    std::vector<GLfloat> red = {BUTTON_RED_R, BUTTON_RED_G,BUTTON_RED_B};
-
-    //Adiciona os elementos do menu
-    menu->addText(0,0,1,4,0,"ADICIONAR CUBO");
-
-    menu->addText(1,0,1,4,1,"PONTO CENTRAL");
-    menu->addText(2,0,1,2,2,"X");
-    menu->addTextInput(2,1,1,2,3);
-    menu->addText(3,0,1,2,4,"Y");
-    menu->addTextInput(3,1,1,2,5);
-    menu->addText(4,0,1,2,6,"Z");
-    menu->addTextInput(4,1,1,2,7);
-
-    menu->addText(5,0,1,2,8,"ARESTA");
-    menu->addTextInput(5,1,1,2,9);
-
-    menu->addButton(6,0,1,2,10,"Cancelar",red);
-    menu->addButton(6,1,1,2,11,"Adicionar");
-    
-    menu->addClickFunction(menuClick1); //Adiciona a função chamada ao se clicar no menu
-    
-    menu->generate(); //Gera o menu
-
-    return menu;
-}
 
 /**
  * @brief Cria o menu de Opção.
@@ -864,7 +744,7 @@ void menuClickRot(int ID)
                     {
                         //Caso não tenha colidido
                     
-                        geometry* geo = w->getSelectedShape();
+                        solid* geo = w->getSelectedShape();
                         geo->rotate(angle,Y_AXIS);
 
                         w->getMenu()->clear(); //Limpa os dados do menu
@@ -906,7 +786,7 @@ void menuClickTrans(int ID)
                     {
                         //Caso não tenha colidido
                     
-                        geometry* geo = w->getSelectedShape();
+                        solid* geo = w->getSelectedShape();
                         geo->translate(dx, dy, dz);
 
                         w->getMenu()->clear(); //Limpa os dados do menu
@@ -948,7 +828,7 @@ void menuClickScale(int ID)
                         //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
                         {
                             //Caso não tenha colidido
-                            geometry* geo = w->getSelectedShape();
+                            solid* geo = w->getSelectedShape();
                             geo->scale(scale, scale, scale);
 
                             w->getMenu()->clear(); //Limpa os dados do menu

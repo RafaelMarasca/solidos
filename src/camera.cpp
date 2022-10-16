@@ -319,7 +319,7 @@ void camera::setupNormals()
 }
 
 
-bool camera::isInsideFrostrum(GLfloat x, GLfloat y, GLfloat z)
+bool camera::isInFrostrum(GLfloat x, GLfloat y, GLfloat z)
 {
     for(int i = 0; i<6; i++)
     {

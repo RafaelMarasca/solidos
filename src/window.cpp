@@ -32,7 +32,7 @@ int yLast;
  * 
  * @param shape Ponteiro para a forma a ser adicionada 
  */
-void window::addShape(geometry* shape)
+void window::addShape(solid* shape)
 {
     this->vision->addObject(shape);
     shape->setView(this->cam->getView());
@@ -110,8 +110,8 @@ void window::keyp(unsigned char key, int x, int y)
         break;
 
         case 114:
-            if(w->selectedShape)
-                std::cout<<w->cam->isInsideFrostrum(w->selectedShape->centralPoint[0],w->selectedShape->centralPoint[1],w->selectedShape->centralPoint[2])<<std::endl;
+            //if(w->selectedShape)
+                //std::cout<<w->cam->isInsideFrostrum(w->selectedShape->centralPoint[0],w->selectedShape->centralPoint[1],w->selectedShape->centralPoint[2])<<std::endl;
             //w->cam->print();
         break;
     }
@@ -417,7 +417,7 @@ void window::deleteShape()
  * 
  * @param obj Par ID, ponteiro para gometry, definindo o ID da forma e a própria forma.
  */
-void window::select(std::pair<unsigned int, geometry*> obj)
+void window::select(std::pair<unsigned int, solid*> obj)
 {
     if(this->selectedShape)
         this->selectedShape->resetColor(); //Muda a cor da forma desselecionada
@@ -440,7 +440,7 @@ void window::select(std::pair<unsigned int, geometry*> obj)
  */
 void window::clearSelection()
 {
-    this->select(std::pair<unsigned int, geometry*>{0,nullptr});
+    this->select(std::pair<unsigned int, solid*>{0,nullptr});
 
     this->setMenu(0,HIDDEN); //Seta o menu corrente para 0.
     this->selIterator = this->vision->begin();
@@ -654,7 +654,7 @@ void window::decWaiting()
  * @brief Getter para a forma selecionada.
  * 
  */
-geometry* window::getSelectedShape()
+solid* window::getSelectedShape()
 {
     return this->selectedShape;
 }
@@ -664,3 +664,8 @@ scene* window::getScene()
     return this->vision;
 }
 
+
+camera* window::getCam()
+{
+    return this->cam;
+}

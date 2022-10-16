@@ -55,7 +55,7 @@ class window
 {
     private:
         scene* vision; //Ponteiro para a cena da janela.
-        geometry* selectedShape; //Ponteiro para a forma selecionada.
+        solid* selectedShape; //Ponteiro para a forma selecionada.
         camera* cam;
 
         inputType inType; //Tipo de entrada atual.
@@ -83,14 +83,14 @@ class window
         void init(); //Método de inicialização do tela
         void updateScene(); //Método de atualização da cena exibida na tela.
         void deleteShape(); //Meétodo para deletar uma forma
-        void select(std::pair<unsigned int, geometry*>); //Método para selecionar uma forma
+        void select(std::pair<unsigned int, solid*>); //Método para selecionar uma forma
         void clearSelection(); //Desseleciona a forma selecionada
 
         void showPopUp(const char* text); //Mostra um popUp.
         void closePopUp(); //Fecha o popUp.
 
         void setMenu(int ID, menuState = VISIBLE, bool clear = 1); //Seta o menu atual.
-        void addShape(geometry* shape); //Adiciona uma forma.
+        void addShape(solid* shape); //Adiciona uma forma.
 
         frame* getMenu(); //Getter para o menu atual.
         
@@ -98,9 +98,11 @@ class window
         void setWaiting(int waiting);
         void decWaiting();
 
-        geometry* getSelectedShape();
+        solid* getSelectedShape();
 
         scene* getScene();
+
+        camera* getCam();
 
         void setInputType(inputType);
         inputType getInputType();
