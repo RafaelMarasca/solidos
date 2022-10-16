@@ -74,7 +74,7 @@ class geometry
         matrix viewMatrix;
         matrix projectionMatrix;
 
-        std::vector<GLfloat> centralPoint; //Ponto central da forma
+        
         std::vector<GLfloat> vertices; //Vetor de vértices da forma
         std::vector<GLfloat> color;
         std::vector<GLfloat> wireFrameColor;
@@ -92,6 +92,10 @@ class geometry
         GLenum usage;        
 
     public:
+        /// @brief /////////////////////////////////////////////////////////
+        std::vector<GLfloat> centralPoint; //Ponto central da forma
+        /////////////////////////////////////////////////qqqq
+
         geometry(std::vector<GLfloat> &vertices, std::vector<int> &indices, std::vector<GLfloat> &centralPoint, GLenum usage = GL_STATIC_DRAW); //Construtor para geometry
         geometry(GLenum usage = GL_STATIC_DRAW);
         virtual ~geometry(); //Destrutor para geometry
@@ -113,7 +117,9 @@ class geometry
         virtual bool collision(geometry* other);
 
         virtual void resetColor();
-        virtual void draw(); //Método virtual puro para desenho da forma.
+        virtual void draw(); 
+
+        void print();
 
 };
 
@@ -149,11 +155,6 @@ class torus : public geometry
 {
     public:
         torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &center, GLenum usage = GL_STATIC_DRAW);
-};
-
-class boundBox : public geometry
-{
-
 };
 
 

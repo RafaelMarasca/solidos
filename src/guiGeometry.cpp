@@ -56,29 +56,6 @@ bool square::collision(GLfloat x, GLfloat y, GLfloat z)
     }         
 }
 
-
-/**
- * @brief Verifica colisão entre o quadrado e outra forma
- * 
- * @param other : a forma a se verificar colisão.
- * @return true : Caso haja colisão entre a forma e o quadrado.
- * @return false : Caso não haja colisão entre a forma e o quadrado.
- */
-/*
-bool square::collision(square* other)
-{
-    std::vector<GLfloat>::iterator it;
-
-    //Verifica se há colisão entre um dos vértices do outro objeto e a forma atual.        
-    for(it = this->vertices.begin(); it!= this->vertices.end(); it+=3)
-    {
-        if(!(other->collision(*it, *(it+1), *(it+2))))
-			return false; //colisão detectada.
-    }
- 
-    return true; // Não foi detectada colisão.
-}*/
-
 /**
  * @brief Desenha o quadrado
  * 

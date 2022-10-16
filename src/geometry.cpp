@@ -23,14 +23,18 @@ unsigned int geometry::geometryCount = 0;
 //Inicialização do ponteiro estático que aponta para o shader gerado
 shaderProgram* geometry::program = nullptr;
 
-std::vector<GLfloat> branco = {1.0f, 1.0f, 1.0f, 1.0f};
 
-bool floatCmp(GLfloat a, GLfloat b)
+int floatCmp(GLfloat a, GLfloat b)
 {
     if(std::fabs(a-b)>0.00001f)
-        return false;
+    {
+        if(a-b > 0.0f)
+            return 1;
+        else if (a-b < 0.0f)
+            return -1;
+    }
     
-    return true;
+    return 0;
 }
 
 geometry::geometry(std::vector<GLfloat> &vertices, std::vector<int> &indices, std::vector<GLfloat> &centralPoint, GLenum usage)
@@ -831,20 +835,20 @@ void geometry::setupCollisionBox()
 
 bool geometry::collision(GLfloat x, GLfloat y, GLfloat z)
 {
-    return(x>collisionLB(0,0) && x<this->collisionRT(0,0) 
-            && y>collisionLB(1,0) && y<this->collisionRT(1,0) 
-            && z>collisionLB(2,0) && z<this->collisionRT(2,0));
+    return(x>=collisionLB(0,0) && x<=this->collisionRT(0,0) 
+            && y>=collisionLB(1,0) && y<=this->collisionRT(1,0) 
+            && z>=collisionLB(2,0) && z<=this->collisionRT(2,0));
 }
 
 bool geometry::collision(geometry* other)
 {
 
-    return (this->collisionLB(0,0) < other->collisionRT(0,0)
-            && this->collisionLB(1,0) < other->collisionRT(1,0)
-            && this->collisionLB(2,0) < other->collisionRT(2,0)
-            && this->collisionRT(0,0) > other->collisionLB(0,0)
-            && this->collisionRT(1,0) > other->collisionLB(1,0)
-            && this->collisionRT(2,0) > other->collisionLB(2,0));
+    return (this->collisionLB(0,0) <= other->collisionRT(0,0)
+            && this->collisionLB(1,0) <= other->collisionRT(1,0)
+            && this->collisionLB(2,0) <= other->collisionRT(2,0)
+            && this->collisionRT(0,0) >= other->collisionLB(0,0)
+            && this->collisionRT(1,0) >= other->collisionLB(1,0)
+            && this->collisionRT(2,0) >= other->collisionLB(2,0));
 }
 
 hexahedron::hexahedron(GLfloat xSize, GLfloat ySize, GLfloat zSize, std::vector<GLfloat> &center, GLenum usage) :geometry(usage)
@@ -933,4 +937,21 @@ hexahedron::hexahedron(GLfloat xSize, GLfloat ySize, GLfloat zSize, std::vector<
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
    // glEnableVertexAttribArray(1);
     //glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
+}
+
+void geometry::print()
+{
+    std::cout<<"RT ";
+    for(int i = 0; i<3; i++)
+    {
+        std::cout<<this->collisionRT(i,0)<<" ";
+    }
+    std::cout<<std::endl;
+
+    std::cout<<"LB ";
+     for(int i = 0; i<3; i++)
+    {
+        std::cout<<this->collisionLB(i,0)<<" ";
+    }
+    std::cout<<std::endl;
 }

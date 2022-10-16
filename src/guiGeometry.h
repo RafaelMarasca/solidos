@@ -24,7 +24,6 @@ class square : public geometry
         void addVertex(std::vector<GLfloat> &vertex);
 
         bool collision(GLfloat x, GLfloat y, GLfloat z); //Detecta colisão entre o quadrado e um ponto.
-        //bool collision(geometry* other); //Detecta a colisão entre o quadrado e outra geometria.
 
 };
 

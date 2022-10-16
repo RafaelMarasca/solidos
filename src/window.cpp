@@ -108,6 +108,12 @@ void window::keyp(unsigned char key, int x, int y)
             w->cam->zoom(10);
             w->vision->updateCam(w->cam->getView(), w->cam->getProjection());
         break;
+
+        case 114:
+            if(w->selectedShape)
+                std::cout<<w->cam->isInsideFrostrum(w->selectedShape->centralPoint[0],w->selectedShape->centralPoint[1],w->selectedShape->centralPoint[2])<<std::endl;
+            //w->cam->print();
+        break;
     }
 
     //Passa apenas as teclas de números para as caixas de texto
@@ -228,7 +234,7 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     c[0] = 0.5;
     this->addShape(new cube(0.2, c));
     c[0] = -0.5;
-    this->addShape(new hexahedron(0.3,0.5,0.2, c));
+    this->addShape(new icosphere(0.3, c));
 
 }
 

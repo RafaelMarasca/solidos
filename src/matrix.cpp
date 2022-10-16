@@ -283,3 +283,13 @@ GLfloat vec3::dotProduct(const vec3 &v1, const vec3 &v2)
           v1.matrixElements[2]*v2.matrixElements[2];
     
 }
+
+vec3 vec3::operator+ (const GLfloat scalar)
+{
+    vec3 aux;
+    aux(0) = this->matrixElements[0] + scalar;
+    aux(1) = this->matrixElements[1] + scalar;
+    aux(2) = this->matrixElements[2] + scalar;
+
+    return aux;
+}

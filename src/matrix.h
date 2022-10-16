@@ -58,6 +58,7 @@ class vec3 :public matrix
 
         vec3 operator- (const vec3 &v);
         vec3 operator+ (const vec3 &v);
+        vec3 operator+ (const GLfloat scalar);
         vec3 operator* (const GLfloat);
         vec3& operator*= (const GLfloat scalar);
 
