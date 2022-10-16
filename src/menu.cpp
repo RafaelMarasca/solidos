@@ -198,7 +198,7 @@ void menuClickTorus(int ID)
                         if(!(w->getScene()->checkCollision(newTorus))) //Verifica se o ponto adicionado colidiu com outro ponto
                         {
                             //Caso não tenha colidido
-
+                            w->addShape(newTorus);
 
                             //if(w->getCam()->isInFrostrum(newTorus->)) //Verifica se o desenho ficará fora da tela
                             {
@@ -284,6 +284,8 @@ void menuClickSphere(int ID)
                         if(!(w->getScene()->checkCollision(newSphere))) //Verifica se o ponto adicionado colidiu com outro ponto
                         {
                             //Caso não tenha colidido
+
+                            w->addShape(newSphere);
 
                             w->setWaiting(0); //Decrementa a variável de espera de entrada.
 
@@ -442,6 +444,7 @@ void menuClickIcosahedron(int ID)
                         if(!(w->getScene()->checkCollision(newIcosahedron))) //Verifica se o ponto adicionado colidiu com outro ponto
                         {
                             //Caso não tenha colidido
+                            w->addShape(newIcosahedron);
 
                             w->setWaiting(0); //Decrementa a variável de espera de entrada.
 
