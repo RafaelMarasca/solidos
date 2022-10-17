@@ -18,12 +18,14 @@ void menuClickCube(int ID);
 void menuClickSphere(int ID);
 void menuClickIsocahedron(int ID);
 void menuClickTorus(int ID);
+void menuClickHexa(int ID);
 
 frame* newShapeMenu();
 frame* newSphere();
 frame* newCube();
 frame* newTorus();
 frame* newIcosahedron();
+frame* newHexa();
 frame* newAddMenu();
 frame* newOptMenu();
 frame* newPopUp();

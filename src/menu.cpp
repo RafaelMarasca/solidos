@@ -10,7 +10,7 @@
  */
 frame* newShapeMenu()
 {
-    frame* menu = new frame(1.0f, 0.5f, 5, 4, 0.45, 0.9); //Cria o frame
+    frame* menu = new frame(1.0f, 0.5f, 6, 4, 0.45, 0.9); //Cria o frame
 
     //Adiciona os elementos de menu
     menu->addText(0,0,1,4,0,"Adicionar Forma");
@@ -18,6 +18,7 @@ frame* newShapeMenu()
     menu->addButton(2,0,1,4,2,"Esfera");
     menu->addButton(3,0,1,4,3,"Torus");
     menu->addButton(4,0,1,4,4,"Icosaedro");
+    menu->addButton(5,0,1,4,5,"Hexaedro");
 
     menu->addClickFunction(menuClickShape); //Adiciona a função chamada ao clicar em um elemento do menu 0
     
@@ -61,6 +62,12 @@ void menuClickShape(int ID)
                 w->setWaiting(1);
                 w->getMenu()->clear(); //Limpa os dados do menu
                 w->setMenu(4); //Seta o menu atual para o menu de adição de pontos
+            break;
+
+            case 5:
+                w->setWaiting(1);
+                w->getMenu()->clear(); //Limpa os dados do menu
+                w->setMenu(10); //Seta o menu atual para o menu de adição de pontos
             break;
         }
     }
@@ -389,6 +396,93 @@ void menuClickCube(int ID)
 }
 
 
+
+/**
+ * @brief Handler para os cliques do menu de adição de Cubo.
+ * 
+ * @param ID : ID do elemento que gerou o evento de clique.
+ */
+void menuClickHexa(int ID)
+{
+    window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
+    if(w)
+    {
+        switch(ID)
+        {
+            case 14: //Botão Cancelar;
+                if(w->getWaiting())
+                {
+                    w->setWaiting(0); //Zera a flag de espera por entrada
+                    w->setMenu(0);//Seta o menu para 0.
+                    w->setInputType(NONE);
+                }
+                w->clearSelection(); //Desseleciona os objetos
+            break;
+
+            case 15: //Botão Adicionar;
+            {
+                std::string xStr = (w->getMenu())->getTextInput(3); //Obtém o texto da caixa de texto 3.
+                std::string yStr = (w->getMenu())->getTextInput(5); //Obtém o texto da caixa de texto 5.
+                std::string zStr = (w->getMenu())->getTextInput(7); //Obtém o texto da caixa de texto 7.
+                std::string xEdgeStr = (w->getMenu())->getTextInput(9); //Obtém o texto da caixa de texto 9.
+                std::string yEdgeStr = (w->getMenu())->getTextInput(11); //Obtém o texto da caixa de texto 9.
+                std::string zEdgeStr = (w->getMenu())->getTextInput(13); //Obtém o texto da caixa de texto 9.
+
+                if(xStr.size()!= 0 && yStr.size()!= 0) //Verifica se os dados são válidos
+                {
+                    GLfloat xEdge = 0, yEdge = 0, zEdge = 0;
+                    std::vector<GLfloat> center(3,0.0f);
+
+                    //Converte as strings para float.
+                    center[0] = stof(xStr);
+                    center[1] = stof(yStr);
+                    center[2] = stof(zStr);
+                    xEdge = stof(xEdgeStr);
+                    yEdge = stof(yEdgeStr);
+                    zEdge = stof(zEdgeStr);
+
+                    if(xEdge<0.0001f || yEdge<0.0001f || zEdge<0.0001f)
+                    {
+                        w->showPopUp("Aresta deve ser > 0");
+                    }else
+                    {   
+                        hexahedron* newHexa = new hexahedron(xEdge, yEdge, zEdge, center);
+
+                        if(!(w->getScene()->checkCollision(newHexa))) //Verifica se o ponto adicionado colidiu com outro ponto
+                        {
+                            //Caso não tenha colidido
+                            w->addShape(newHexa);
+
+                            w->setWaiting(0); //Decrementa a variável de espera de entrada.
+
+                            w->getMenu()->clear(); //Limpa os dados do menu
+                            
+                            if(!w->getWaiting()) //Se não há espera por entrada
+                            {
+                                w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
+                                w->setMenu(0,HIDDEN); //Seta o menu como 0.
+                            }
+
+                            if(!w->getCam()->isInFrustrum(newHexa)) //Verifica se o desenho ficará fora da tela
+                            {
+                                w->showPopUp("O Desenho Pode Ficar Fora da Tela!");
+                            }
+
+                        }else{
+                            //Caso tenha havido colisão
+                            w->showPopUp("Colisão Detectada!"); //Mostra o popUp de ponto repetido 
+                            delete newHexa;
+                        }
+                    }
+                }
+            }break;
+        }
+    }
+}
+
+
+
+
 /**
  * @brief Handler para os cliques do menu de adição de Icosaedro.
  * 
@@ -663,6 +757,43 @@ frame* newCube()
     menu->addButton(6,1,1,2,11,"Adicionar");
     
     menu->addClickFunction(menuClickCube); //Adiciona a função chamada ao se clicar no menu
+    
+    menu->generate(); //Gera o menu
+
+    return menu;
+}
+
+
+frame* newHexa()
+{
+    frame* menu = new frame(1.4f, 1.0f, 9, 4, -0.5, 0.7); //Cria o frame do menu
+
+    std::vector<GLfloat> red = {BUTTON_RED_R, BUTTON_RED_G,BUTTON_RED_B};
+    
+    //Adiciona os elementos do menu
+    menu->addText(0,0,1,4,0,"ADICIONAR HEXAEDRO");
+
+    menu->addText(1,0,1,4,1,"PONTO CENTRAL");
+    menu->addText(2,0,1,2,2,"X");
+    menu->addTextInput(2,1,1,2,3);
+    menu->addText(3,0,1,2,4,"Y");
+    menu->addTextInput(3,1,1,2,5);
+    menu->addText(4,0,1,2,6,"Z");
+    menu->addTextInput(4,1,1,2,7);
+
+    menu->addText(5,0,1,2,8,"ARESTA X");
+    menu->addTextInput(5,1,1,2,9);
+
+    menu->addText(6,0,1,2,10,"ARESTA Y");
+    menu->addTextInput(6,1,1,2,11);
+
+    menu->addText(7,0,1,2,12,"ARESTA Z");
+    menu->addTextInput(7,1,1,2,13);
+
+    menu->addButton(8,0,1,2,14,"Cancelar",red);
+    menu->addButton(8,1,1,2,15,"Adicionar");
+    
+    menu->addClickFunction(menuClickHexa); //Adiciona a função chamada ao se clicar no menu
     
     menu->generate(); //Gera o menu
 

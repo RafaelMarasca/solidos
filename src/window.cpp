@@ -218,6 +218,7 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     this->menu[7] = newRotMenu();
     this->menu[8] = newTransMenu();
     this->menu[9] = newScaleMenu();
+    this->menu[10] = newHexa();
 
     this->currentMenu = 0;
     std::vector<GLfloat> c= {0.0f, 0.0f, 0.0f};
