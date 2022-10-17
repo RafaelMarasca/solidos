@@ -502,18 +502,24 @@ frame* newOptMenu()
  */
 frame* newRotMenu()
 {
-    frame* menu = new frame(0.5f, 1.0f, 3, 4, -0.5, 0.25); //Cria o frame do menu
+    frame* menu = new frame(1.0f, 1.0f, 5, 4, -0.5, 0.5); //Cria o frame do menu
 
     std::vector<GLfloat> red = {BUTTON_RED_R, BUTTON_RED_G,BUTTON_RED_B};
 
     //Adiciona os elementos do menu
     menu->addText(0,0,1,4,0,"ROTACIONAR");
 
-    menu->addText(1,0,1,2,1,"Angulo");
+    menu->addText(1,0,1,2,1,"Angulo X");
     menu->addTextInput(1,1,1,2,2);
 
-    menu->addButton(2,0,1,2,3,"Cancelar",red);
-    menu->addButton(2,1,1,2,4,"Confirmar");
+    menu->addText(2,0,1,2,3,"Angulo Y");
+    menu->addTextInput(2,1,1,2,4);
+
+    menu->addText(3,0,1,2,5,"Angulo Z");
+    menu->addTextInput(3,1,1,2,6);
+
+    menu->addButton(4,0,1,2,7,"Cancelar",red);
+    menu->addButton(4,1,1,2,8,"Confirmar");
 
     menu->addClickFunction(menuClickRot); //Adiciona a função chamada ao clicar em um elemento do menu
 
@@ -734,23 +740,29 @@ void menuClickRot(int ID)
     {
         switch(ID)
         {
-            case 4: //Botão Rodar
+            case 8: //Botão Rodar
             {
-                std::string angleStr = (w->getMenu())->getTextInput(2); //Obtém o texto da caixa de texto 2.
+                std::string xAngleStr = (w->getMenu())->getTextInput(2); //Obtém o texto da caixa de texto 2.
+                std::string yAngleStr = (w->getMenu())->getTextInput(4); //Obtém o texto da caixa de texto 2.
+                std::string zAngleStr = (w->getMenu())->getTextInput(6); //Obtém o texto da caixa de texto 2.
 
-                if(angleStr.size()!= 0) //Verifica se os dados são válidos
+                if(xAngleStr.size()!= 0 && yAngleStr.size()!= 0 && zAngleStr.size()!= 0) //Verifica se os dados são válidos
                 {
-                    GLfloat angle = 0.0f;
+                    GLfloat xAngle, yAngle, zAngle = 0.0f;
 
                     //Converte as strings para float.
-                    angle = stof(angleStr);
+                    xAngle = stof(xAngleStr);
+                    yAngle = stof(yAngleStr);
+                    zAngle = stof(zAngleStr);
 
                     //if(!(w->vision->checkCollision(x,y).first)) //Verifica se o ponto adicionado colidiu com outro ponto
                     {
                         //Caso não tenha colidido
                     
                         solid* geo = w->getSelectedShape();
-                        geo->rotate(angle,Y_AXIS);
+                        geo->rotate(xAngle,X_AXIS);
+                        geo->rotate(yAngle,Y_AXIS);
+                        geo->rotate(zAngle,Z_AXIS);
 
                         w->getMenu()->clear(); //Limpa os dados do menu
                         w->setMenu(5, HIDDEN);//Seta o menu para 5.
@@ -758,7 +770,7 @@ void menuClickRot(int ID)
                 }
             }break;
         
-            case 3: //Botão Cancelar;
+            case 7: //Botão Cancelar;
                 w->setMenu(5);//Seta o menu para 5.
             break;
         }
