@@ -2,6 +2,7 @@
 #define CAMERA_H
 
 #include "matrix.h"
+#include "geometry.h"
 #include<vector>
 #include<GL/glew.h>
 
@@ -62,6 +63,7 @@ class camera
 
         void setupNormals();
         bool isInFrostrum(GLfloat x, GLfloat y, GLfloat z);
+        bool isInFrostrum(solid* s);
 
         void print();
 

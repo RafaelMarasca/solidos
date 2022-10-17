@@ -83,33 +83,25 @@ void window::keyp(unsigned char key, int x, int y)
             w->setMenu(w->currentMenu, 
                         w->menu[w->currentMenu]->visible()? HIDDEN : VISIBLE, 
                         false);
-            /*if(w->menu[w->currentMenu]->visible())
-                w->menu[w->currentMenu]->hide();
-            else
+        break;
+
+        case 43: //Tecla +
+            if(w->menu[w->currentMenu]->visible())
             {
-                if(w->currentMenu == 5)
-                {
-                    if(w->selectedShape)
-                    {
-                        w->getMenu()->setState(2,w->selectedShape->getWireFrameState());
-                        w->getMenu()->setState(4,w->selectedShape->getSolidState());
-                    }
-                }
-                w->menu[w->currentMenu]->show();
-            }*/
+                w->cam->zoom(-10);
+                w->vision->updateCam(w->cam->getView(), w->cam->getProjection());
+            } 
         break;
 
-        case 43:
-            w->cam->zoom(-10);
-            w->vision->updateCam(w->cam->getView(), w->cam->getProjection());
+        case 45: //Tecla -
+            if(w->menu[w->currentMenu]->visible())
+            {
+                w->cam->zoom(10);
+                w->vision->updateCam(w->cam->getView(), w->cam->getProjection());
+            }
         break;
 
-        case 45:
-            w->cam->zoom(10);
-            w->vision->updateCam(w->cam->getView(), w->cam->getProjection());
-        break;
-
-        case 114:
+        case 114: //debug
             //if(w->selectedShape)
                 //std::cout<<w->cam->isInsideFrostrum(w->selectedShape->centralPoint[0],w->selectedShape->centralPoint[1],w->selectedShape->centralPoint[2])<<std::endl;
             //w->cam->print();

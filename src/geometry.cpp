@@ -99,7 +99,8 @@ geometry::~geometry()
     
 void solid::draw()
 {
-    this->box->draw();
+    if(isBoundBox)
+        this->box->draw();
 
     this->program->use();
     glBindVertexArray(this->VAO);
@@ -300,6 +301,19 @@ void geometry::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
     //this->wireFrameColor[3] = a; 
 }
 
+void solid::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+{
+    this->color[0] = r;
+    this->color[1] = g;
+    this->color[2] = b;
+    this->color[3] = a; 
+
+    this->wireFrameColor[0] = r;
+    this->wireFrameColor[1] = g;
+    this->wireFrameColor[2] = b;
+    this->wireFrameColor[3] = a; 
+}
+
 void geometry::resetColor()
 {
     this->color[0] = GEOMETRY_R;
@@ -313,10 +327,24 @@ void geometry::resetColor()
     //this->wireFrameColor[3] = 1.0f; 
 }
 
+void solid::resetColor()
+{
+    this->color[0] = GEOMETRY_R;
+    this->color[1] = GEOMETRY_G;
+    this->color[2] = GEOMETRY_B;
+    this->color[3] = 1.0f; 
+
+    this->wireFrameColor[0] = WF_R;
+    this->wireFrameColor[1] = WF_G;
+    this->wireFrameColor[2] = WF_B;
+    this->wireFrameColor[3] = 1.0f; 
+}
+
 solid::solid(std::vector<GLfloat> &vertices, std::vector<int> &indices, std::vector<GLfloat> &centralPoint, GLenum usage):geometry(vertices, indices, centralPoint, usage)
 {
     this->isWireFrame = 0;
     this->isSolid = 1;
+    this->isBoundBox = 0;
     this->wireFrameColor = {WF_R, WF_G, WF_B, 1.0f};
     this->box = new boundBox();
 };
@@ -325,6 +353,7 @@ solid::solid(GLenum usage):geometry(usage)
 {
     this->isWireFrame = 0;
     this->isSolid = 1;
+    this->isBoundBox = 0;
     this->wireFrameColor = {WF_R, WF_G, WF_B, 1.0f};
     this->box = new boundBox();
     
@@ -803,92 +832,37 @@ bool solid::getSolidState()
 {
     return this->isSolid;
 }
-/*
-void geometry::setupCollisionBox()
+
+bool solid::collision(GLfloat x, GLfloat y, GLfloat z)
 {
-    GLfloat minX, maxX, minY, maxY, minZ, maxZ; 
-    std::vector<GLfloat>::iterator it;
+    vec3 max = this->box->getMax();
+    vec3 min = this->box->getMin();
 
-    this->collisionRT = matrix(4,1);
-    this->collisionLB = matrix(4,1);
-
-    maxX = maxY = maxZ = std::numeric_limits<float>::lowest();
-    minX = minY = minZ = std::numeric_limits<float>::max();
-
-    matrix aux(4,1);
-
-    for(it = this->vertices.begin(); it!= this->vertices.end(); it+=3)
-    {
-        aux(0,0) = *it;
-        aux(1,0) = *(it+1);
-        aux(2,0) = *(it+2);
-        aux(3,0) = 1.0f;
-
-        aux = this->modelMatrix*aux;
-
-        if(aux(0,0)<minX)
-        {
-            minX = aux(0,0);
-        }
-        if(aux(0,0)>maxX)
-        {
-            maxX = aux(0,0);
-        }
-
-        if(aux(1,0)<minY)
-        {
-            minY = aux(1,0);
-        }
-        if(aux(1,0)>maxY)
-        {
-            maxY = aux(1,0);
-        }
-
-        if(aux(2,0)<minZ)
-        {
-            minZ = aux(2,0);
-        }
-        
-        if(aux(2,0)>maxZ)
-        {
-            maxZ = aux(2,0);
-        }
-    }
-
-    this->collisionLB(0,0) = minX;
-    this->collisionLB(1,0) = minY;
-    this->collisionLB(2,0) = minZ;
-    this->collisionLB(3,0) = 1;
-
-    this->collisionRT(0,0) = maxX;
-    this->collisionRT(1,0) = maxY;
-    this->collisionRT(2,0) = maxZ;
-    this->collisionRT(3,0) = 1;
-}*/
-
-bool geometry::collision(GLfloat x, GLfloat y, GLfloat z)
-{
-    /*return(x>=collisionLB(0,0) && x<=this->collisionRT(0,0) 
-            && y>=collisionLB(1,0) && y<=this->collisionRT(1,0) 
-            && z>=collisionLB(2,0) && z<=this->collisionRT(2,0));*/
-    return false;
+    return(x>=min(0) && x<=max(0) 
+            && y>=min(1) && y<=max(1) 
+            && z>=min(2) && z<=max(2));
 }
 
-bool geometry::collision(geometry* other)
+bool solid::collision(solid* other)
 {
 
-    /*return (this->collisionLB(0,0) <= other->collisionRT(0,0)
-            && this->collisionLB(1,0) <= other->collisionRT(1,0)
-            && this->collisionLB(2,0) <= other->collisionRT(2,0)
-            && this->collisionRT(0,0) >= other->collisionLB(0,0)
-            && this->collisionRT(1,0) >= other->collisionLB(1,0)
-            && this->collisionRT(2,0) >= other->collisionLB(2,0));*/
-            return false;
+    vec3 max = this->box->getMax();
+    vec3 min = this->box->getMin();
+    vec3 otherMax = other->box->getMax();
+    vec3 otherMin = other->box->getMin();
+
+
+    return (min(0) <= otherMax(0)
+            && min(1) <= otherMax(1)
+            && min(2) <= otherMax(2)
+            && max(0) >= otherMin(0)
+            && max(1) >= otherMin(1)
+            && max(2) >= otherMin(2));
 }
 
 
-bool solid::collision(GLfloat x, GLfloat y, GLfloat z){return false;}
-bool solid::collision(solid* other){return false;}
+bool geometry::collision(GLfloat x, GLfloat y, GLfloat z){return false;}
+bool geometry::collision(geometry* other){return false;}
 
 
 hexahedron::hexahedron(GLfloat xSize, GLfloat ySize, GLfloat zSize, std::vector<GLfloat> &center, GLenum usage) : solid(usage)
@@ -978,7 +952,7 @@ boundBox::boundBox() :geometry(GL_DYNAMIC_DRAW)
 
     this->vertices = std::vector<GLfloat> (24,0.0f);
     this->indices = std::vector<int> (36,0);
-    this->setColor(0.0f,0.0f,1.0f);
+    this->setColor(BB_R,BB_G,BB_B);
 
     //glBindVertexArray(this->VAO);
 
@@ -1060,8 +1034,6 @@ void boundBox::updateVertices()
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
-
-    
 }
 
 void boundBox::update(std::vector<GLfloat> &v, std::vector<GLfloat> &center,matrix &model)
@@ -1153,4 +1125,19 @@ void boundBox::draw()
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, (void*)0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+bool solid::getBoundBoxState()
+{
+    return this->isBoundBox;
+}
+
+void solid::setBoundBox(bool state)
+{
+    this->isBoundBox = state;
+}
+
+boundBox* solid::getBoundBox()
+{
+    return this->box;
 }

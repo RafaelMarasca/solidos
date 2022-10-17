@@ -325,13 +325,26 @@ bool camera::isInFrostrum(GLfloat x, GLfloat y, GLfloat z)
     {
         if(this->planes[i].dist(vec3(x,y,z))<0)
         {
-            std::cout<<"I:"<<i<<std::endl;
             return false;
         }
     }
 
     return true;
 }
+
+bool camera::isInFrostrum(solid* s)
+{
+    vec3 max = s->getBoundBox()->getMax();
+    vec3 min = s->getBoundBox()->getMin();
+    
+    for(int i = 0; i<6; i++)
+    {
+        if(this->planes[i].dist(max)<0 || this->planes[i].dist(min)<0)
+            return false;
+    }
+    return true;
+}
+
 
 void camera::print()
 {

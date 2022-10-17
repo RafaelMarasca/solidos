@@ -1,6 +1,7 @@
 #include "menu.h"
 #include "gui.h"
 #include "window.h"
+#include <iostream>
 
 /**
  * @brief Cria o menu 0 (menu de criação de formas)
@@ -200,11 +201,6 @@ void menuClickTorus(int ID)
                             //Caso não tenha colidido
                             w->addShape(newTorus);
 
-                            //if(w->getCam()->isInFrostrum(newTorus->)) //Verifica se o desenho ficará fora da tela
-                            {
-                                w->showPopUp("O Desenho Ficara Fora da Tela!");
-                            }
-
                             w->setWaiting(0); //Decrementa a variável de espera de entrada.
 
                             w->getMenu()->clear(); //Limpa os dados do menu
@@ -215,6 +211,10 @@ void menuClickTorus(int ID)
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0.
                             }
 
+                            if(!w->getCam()->isInFrostrum(newTorus)) //Verifica se o desenho ficará fora da tela
+                            {
+                                w->showPopUp("O Desenho Pode Ficar Fora da Tela!");
+                            }
                             
                         }else{
                             //Caso tenha havido colisão
@@ -273,18 +273,12 @@ void menuClickSphere(int ID)
                     {
                         w->showPopUp("Raio deve ser > 0");
                     }else
-                    {
-                        if(std::fabs(center[0])>1  || std::fabs(center[1])>1 || std::fabs(center[2])>1) //Verifica se o desenho ficará fora da tela
-                        {
-                            w->showPopUp("O Desenho Ficara Fora da Tela!");
-                        }
-                        
+                    {   
                         icosphere* newSphere = new icosphere(r, center);
 
                         if(!(w->getScene()->checkCollision(newSphere))) //Verifica se o ponto adicionado colidiu com outro ponto
                         {
                             //Caso não tenha colidido
-
                             w->addShape(newSphere);
 
                             w->setWaiting(0); //Decrementa a variável de espera de entrada.
@@ -294,8 +288,14 @@ void menuClickSphere(int ID)
                             if(!w->getWaiting()) //Se não há espera por entrada
                             {
                                 w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
-                                w->setMenu(0,HIDDEN); //Seta o menu como 0.
+                                w->setMenu(0,HIDDEN); //Seta o menu como 0
                             }
+
+                            if(!w->getCam()->isInFrostrum(newSphere)) //Verifica se o desenho ficará fora da tela
+                            {
+                                w->showPopUp("O Desenho Pode Ficar Fora da Tela!");
+                            }
+
                         }else{
                             //Caso tenha havido colisão
                             w->showPopUp("Colisão Detectada!"); //Mostra o popUp de ponto repetido 
@@ -353,18 +353,12 @@ void menuClickCube(int ID)
                     {
                         w->showPopUp("Aresta deve ser > 0");
                     }else
-                    {
-                        if(std::fabs(center[0])>1  || std::fabs(center[1])>1 || std::fabs(center[2])>1) //Verifica se o desenho ficará fora da tela
-                        {
-                            w->showPopUp("O Desenho Ficara Fora da Tela!");
-                        }
-                        
+                    {   
                         cube* newCube = new cube(edge, center);
 
                         if(!(w->getScene()->checkCollision(newCube))) //Verifica se o ponto adicionado colidiu com outro ponto
                         {
                             //Caso não tenha colidido
-                        
                             w->addShape(newCube);
 
                             w->setWaiting(0); //Decrementa a variável de espera de entrada.
@@ -376,6 +370,12 @@ void menuClickCube(int ID)
                                 w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0.
                             }
+
+                            if(!w->getCam()->isInFrostrum(newCube)) //Verifica se o desenho ficará fora da tela
+                            {
+                                w->showPopUp("O Desenho Pode Ficar Fora da Tela!");
+                            }
+
                         }else{
                             //Caso tenha havido colisão
                             w->showPopUp("Colisão Detectada!"); //Mostra o popUp de ponto repetido 
@@ -433,17 +433,13 @@ void menuClickIcosahedron(int ID)
                     {
                         w->showPopUp("Aresta deve ser > 0");
                     }else
-                    {
-                        if(std::fabs(center[0])>1  || std::fabs(center[1])>1 || std::fabs(center[2])>1) //Verifica se o desenho ficará fora da tela
-                        {
-                            w->showPopUp("O Desenho Ficara Fora da Tela!");
-                        }
-                        
-                        icosahedron* newIcosahedron = new icosahedron(edge, center);
+                    {  
+                      icosahedron* newIcosahedron = new icosahedron(edge, center);
 
                         if(!(w->getScene()->checkCollision(newIcosahedron))) //Verifica se o ponto adicionado colidiu com outro ponto
                         {
                             //Caso não tenha colidido
+
                             w->addShape(newIcosahedron);
 
                             w->setWaiting(0); //Decrementa a variável de espera de entrada.
@@ -455,6 +451,12 @@ void menuClickIcosahedron(int ID)
                                 w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0.
                             }
+
+                            if(!w->getCam()->isInFrostrum(newIcosahedron)) //Verifica se o desenho ficará fora da tela
+                            {
+                                w->showPopUp("O Desenho Pode Ficar Fora da Tela!");
+                            }
+
                         }else{
                             //Caso tenha havido colisão
                             w->showPopUp("Ponto Repetido!"); //Mostra o popUp de ponto repetido 

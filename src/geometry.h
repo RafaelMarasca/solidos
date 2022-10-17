@@ -22,6 +22,11 @@
 #define WF_G 0.000f
 #define WF_B 0.000f 
 
+//Cor inicial da caixa de colisão
+#define BB_R 0.000f
+#define BB_G 0.000f
+#define BB_B 1.000f 
+
 typedef enum {X_AXIS=0, Y_AXIS, Z_AXIS}AXIS;
 
 
@@ -59,11 +64,6 @@ class geometry
         void setup();
 
     protected:
-        //void setupCollisionBox();
-
-        //bool wireFrame;
-        //bool solid;
-        
         static shaderProgram* program;
 
         GLuint VAO;
@@ -76,12 +76,7 @@ class geometry
         
         std::vector<GLfloat> vertices; //Vetor de vértices da forma
         std::vector<GLfloat> color;
-        //std::vector<GLfloat> wireFrameColor;
         std::vector<int> indices;
-
-        //matrix collisionLB;
-        //matrix collisionRT;
-        
 
         GLuint colorLoc;
         GLuint modelLoc;
@@ -99,18 +94,9 @@ class geometry
         geometry(GLenum usage = GL_STATIC_DRAW);
         virtual ~geometry(); //Destrutor para geometry
 
-        //void rotate(GLfloat degrees, AXIS a);
-        //void translate(GLfloat dx, GLfloat dy, GLfloat dz);
-        //void scale(GLfloat sx, GLfloat sy, GLfloat sz);
-
         virtual void setProjection(const matrix &projectionMatrix);
         virtual void setView(const matrix &viewMatrix);
         virtual void setColor(GLfloat r, GLfloat g,  GLfloat b, GLfloat a = 1.0f);
-        
-        //void setWireFrame(bool state);
-        //void setSolid(bool state);
-        //bool getWireFrameState();
-        //bool getSolidState();
 
         virtual bool collision(GLfloat x, GLfloat y, GLfloat z);
         virtual bool collision(geometry* other);
@@ -147,6 +133,7 @@ class solid : public geometry
     protected:
         bool isWireFrame;
         bool isSolid;
+        bool isBoundBox;
         boundBox* box;
         std::vector<GLfloat> wireFrameColor;
 
@@ -157,9 +144,14 @@ class solid : public geometry
 
         void setWireFrame(bool state);
         void setSolid(bool state);
+        void setBoundBox(bool state);
 
         bool getWireFrameState();
         bool getSolidState();
+        bool getBoundBoxState();
+
+        virtual void setColor(GLfloat r, GLfloat g,  GLfloat b, GLfloat a = 1.0f);
+        virtual void resetColor();
 
         virtual void setProjection(const matrix &projectionMatrix);
         virtual void setView(const matrix &viewMatrix);
@@ -170,6 +162,8 @@ class solid : public geometry
 
         bool collision(GLfloat x, GLfloat y, GLfloat z);
         bool collision(solid* other);
+
+        boundBox* getBoundBox();
 
         virtual void draw();
 };
