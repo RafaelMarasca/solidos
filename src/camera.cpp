@@ -319,7 +319,7 @@ void camera::setupNormals()
 }
 
 
-bool camera::isInFrostrum(GLfloat x, GLfloat y, GLfloat z)
+bool camera::isInFrustrum(GLfloat x, GLfloat y, GLfloat z)
 {
     for(int i = 0; i<6; i++)
     {
@@ -332,7 +332,7 @@ bool camera::isInFrostrum(GLfloat x, GLfloat y, GLfloat z)
     return true;
 }
 
-bool camera::isInFrostrum(solid* s)
+bool camera::isInFrustrum(solid* s)
 {
     vec3 max = s->getBoundBox()->getMax();
     vec3 min = s->getBoundBox()->getMin();

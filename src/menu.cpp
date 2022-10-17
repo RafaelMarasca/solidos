@@ -211,7 +211,7 @@ void menuClickTorus(int ID)
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0.
                             }
 
-                            if(!w->getCam()->isInFrostrum(newTorus)) //Verifica se o desenho ficará fora da tela
+                            if(!w->getCam()->isInFrustrum(newTorus)) //Verifica se o desenho ficará fora da tela
                             {
                                 w->showPopUp("O Desenho Pode Ficar Fora da Tela!");
                             }
@@ -291,7 +291,7 @@ void menuClickSphere(int ID)
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0
                             }
 
-                            if(!w->getCam()->isInFrostrum(newSphere)) //Verifica se o desenho ficará fora da tela
+                            if(!w->getCam()->isInFrustrum(newSphere)) //Verifica se o desenho ficará fora da tela
                             {
                                 w->showPopUp("O Desenho Pode Ficar Fora da Tela!");
                             }
@@ -371,7 +371,7 @@ void menuClickCube(int ID)
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0.
                             }
 
-                            if(!w->getCam()->isInFrostrum(newCube)) //Verifica se o desenho ficará fora da tela
+                            if(!w->getCam()->isInFrustrum(newCube)) //Verifica se o desenho ficará fora da tela
                             {
                                 w->showPopUp("O Desenho Pode Ficar Fora da Tela!");
                             }
@@ -452,7 +452,7 @@ void menuClickIcosahedron(int ID)
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0.
                             }
 
-                            if(!w->getCam()->isInFrostrum(newIcosahedron)) //Verifica se o desenho ficará fora da tela
+                            if(!w->getCam()->isInFrustrum(newIcosahedron)) //Verifica se o desenho ficará fora da tela
                             {
                                 w->showPopUp("O Desenho Pode Ficar Fora da Tela!");
                             }

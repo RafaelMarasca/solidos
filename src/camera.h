@@ -62,8 +62,8 @@ class camera
         void zoom(GLfloat fovInc);
 
         void setupNormals();
-        bool isInFrostrum(GLfloat x, GLfloat y, GLfloat z);
-        bool isInFrostrum(solid* s);
+        bool isInFrustrum(GLfloat x, GLfloat y, GLfloat z);
+        bool isInFrustrum(solid* s);
 
         void print();
 
