@@ -140,19 +140,7 @@ void geometry::setup()
     glGenVertexArrays(1,&(this->VAO));
     glGenBuffers(1,&(this->EBO));
 
-    //Seleciona o array de vértices da forma corrente.
-    glBindVertexArray(this->VAO);
-
-    //Transfere os dados para o buffer de objetos.
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, (this->vertices).size()*sizeof(GLfloat),&(this->vertices[0]), usage);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (this->indices.size())*sizeof(int), &(this->indices[0]), usage);
-
-    //Aponta os atributos de vértice.
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
+    this->setupBuffers();
     //glEnableVertexAttribArray(1);
     //glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), (void*)0);
 
@@ -241,8 +229,8 @@ void solid::translate(GLfloat dx, GLfloat dy, GLfloat dz)
     this->centralPoint = std::vector<GLfloat>(translation*cMatrix);
 
     this->modelMatrix = translation*this->modelMatrix;
-    //this->setupCollisionBox();
-     this->box->update(this->vertices, this->centralPoint, this->modelMatrix);
+
+    this->box->update(this->vertices, this->centralPoint, this->modelMatrix);
 
     glUniformMatrix4fv(this->modelLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->modelMatrix)[0]));
 }
@@ -265,7 +253,7 @@ void solid::scale(GLfloat sx, GLfloat sy, GLfloat sz)
     this->centralPoint = std::vector<GLfloat>(scale*cMatrix);
     this->modelMatrix = scale*this->modelMatrix;
     //this->setupCollisionBox();
-     this->box->update(this->vertices, this->centralPoint ,this->modelMatrix);
+    this->box->update(this->vertices, this->centralPoint ,this->modelMatrix);
 
     glUniformMatrix4fv(this->modelLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->modelMatrix)[0]));
 }
@@ -294,11 +282,6 @@ void geometry::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
     this->color[1] = g;
     this->color[2] = b;
     this->color[3] = a; 
-
-    //this->wireFrameColor[0] = r;
-    //this->wireFrameColor[1] = g;
-    //this->wireFrameColor[2] = b;
-    //this->wireFrameColor[3] = a; 
 }
 
 void solid::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
@@ -320,11 +303,6 @@ void geometry::resetColor()
     this->color[1] = GEOMETRY_G;
     this->color[2] = GEOMETRY_B;
     this->color[3] = 1.0f; 
-
-    //this->wireFrameColor[0] = WF_R;
-    //this->wireFrameColor[1] = WF_G;
-    //this->wireFrameColor[2] = WF_B;
-    //this->wireFrameColor[3] = 1.0f; 
 }
 
 void solid::resetColor()
@@ -436,22 +414,8 @@ cube::cube(GLfloat size, std::vector<GLfloat> &center, GLenum usage): solid(usag
     this->scale(size/2.0f, size/2.0f, size/2.0f);
     this->translate(center[0], center[1], center[2]);
 
-     //Seleciona o array de vértices da forma corrente.
-    glBindVertexArray(this->VAO);
-
-    //Transfere os dados para o buffer de objetos.
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, (this->vertices.size())*sizeof(GLfloat),&(this->vertices[0]), usage);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (this->indices.size())*sizeof(int), &(this->indices[0]), usage);
-
-    //Aponta os atributos de vértice.
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
-   // glEnableVertexAttribArray(1);
-    //glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-     this->box->update(this->vertices, this->centralPoint, this->modelMatrix);
+    this->setupBuffers();
+    this->box->update(this->vertices, this->centralPoint, this->modelMatrix);
 }
 
 
@@ -502,20 +466,8 @@ icosahedron::icosahedron(GLfloat size, std::vector<GLfloat> &center, GLenum usag
     this->scale(size/2.0f, size/2.0f, size/2.0f);
     this->translate(center[0], center[1], center[2]);
 
-     //Seleciona o array de vértices da forma corrente.
-    glBindVertexArray(this->VAO);
-
-    //Transfere os dados para o buffer de objetos.
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, (this->vertices.size())*sizeof(GLfloat),&(this->vertices[0]), usage);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (this->indices.size())*sizeof(int), &(this->indices[0]), usage);
-
-    //Aponta os atributos de vértice.
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
-     this->box->update(this->vertices, this->centralPoint, this->modelMatrix);
+    this->setupBuffers();
+    this->box->update(this->vertices, this->centralPoint, this->modelMatrix);
 }
 
 
@@ -644,20 +596,7 @@ void icosphere::subdivide(int depth)
         depth--;
     }
 
-    //Seleciona o array de vértices da forma corrente.
-    glBindVertexArray(this->VAO);
-
-    //Transfere os dados para o buffer de objetos.
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, (this->vertices.size())*sizeof(GLfloat),&(this->vertices[0]), usage);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (this->indices.size())*sizeof(int), &(this->indices[0]), usage);
-
-    //Aponta os atributos de vértice.
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
-
+    this->setupBuffers();
 }
 
 
@@ -713,7 +652,9 @@ icosphere::icosphere(GLfloat radius, std::vector<GLfloat> &center, int depth, GL
     this->scale(radius/scaleFactor, radius/scaleFactor, radius/scaleFactor);
     this->translate(center[0], center[1], center[2]);
 
-     this->box->update(this->vertices, this->centralPoint, this->modelMatrix);
+    this->setupBuffers();
+
+    this->box->update(this->vertices, this->centralPoint, this->modelMatrix);
 }
 
 #define HDIV 16
@@ -796,21 +737,9 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
 
     this->translate(center[0], center[1], center[2]);
 
-    //Seleciona o array de vértices da forma corrente.
-    glBindVertexArray(this->VAO);
+    this->setupBuffers();
 
-    //Transfere os dados para o buffer de objetos.
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, (this->vertices.size())*sizeof(GLfloat),&(this->vertices[0]), usage);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (this->indices.size())*sizeof(int), &(this->indices[0]), usage);
-
-    //Aponta os atributos de vértice.
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
-
-     this->box->update(this->vertices, this->centralPoint ,this->modelMatrix);
+    this->box->update(this->vertices, this->centralPoint ,this->modelMatrix);
 }
 
 void solid::setWireFrame(bool state)
@@ -912,38 +841,7 @@ hexahedron::hexahedron(GLfloat xSize, GLfloat ySize, GLfloat zSize, std::vector<
     this->scale(0.5f, 0.5f, 0.5f);
     this->translate(center[0], center[1], center[2]);
 
-     //Seleciona o array de vértices da forma corrente.
-    glBindVertexArray(this->VAO);
-
-    //Transfere os dados para o buffer de objetos.
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, (this->vertices.size())*sizeof(GLfloat),&(this->vertices[0]), usage);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (this->indices.size())*sizeof(int), &(this->indices[0]), usage);
-
-    //Aponta os atributos de vértice.
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
-   // glEnableVertexAttribArray(1);
-    //glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-}
-
-void geometry::print()
-{
-    std::cout<<"RT ";
-    for(int i = 0; i<3; i++)
-    {
-         //std::cout<<this->collisionRT(i,0)<<" ";
-    }
-    std::cout<<std::endl;
-
-    std::cout<<"LB ";
-     for(int i = 0; i<3; i++)
-    {
-        //std::cout<<this->collisionLB(i,0)<<" ";
-    }
-    std::cout<<std::endl;
+    this->setupBuffers();
 }
 
 
@@ -954,18 +852,7 @@ boundBox::boundBox() :geometry(GL_DYNAMIC_DRAW)
     this->indices = std::vector<int> (36,0);
     this->setColor(BB_R,BB_G,BB_B);
 
-    //glBindVertexArray(this->VAO);
-
-    //Transfere os dados para o buffer de objetos.
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, (this->vertices.size())*sizeof(GLfloat), NULL, usage);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (this->indices.size())*sizeof(int), NULL, usage);
-
-    //Aponta os atributos de vértice.
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
+    this->setupBuffers();
 }
 
 void boundBox::updateVertices()
@@ -1140,4 +1027,21 @@ void solid::setBoundBox(bool state)
 boundBox* solid::getBoundBox()
 {
     return this->box;
+}
+
+void geometry::setupBuffers()
+{
+     //Seleciona o array de vértices da forma corrente.
+    glBindVertexArray(this->VAO);
+
+    //Transfere os dados para o buffer de objetos.
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferData(GL_ARRAY_BUFFER, (this->vertices.size())*sizeof(GLfloat),&(this->vertices[0]), usage);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, (this->indices.size())*sizeof(int), &(this->indices[0]), usage);
+
+    //Aponta os atributos de vértice.
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
 }

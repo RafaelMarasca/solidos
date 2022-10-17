@@ -176,13 +176,12 @@ axis::axis():geometry(GL_STATIC_DRAW)
     //Aponta os atributos de vértice.
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GLfloat), (void*)0);
+    
 }
 
 void axis::draw()
 {
     this->program->use();
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_FRONT);
     glBindVertexArray(this->VAO);
     glUniform4fv(this->colorLoc, 1, &(this->color[0]));
     glUniformMatrix4fv(this->modelLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->modelMatrix)[0]));
@@ -190,6 +189,5 @@ void axis::draw()
     glUniformMatrix4fv(this->projectionLoc, 1, GL_TRUE, &(((std::vector<GLfloat>)this->projectionMatrix)[0]));
     glDrawElements(GL_LINES, this->indices.size(), GL_UNSIGNED_INT, (void*)0);
     glBindVertexArray(this->VAO);
-    //glCullFace(GL_BACK);
     glUseProgram(0);
 }

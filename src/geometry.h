@@ -104,7 +104,7 @@ class geometry
         virtual void resetColor();
         virtual void draw() = 0; 
 
-        void print();
+        void setupBuffers();
 
 };
 
