@@ -662,3 +662,9 @@ camera* window::getCam()
 {
     return this->cam;
 }
+
+
+void window::updateSelection()
+{
+    this->selIterator = this->vision->begin();
+}

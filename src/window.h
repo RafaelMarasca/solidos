@@ -81,10 +81,11 @@ class window
 
         void input(); //Método de entrada de dados
         void init(); //Método de inicialização do tela
-        void updateScene(); //Método de atualização da cena exibida na tela.
         void deleteShape(); //Meétodo para deletar uma forma
         void select(std::pair<unsigned int, solid*>); //Método para selecionar uma forma
         void clearSelection(); //Desseleciona a forma selecionada
+
+        void updateSelection(); //Método de atualização da cena exibida na tela.
 
         void showPopUp(const char* text); //Mostra um popUp.
         void closePopUp(); //Fecha o popUp.

@@ -216,6 +216,7 @@ void menuClickTorus(int ID)
                             {
                                 w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0.
+                                w->updateSelection();
                             }
 
                             if(!w->getCam()->isInFrustrum(newTorus)) //Verifica se o desenho ficará fora da tela
@@ -296,6 +297,7 @@ void menuClickSphere(int ID)
                             {
                                 w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0
+                                w->updateSelection();
                             }
 
                             if(!w->getCam()->isInFrustrum(newSphere)) //Verifica se o desenho ficará fora da tela
@@ -376,6 +378,7 @@ void menuClickCube(int ID)
                             {
                                 w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0.
+                                w->updateSelection();
                             }
 
                             if(!w->getCam()->isInFrustrum(newCube)) //Verifica se o desenho ficará fora da tela
@@ -394,7 +397,6 @@ void menuClickCube(int ID)
         }
     }
 }
-
 
 
 /**
@@ -456,11 +458,12 @@ void menuClickHexa(int ID)
                             w->setWaiting(0); //Decrementa a variável de espera de entrada.
 
                             w->getMenu()->clear(); //Limpa os dados do menu
-                            
+
                             if(!w->getWaiting()) //Se não há espera por entrada
                             {
                                 w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0.
+                                w->updateSelection();
                             }
 
                             if(!w->getCam()->isInFrustrum(newHexa)) //Verifica se o desenho ficará fora da tela
@@ -544,6 +547,7 @@ void menuClickIcosahedron(int ID)
                             {
                                 w->setInputType(NONE); //Seta o tipo de entrada para nenhuma
                                 w->setMenu(0,HIDDEN); //Seta o menu como 0.
+                                w->updateSelection();
                             }
 
                             if(!w->getCam()->isInFrustrum(newIcosahedron)) //Verifica se o desenho ficará fora da tela
