@@ -172,8 +172,8 @@ void camera::setupNormals()
     hNear = 2.0f*ZNEAR*tan(rad/2.0f);
     hFar = 2.0f* ZFAR*tan(rad/2.0f);
 
-    wNear = 2.0f*ZNEAR*tan(rad/2.0f); //ar = 1
-    wFar = 2.0f* ZFAR*tan(rad/2.0f); //ar = 1
+    wNear = 2.0f*ZNEAR*tan(rad/2.0f)*ar; //ar = 1
+    wFar = 2.0f* ZFAR*tan(rad/2.0f)*ar; //ar = 1
 
     cFar = cameraPos - dir*ZFAR;
     cNear = cameraPos - dir*ZNEAR; 

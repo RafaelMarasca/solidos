@@ -102,6 +102,14 @@ void window::keyp(unsigned char key, int x, int y)
                 w->vision->updateCam(w->cam->getView(), w->cam->getProjection(), w->cam->getCameraPos());
             }
         break;
+
+        case 114: //Tecla r
+            if(w->selectedShape)
+            {
+                std::cout<<w->cam->isInFrustrum(w->selectedShape)<<std::endl;
+            std::cout<<"ar: "<<w->aspectRatio<<std::endl;
+            }
+        break;
     }
 
     //Passa apenas as teclas de números para as caixas de texto
@@ -175,6 +183,7 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
                     GLUT_ACTION_GLUTMAINLOOP_RETURNS);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);    
     glEnable(GL_BLEND);
@@ -274,6 +283,7 @@ void window::draw()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
     glutSwapBuffers(); //Troca os buffers (Exibe na tela)
 }

@@ -608,7 +608,7 @@ void button::draw()
 
     int length = glutBitmapLength(GLUT_BITMAP_9_BY_15, (unsigned char*)(this->text.c_str()));
     
-    glRasterPos2f(this->xPos + ((this->width)-(length*0.00333f))/2.0, this->yPos-this->height/2);
+    glRasterPos2f((this->xPos + ((this->width)-(length*0.00333f))/(2.0)), this->yPos-this->height/2);
 
     glutBitmapString(GLUT_BITMAP_9_BY_15, (unsigned char*)(this->text.c_str()));
 
