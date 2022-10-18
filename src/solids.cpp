@@ -396,7 +396,7 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
             this->indices.insert(this->indices.end(), tmpIndex.begin(), tmpIndex.end());
             tmpIndex.clear();*/
 
-             theta = -i*HRES;
+            theta = -i*HRES;
             phi = j*VRES;
 
             x = (r*cos(phi)+R)*cos(theta);
@@ -778,13 +778,12 @@ boundBox* solid::getBoundBox()
 void solid::generateNormals()
 {
     std::vector<int>::iterator it;
-    std::vector<GLfloat>::iterator nit;
+
     vec3 v1;
     vec3 v2;
     vec3 v3;
     vec3 normal;
 
-    std::vector<int> visited(this->vertices.size(),0);
     this->normals = std::vector<GLfloat> (this->vertices.size(),0.0f);
 
     for(it = this->indices.begin(); it!= this->indices.end(); it+=3)
@@ -814,22 +813,6 @@ void solid::generateNormals()
         this->normals[(*(it+2))*3] += normal(0);
         this->normals[((*(it+2))*3)+1] += normal(1);
         this->normals[((*(it+2)))*3+2] += normal(2);
-
-        visited[(*it)*3] += 1;
-        visited[((*it)*3)+1] += 1;
-        visited[((*it)*3)+2] += 1;
-
-        visited[(*(it+1))*3] += 1;
-        visited[(*(it+1))*3+1] += 1;
-        visited[(*(it+1))*3+2] += 1;
-        
-        visited[(*(it+2))*3] += 1;
-        visited[((*(it+2))*3)+1] += 1;
-        visited[((*(it+2)))*3+2] += 1;
     }
 
-    for(unsigned i = 0; i<this->normals.size(); i++)
-    {
-        normals[i]/= float(visited[i]);
-    }
 }

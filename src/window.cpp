@@ -185,7 +185,11 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     glDepthFunc(GL_LESS);    
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
     glutSetWindowData(this);
+
     /*glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     glPointSize(7);
     glEnable(GL_LINE_SMOOTH);
@@ -278,9 +282,13 @@ void window::draw()
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     w->vision->draw(); //Desenha a cena
     glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
     w->menu[w->currentMenu]->draw(); //Desenha o menu corrente.
     glEnable(GL_DEPTH_TEST);
-    
+    glDepthFunc(GL_LESS); 
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
     glutSwapBuffers(); //Troca os buffers (Exibe na tela)
 }
@@ -440,8 +448,8 @@ void window::resize(int newWidth, int newHeight)
     
    
     //Inicializa o sistema de coordenadas para a projeção ortogonal
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+    //glMatrixMode(GL_PROJECTION);
+    //glLoadIdentity();
 
     guiElement::setAspectRatio(aspectRatio);
 
