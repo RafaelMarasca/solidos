@@ -22,8 +22,8 @@
 #define WF_B 0.000f 
 
 //Resolução torus
-#define HDIV 16
-#define VDIV 16
+#define HDIV 32
+#define VDIV 32
 #define HRES 2*M_PI/float(HDIV)
 #define VRES 2*M_PI/float(VDIV)
 
