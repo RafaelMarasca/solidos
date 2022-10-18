@@ -159,117 +159,6 @@ void camera::zoom(GLfloat fovInc)
 
     this->perspective(fov, this->ar);
 }
-/*
-void camera::setupNormals()
-{
-    matrix norm(3,6);
-    vec3 aux1;
-    vec3 aux2;
-    GLfloat rad = 75*M_PI/180.0f;
-    GLfloat zFar = 100.0f;
-
-    //Face frontal
-
-    aux1(0) = 1.0f;
-    aux1(1) = 0.0f;
-    aux1(2) = 0.0f;
-
-    aux2(0) = 0.0f;
-    aux2(1) = 1.0f;
-    aux2(2) = 0.0f;
-    
-    aux1 = vec3::crossProduct(aux1,aux2);
-    norm(0,0) = aux1(0);
-    norm(1,0) = aux1(1);
-    norm(2,0) = aux1(2);
-
-
-    //Face direita
-
-    aux1(0) =  0.0f;
-    aux1(1) = -1.0f;
-    aux1(2) =  0.0f;
-
-    aux2(0) = zFar*tan(rad);
-    aux2(1) = zFar*tan(rad);
-    aux2(2) = zFar;
-
-    aux2.normalize();
-
-    aux1 = vec3::crossProduct(aux1,aux2);
-    norm(0,1) = aux1(0);
-    norm(1,1) = aux1(1);
-    norm(2,1) = aux1(2);
-
-
-    //Face Esquerda
-    aux1(0) =  0.0f;
-    aux1(1) =  1.0f;
-    aux1(2) =  0.0f;
-
-    aux2(0) = -zFar*tan(rad);
-    aux2(1) = -zFar*tan(rad);
-    aux2(2) = zFar;
-
-    aux2.normalize();
-
-    aux1 = vec3::crossProduct(aux1,aux2);
-    norm(0,2) = aux1(0);
-    norm(1,2) = aux1(1);
-    norm(2,2) = aux1(2);
-
-
-    //Face Superior
-    aux1(0) =  1.0f;
-    aux1(1) =  0.0f;
-    aux1(2) =  0.0f;
-
-    aux2(0) = -zFar*tan(rad);
-    aux2(1) = zFar*tan(rad);
-    aux2(2) = zFar;
-
-    aux2.normalize();
-
-    aux1 = vec3::crossProduct(aux1,aux2);
-    norm(0,3) = aux1(0);
-    norm(1,3) = aux1(1);
-    norm(2,3) = aux1(2);
-
-
-    
-    //Face Inferior
-    aux1(0) =  1.0f;
-    aux1(1) =  0.0f;
-    aux1(2) =  0.0f;
-
-    aux2(0) = -zFar*tan(rad);
-    aux2(1) = -zFar*tan(rad);
-    aux2(2) = zFar;
-
-    aux2.normalize();
-
-    aux1 = vec3::crossProduct(aux1,aux2);
-    norm(0,4) = aux1(0);
-    norm(1,4) = aux1(1);
-    norm(2,4) = aux1(2);
-
-
-    //Face Traseira
-    aux1(0) =  1.0f;
-    aux1(1) =  0.0f;
-    aux1(2) =  0.0f;
-
-    aux2(0) = 0.0f;
-    aux2(1) = -1.0f;
-    aux2(2) = 0.0f;
-
-    aux1 = vec3::crossProduct(aux1,aux2);
-    norm(0,5) = aux1(0);
-    norm(1,5) = aux1(1);
-    norm(2,5) = aux1(2);
-
-    this->normals = norm;
-}*/
 
 
 void camera::setupNormals()
@@ -354,6 +243,11 @@ void camera::print()
     }
 }
 
+vec3& camera::getCameraPos()
+{
+    return this->cameraPos;
+}
+
 
 plane::plane(vec3 p0, vec3 p1, vec3 p2)
 {
@@ -380,3 +274,4 @@ void plane::print()
 {
     std::cout<<this->normal(0)<<" "<<this->normal(1)<<" "<<this->normal(2)<<" "<<std::endl;
 }
+

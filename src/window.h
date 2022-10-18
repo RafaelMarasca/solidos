@@ -14,7 +14,7 @@
 #include<GL/glut.h>
 #include<GL/freeglut.h>
 #include"scene.h"
-#include"geometry.h"
+#include"solids.h"
 #include<string>
 #include<vector>
 #include<map>

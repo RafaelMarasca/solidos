@@ -1,5 +1,5 @@
 #include"scene.h"
-#include"geometry.h"
+#include"solids.h"
 #include"axis.h"
 #include<algorithm>
 #include<GL/glew.h>
@@ -14,7 +14,6 @@
 scene::scene()
 {
    this->theAxis = new axis;
-   this->theAxis->setColor(0.0f, 1.0f, 0.0f);
    this->nextID = 1;
 }
 
@@ -51,15 +50,9 @@ void scene::draw()
  */
 unsigned int scene::addObject(solid* object)
 {
-	/*if(this->checkCollision(object).second)
-	{
-		return 0;
-	}else*/{
-	
 		this->objects[nextID] = object;
 		nextID++;
 		return nextID-1;
-	}
 }
 
 /**
@@ -176,7 +169,7 @@ sceneIterator scene::end()
  * @param view Matriz view.
  * @param projection Matrix de projeção.
  */
-void scene::updateCam(const matrix &view, const matrix &projection)
+void scene::updateCam(const matrix &view, const matrix &projection, vec3 &cameraPos)
 {
     sceneIterator it = this->objects.begin();
 
@@ -184,6 +177,7 @@ void scene::updateCam(const matrix &view, const matrix &projection)
     {
         (*it).second->setProjection(projection);
         (*it).second->setView(view);
+        (*it).second->setCameraPos(cameraPos);
     }
 
     this->theAxis->setProjection(projection);

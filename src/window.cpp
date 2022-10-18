@@ -37,6 +37,8 @@ void window::addShape(solid* shape)
     this->vision->addObject(shape);
     shape->setView(this->cam->getView());
     shape->setProjection(this->cam->getProjection());
+    shape->setCameraPos(this->cam->getCameraPos());
+    this->selIterator = this->vision->begin();
 }
 
 
@@ -86,18 +88,18 @@ void window::keyp(unsigned char key, int x, int y)
         break;
 
         case 43: //Tecla +
-            if(w->menu[w->currentMenu]->visible())
+            if(!w->menu[w->currentMenu]->visible())
             {
                 w->cam->zoom(-10);
-                w->vision->updateCam(w->cam->getView(), w->cam->getProjection());
+                w->vision->updateCam(w->cam->getView(), w->cam->getProjection(), w->cam->getCameraPos());
             } 
         break;
 
         case 45: //Tecla -
-            if(w->menu[w->currentMenu]->visible())
+            if(!w->menu[w->currentMenu]->visible())
             {
                 w->cam->zoom(10);
-                w->vision->updateCam(w->cam->getView(), w->cam->getProjection());
+                w->vision->updateCam(w->cam->getView(), w->cam->getProjection(), w->cam->getCameraPos());
             }
         break;
 
@@ -198,7 +200,7 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     this->vision= new scene; //Cria uma cena para exibição
     this->cam = new camera(vec3(0.0f,0.0f,3.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f,1.0f,0.0f));
     this->cam->rotate(45.0f, 0.0f);
-    this->vision->updateCam(cam->getView(), cam->getProjection());
+    this->vision->updateCam(cam->getView(), cam->getProjection(), cam->getCameraPos());
     this->waitingInput = 0; //Inicializa a flag de espera de entrada em 0
     this->inType = NONE;  //Tipo de entrada
     this->width = width; //Inicializa a largura da tela
@@ -223,12 +225,12 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     this->currentMenu = 0;
     std::vector<GLfloat> c= {0.0f, 0.0f, 0.0f};
 
-    this->addShape(new cube(0.2, c));
-    c[0] = 0.5;
-    this->addShape(new cube(0.2, c));
-    c[0] = -0.5;
-    this->addShape(new icosphere(0.3, c));
-
+    //this->addShape(new cube(0.2, c));
+    //c[0] = 0.5;
+    //this->addShape(new cube(0.2, c));
+    //c[0] = -0.5;
+    //this->addShape(new icosphere(0.3, c));
+    this->addShape(new torus(0.1, 0.2, c));
 }
 
 
@@ -513,7 +515,7 @@ void window::mouseMove(int x, int y)
         }
 
         w->cam->mouseMap(xLast-x, yLast-y, 600, 600);
-        w->vision->updateCam(w->cam->getView(),w->cam->getProjection());
+        w->vision->updateCam(w->cam->getView(),w->cam->getProjection(), w->cam->getCameraPos());
         xLast = x;
         yLast = y;
         glutPostRedisplay();

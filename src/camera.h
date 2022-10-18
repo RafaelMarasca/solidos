@@ -2,7 +2,7 @@
 #define CAMERA_H
 
 #include "matrix.h"
-#include "geometry.h"
+#include "solids.h"
 #include<vector>
 #include<GL/glew.h>
 
@@ -53,6 +53,7 @@ class camera
         void perspective(GLfloat fov, GLfloat ar = 1.0f);
         matrix getView();
         matrix getProjection();
+        vec3& getCameraPos();
 
         void setPos(vec3 cameraPos);
         void setTarget(vec3 target);

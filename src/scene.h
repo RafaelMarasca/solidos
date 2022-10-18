@@ -15,7 +15,7 @@
 #include<map>
 #include<utility>
 #include<GL/glew.h>
-#include"geometry.h"
+#include"solids.h"
 #include"axis.h"
 #include"matrix.h"
 
@@ -50,7 +50,7 @@ class scene
        
         bool checkCollision(solid* geo); //Verifica se há colisão de um objeto da cena com um objeto passado por argumento
 
-        void updateCam(const matrix &view, const matrix &projection);
+        void updateCam(const matrix &view, const matrix &projection, vec3 &cameraPos);
 };
 
 
