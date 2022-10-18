@@ -340,7 +340,7 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
     {
         for(int i = 0; i<HDIV; i++)
         {
-            theta = i*HRES;
+            /*theta = i*HRES;
             phi = j*VRES;
 
             x = (r*cos(phi)+R)*cos(theta);
@@ -366,7 +366,7 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
             this->vertices.push_back(z);
             
             phi = j*VRES;
-            theta = (1+i)*HRES;
+            theta = -(1+i)*HRES;
 
             x = (r*cos(phi)+R)*cos(theta);
             y =  r*sin(phi);
@@ -394,8 +394,9 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
             tmpIndex.push_back(tmpIndex[1]);
 
             this->indices.insert(this->indices.end(), tmpIndex.begin(), tmpIndex.end());
-            tmpIndex.clear();
-            /*theta = i*HRES;
+            tmpIndex.clear();*/
+
+             theta = -i*HRES;
             phi = j*VRES;
 
             x = (r*cos(phi)+R)*cos(theta);
@@ -408,7 +409,7 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
             this->vertices.push_back(y);
             this->vertices.push_back(z);
             
-            theta = (1+i)*HRES;
+            theta = -(1+i)*HRES;
 
             x = (r*cos(phi)+R)*cos(theta);
             y =  r*sin(phi);
@@ -420,7 +421,7 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
             this->vertices.push_back(y);
             this->vertices.push_back(z);
 
-            theta = i*HRES;
+            theta = -i*HRES;
             phi = (j+1)*VRES;
 
             x = (r*cos(phi)+R)*cos(theta);
@@ -433,7 +434,7 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
             this->vertices.push_back(y);
             this->vertices.push_back(z);
 
-            theta = (i+1)*HRES;
+            theta = -(i+1)*HRES;
 
             x = (r*cos(phi)+R)*cos(theta);
             y =  r*sin(phi);
@@ -449,7 +450,8 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
             tmpIndex.push_back(tmpIndex[1]);
 
             this->indices.insert(this->indices.end(), tmpIndex.begin(), tmpIndex.end());
-            tmpIndex.clear();*/
+            tmpIndex.clear();
+            
         }
     }
 
@@ -799,7 +801,7 @@ void solid::generateNormals()
         v3(1) = this->vertices[(*(it+2))*3+1];
         v3(2) = this->vertices[(*(it+2))*3+2];
 
-        normal = vec3::crossProduct(v2-v1,v3-v1);
+        normal = vec3::crossProduct(v3-v2,v1-v2);
 
         this->normals[(*it)*3] += normal(0);
         this->normals[((*it)*3)+1] += normal(1);

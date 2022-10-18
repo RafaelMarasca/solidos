@@ -13,8 +13,6 @@
 #include<vector>
 #include<string>
 
-#define VPOS 0
-#define COLOR 1
 
 //Cor inicial do Aramado
 #define WF_R 1.000f
@@ -45,7 +43,7 @@ const std::string solidVertexShader =
         "out vec3 FragPos;\n"
         "void main(){\n"
         "gl_Position = projection*view*model*vec4(pos, 1.0f);\n"
-        "Normal = mat3(transpose(inverse(model)))*normals;\n"
+        "Normal = normals;\n"
         "FragPos = vec3(model*vec4(pos,1.0f));\n"
         "}\n";
 
@@ -64,7 +62,7 @@ const std::string solidFragmentShader =
         "float ambient = 0.2;\n"
         "vec3 norm = normalize(Normal);\n"
         "vec3 lightDir = normalize(lightPos - FragPos);\n"
-        "float diff = max(dot(norm, lightDir), -dot(norm, lightDir));\n"
+        "float diff = max(dot(norm, lightDir), 0.0f);\n"
         "vec3 diffuse = vec3(diff,diff,diff)\n;"
         "vec3 reflectDir = reflect(-lightDir, norm);\n"
         "float spec = pow(max(dot(lightDir,reflectDir), 0.0f),32);\n"

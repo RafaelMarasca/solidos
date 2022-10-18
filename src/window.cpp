@@ -469,14 +469,14 @@ void window::mouseMove(int x, int y)
 
         //Mapeia os cliques das coordenadas da janela para as coordenadas normalizadas
         if(w->width > w->height){
-            xpos =  ((2.0*float(x)/float(w->width)) - 1.0f)*w->aspectRatio;
+            xpos =  ((2.0*float(x)/float(w->width)) - 1.0f);//*w->aspectRatio;
             ypos =  (-2.0*float(y)/float(w->height)) + 1.0f;
         }else{
             xpos =  ((2.0*float(x)/float(w->width)) - 1.0f);
-            ypos =  ((-2.0*float(y)/float(w->height)) + 1.0f)/w->aspectRatio;
+            ypos =  ((-2.0*float(y)/float(w->height)) + 1.0f);//w->aspectRatio;
         }
 
-        w->cam->mouseMap(xLast-x, yLast-y, 600, 600);
+        w->cam->mouseMap(xLast-x, yLast-y, 800, 800);
         w->vision->updateCam(w->cam->getView(),w->cam->getProjection(), w->cam->getCameraPos());
         xLast = x;
         yLast = y;
