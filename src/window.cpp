@@ -226,12 +226,15 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     this->currentMenu = 0;
     std::vector<GLfloat> c= {0.0f, 0.0f, 0.0f};
 
-    //this->addShape(new cube(0.2, c));
-    //c[0] = 0.5;
-    //this->addShape(new cube(0.2, c));
-    //c[0] = -0.5;
-    //this->addShape(new icosphere(0.3, c));
     this->addShape(new torus(0.1, 0.2, c));
+    
+    c[1] = -0.5;
+
+    this->addShape(new cube(0.2, c));
+    //this->addShape(new cube(0.2, c));
+    c[1] = +0.5;
+    this->addShape(new icosphere(0.2, c));
+    
 }
 
 
