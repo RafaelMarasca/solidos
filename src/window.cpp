@@ -181,9 +181,6 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     glutReshapeFunc(window::resize);
     glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE,
                     GLUT_ACTION_GLUTMAINLOOP_RETURNS);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);    
     glEnable(GL_BLEND);
@@ -278,12 +275,9 @@ void window::draw()
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     w->vision->draw(); //Desenha a cena
     glDisable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
     w->menu[w->currentMenu]->draw(); //Desenha o menu corrente.
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
+    
 
     glutSwapBuffers(); //Troca os buffers (Exibe na tela)
 }
