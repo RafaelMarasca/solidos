@@ -116,7 +116,6 @@ void square::draw()
 bool square::collision(GLfloat x, GLfloat y, GLfloat z)
 {
     std::vector<GLfloat>::iterator it; //Iterator para um vector de GLfloat
-    int i = 1; //Variável auxiliar
 
     GLfloat xMax = std::numeric_limits<float>::lowest(), xMin = std::numeric_limits<float>::max(), 
             yMax = std::numeric_limits<float>::lowest(), yMin = std::numeric_limits<float>::max();

@@ -11,11 +11,23 @@
 #include<glm/glm.hpp>
 
 
-
+/*
 //Cor inicial da Forma
 #define GEOMETRY_R 0.329f
 #define GEOMETRY_G 0.341f
-#define GEOMETRY_B 0.486f 
+#define GEOMETRY_B 0.486f */
+/*
+#define GEOMETRY_R 0.0000f
+#define GEOMETRY_G 0.6627f
+#define GEOMETRY_B 0.6471f */
+/*
+#define GEOMETRY_R 0.0275f
+#define GEOMETRY_G 0.5137f
+#define GEOMETRY_B 0.6902f*/
+
+#define GEOMETRY_R 0.7098f
+#define GEOMETRY_G 0.6980f
+#define GEOMETRY_B 0.7608f
 
 
 class geometry

@@ -15,6 +15,10 @@
 #include<GL/glew.h>
 
 #define AXIS_TICK_SPACING 0.1f //Espaçamento entre ticks
+#define PLANE_COLOR_R 0.4f
+#define PLANE_COLOR_G 0.4f
+#define PLANE_COLOR_B 0.4f
+
 
 axis::axis() : geometry(GL_STATIC_DRAW)
 {
@@ -40,12 +44,12 @@ void axis::setup()
 {
     this->vertices = 
     {
-        -1.0f,   0.0f,   0.0f, 1.0f, 0.0f, 0.0f,
-         1.0f,   0.0f,   0.0f, 1.0f, 0.0f, 0.0f,
-          0.0f, -1.0f,   0.0f, 0.0f, 1.0f, 0.0f,
-          0.0f,  1.0f,   0.0f, 0.0f, 1.0f, 0.0f,
-          0.0f,   0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-          0.0f,   0.0f,  1.0f, 0.0f, 0.0f, 1.0f
+        -1.0f,   0.0f,   0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+         1.0f,   0.0f,   0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+          0.0f, -1.0f,   0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+          0.0f,  1.0f,   0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+          0.0f,   0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+          0.0f,   0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 1.0f
     };
 
     this->indices = 
@@ -54,6 +58,66 @@ void axis::setup()
         2, 3,
         4, 5
     };
+
+    GLfloat initX, initZ;
+    initX = initZ = -10*AXIS_TICK_SPACING;
+
+    int tempIndex[3] = {0,0,0};
+
+    for(int i = 0; i <=20; i++)
+    {
+        //X AXIS
+        tempIndex[0] = this->vertices.size()/7;
+
+        this->vertices.push_back(initX + i*AXIS_TICK_SPACING);
+        this->vertices.push_back(0.0f);
+        this->vertices.push_back(initZ);
+
+        this->vertices.push_back(PLANE_COLOR_R);
+        this->vertices.push_back(PLANE_COLOR_G);
+        this->vertices.push_back(PLANE_COLOR_B);
+        this->vertices.push_back(1.0f);
+
+        tempIndex[1] = this->vertices.size()/7;
+    
+        this->vertices.push_back(initX + i*AXIS_TICK_SPACING);
+        this->vertices.push_back(0.0f);
+        this->vertices.push_back(initZ + 20*AXIS_TICK_SPACING);
+
+        this->vertices.push_back(PLANE_COLOR_R);
+        this->vertices.push_back(PLANE_COLOR_G);
+        this->vertices.push_back(PLANE_COLOR_B);
+        this->vertices.push_back(1.0f);
+
+        this->indices.push_back(tempIndex[0]);
+        this->indices.push_back(tempIndex[1]);
+
+        //Z AXIS
+        tempIndex[0] = this->vertices.size()/7;
+
+        this->vertices.push_back(initX);
+        this->vertices.push_back(0.0f);
+        this->vertices.push_back(initZ + i*AXIS_TICK_SPACING);
+
+        this->vertices.push_back(PLANE_COLOR_R);
+        this->vertices.push_back(PLANE_COLOR_G);
+        this->vertices.push_back(PLANE_COLOR_B);
+        this->vertices.push_back(1.0f);
+
+        tempIndex[1] = this->vertices.size()/7;
+    
+        this->vertices.push_back(initX + 20*AXIS_TICK_SPACING);
+        this->vertices.push_back(0.0f);
+        this->vertices.push_back(initZ + i*AXIS_TICK_SPACING);
+
+        this->vertices.push_back(PLANE_COLOR_R);
+        this->vertices.push_back(PLANE_COLOR_G);
+        this->vertices.push_back(PLANE_COLOR_B);
+        this->vertices.push_back(1.0f);
+    
+        this->indices.push_back(tempIndex[0]);
+        this->indices.push_back(tempIndex[1]);
+    }
 
     this->setupBuffers();
 }
@@ -70,10 +134,10 @@ void axis::setupBuffers()
 
     //Aponta os atributos de vértice.
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7*sizeof(GLfloat), (void*)0);
 
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 7*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, (this->indices.size())*sizeof(int), &(this->indices[0]), usage);

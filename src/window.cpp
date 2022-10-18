@@ -102,12 +102,6 @@ void window::keyp(unsigned char key, int x, int y)
                 w->vision->updateCam(w->cam->getView(), w->cam->getProjection(), w->cam->getCameraPos());
             }
         break;
-
-        case 114: //debug
-            //if(w->selectedShape)
-                //std::cout<<w->cam->isInsideFrostrum(w->selectedShape->centralPoint[0],w->selectedShape->centralPoint[1],w->selectedShape->centralPoint[2])<<std::endl;
-            //w->cam->print();
-        break;
     }
 
     //Passa apenas as teclas de números para as caixas de texto
@@ -199,7 +193,7 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
 
     this->vision= new scene; //Cria uma cena para exibição
     this->cam = new camera(vec3(0.0f,0.0f,3.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f,1.0f,0.0f));
-    this->cam->rotate(45.0f, 0.0f);
+    this->cam->rotate(45.0f, -45.0f);
     this->vision->updateCam(cam->getView(), cam->getProjection(), cam->getCameraPos());
     this->waitingInput = 0; //Inicializa a flag de espera de entrada em 0
     this->inType = NONE;  //Tipo de entrada
@@ -269,7 +263,7 @@ void window::draw()
 {
     window* w = (window*)glutGetWindowData(); //Obtém os dados da janela
 
-    glClearColor(0.784f,0.784f,0.784f, 1.0f); //Determina a cor de limpeza do buffer de cor
+    glClearColor(0.0f,0.0f,0.0f, 1.0f); //Determina a cor de limpeza do buffer de cor
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Limpa o buffer de cor e o buffer de produndidade
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     w->vision->draw(); //Desenha a cena
@@ -325,38 +319,12 @@ void window::mouseClick(int button, int state,int x, int y)
             }else{
                 std::vector<GLfloat> coordinates = {xpos, ypos, 0.0f};
 
-                //Cria o início caixa de seleção caso não esteja sendo inserido um ponto
+                //Inicio do deslocamento do mouse para rotação caso não esteja sendo inserido um ponto
                 if(mouseFlag == 0 && !w->waitingInput)
                 {
                     mouseFlag = 1; 
                     xLast = x;
                     yLast = y;
-                }
-
-                //Caso esteja sendo inserida uma forma via mouse
-                if(w->waitingInput && w->inType == MOUSE)
-                { 
-                    if(w->selectedShape)
-                    {
-                      
-                        
-                        /*if((w->vision->checkCollision(xpos, ypos)).first) //Verifica se o ponto inserido é repetido
-                        {
-                            w->showPopUp("Ponto Repetido!");      
-
-                        }else*/{
-                            //Caso não seja repetido adiciona o ponto repetido
-                        
-                            w->waitingInput--;
-                            
-                            if(!(w->waitingInput))//Verifica se acabou a inserção de pontos
-                            {
-                                //Gera a B-Spline
-                               
-                                w->inType = NONE;
-                            }
-                        }   
-                    }
                 }
             }
         }
@@ -393,11 +361,8 @@ void window::deleteShape()
     if(this->selectedShape) //Caso alguma forma esteja selecionada
     {
 	    geometry* temp = this->vision->removeObject(this->selectedShapeID);//Remove o objeto da cena
-        if(!temp)
+        if(temp)
         {
-            throw std::string("Objeto inválido");
-		}else
-		{
             //Limpa a seleção
 		    delete temp;
             this->selectedShape = nullptr;

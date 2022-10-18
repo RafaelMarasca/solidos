@@ -182,7 +182,7 @@ void menuClickTorus(int ID)
                 std::string R1Str = (w->getMenu())->getTextInput(9); //Obtém o texto da caixa de texto 9.
                 std::string R2Str = (w->getMenu())->getTextInput(11); //Obtém o texto da caixa de texto 11.
 
-                if(xStr.size()!= 0 && yStr.size()!= 0) //Verifica se os dados são válidos
+                if(xStr.size()!= 0 && yStr.size()!= 0 && zStr.size()!= 0 && R1Str.size()!= 0 && R2Str.size()!= 0) //Verifica se os dados são válidos
                 {
                     GLfloat R1 = 0, R2 = 0;
                     std::vector<GLfloat> center(3,0.0f);
@@ -266,7 +266,7 @@ void menuClickSphere(int ID)
                 std::string zStr = (w->getMenu())->getTextInput(7); //Obtém o texto da caixa de texto 7.
                 std::string rStr = (w->getMenu())->getTextInput(9); //Obtém o texto da caixa de texto 9.
 
-                if(xStr.size()!= 0 && yStr.size()!= 0) //Verifica se os dados são válidos
+                if(xStr.size()!= 0 && yStr.size()!= 0 && zStr.size()!= 0 && rStr.size()!=0) //Verifica se os dados são válidos
                 {
                     GLfloat r = 0;
                     std::vector<GLfloat> center(3,0.0f);
@@ -347,7 +347,7 @@ void menuClickCube(int ID)
                 std::string zStr = (w->getMenu())->getTextInput(7); //Obtém o texto da caixa de texto 7.
                 std::string edgeStr = (w->getMenu())->getTextInput(9); //Obtém o texto da caixa de texto 9.
 
-                if(xStr.size()!= 0 && yStr.size()!= 0) //Verifica se os dados são válidos
+                if(xStr.size()!= 0 && yStr.size()!= 0 && zStr.size()!= 0 && edgeStr.size()!=0) //Verifica se os dados são válidos
                 {
                     GLfloat edge = 0;
                     std::vector<GLfloat> center(3,0.0f);
@@ -430,7 +430,7 @@ void menuClickHexa(int ID)
                 std::string yEdgeStr = (w->getMenu())->getTextInput(11); //Obtém o texto da caixa de texto 9.
                 std::string zEdgeStr = (w->getMenu())->getTextInput(13); //Obtém o texto da caixa de texto 9.
 
-                if(xStr.size()!= 0 && yStr.size()!= 0) //Verifica se os dados são válidos
+                if(xStr.size()!= 0 && yStr.size()!= 0 && zStr.size()!= 0 && xEdgeStr.size()!= 0 && yEdgeStr.size()!= 0 && zEdgeStr.size()!= 0) //Verifica se os dados são válidos
                 {
                     GLfloat xEdge = 0, yEdge = 0, zEdge = 0;
                     std::vector<GLfloat> center(3,0.0f);
@@ -515,7 +515,7 @@ void menuClickIcosahedron(int ID)
                 std::string zStr = (w->getMenu())->getTextInput(7); //Obtém o texto da caixa de texto 7.
                 std::string edgeStr = (w->getMenu())->getTextInput(9); //Obtém o texto da caixa de texto 9.
 
-                if(xStr.size()!= 0 && yStr.size()!= 0) //Verifica se os dados são válidos
+                if(xStr.size()!= 0 && yStr.size()!= 0 && zStr.size()!= 0 && edgeStr.size()!= 0) //Verifica se os dados são válidos
                 {
                     GLfloat edge = 0;
                     std::vector<GLfloat> center(3,0.0f);
@@ -906,6 +906,7 @@ void menuClickRot(int ID)
             }break;
         
             case 7: //Botão Cancelar;
+                w->getMenu()->clear(); //Limpa os dados do menu
                 w->setMenu(5);//Seta o menu para 5.
             break;
         }
@@ -948,6 +949,7 @@ void menuClickTrans(int ID)
             }break;
         
             case 7: //Botão Cancelar;
+                w->getMenu()->clear(); //Limpa os dados do menu
                 w->setMenu(5);//Seta o menu para 5.
             break;
         }
@@ -991,6 +993,7 @@ void menuClickScale(int ID)
             }break;
         
             case 3: //Botão Cancelar;
+                w->getMenu()->clear(); //Limpa os dados do menu     
                 w->setMenu(5);//Seta o menu para 5.
             break;
         }

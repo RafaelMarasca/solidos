@@ -30,6 +30,11 @@
 #define SELECTION_G 0.0549f
 #define SELECTION_B 0.7882f
 
+/*#define SELECTION_R 0.8431f
+#define SELECTION_G 0.1490f
+#define SELECTION_B 0.2392f*/
+
+
 /**
  * @enum inputType
  * @brief Representação do dispositivo de entrada atual.

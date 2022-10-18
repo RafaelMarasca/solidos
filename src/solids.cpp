@@ -35,7 +35,7 @@ solid::solid() : geometry(GL_STATIC_DRAW)
 
     this->isWireFrame = 0;
     this->isSolid = 1;
-    this->isBoundBox = 1;
+    this->isBoundBox = 0;
     this->box = new boundBox();
 
     solid::solidCount++; //Incrementa o contador de formas.

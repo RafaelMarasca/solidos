@@ -12,10 +12,10 @@ const std::string axisVertexShader =
         "uniform mat4 view;\n"
         "uniform mat4 projection;\n"
         "layout (location = 0) in vec3 pos;\n"
-        "layout (location = 1) in vec3 color;\n"
-        "out vec3 vColor;\n"
+        "layout (location = 1) in vec4 color;\n"
+        "out vec4 vColor;\n"
         "void main(){\n"
-        "gl_Position = projection*view*vec4(pos*0.9999f, 1.0f);\n"
+        "gl_Position = projection*view*vec4(pos, 1.0f);\n"
         "vColor = color;\n"
         "}\n";
 
@@ -25,10 +25,10 @@ const std::string axisVertexShader =
  */
 const std::string axisFragmentShader = 
         "#version 330 core\n"
-        "in vec3 vColor;\n"
+        "in vec4 vColor;\n"
         "out vec4 FragColor;\n"
         "void main(){\n"
-        "FragColor = vec4(vColor, 1.0f);\n"
+        "FragColor = vColor;\n"
         "}\n";
 
 
