@@ -50,12 +50,12 @@ matrix camera::getView()
 
 void camera::setPos(vec3 cameraPos)
 {
-    this->lookAt(cameraPos, this->target, this->up);
+    this->lookAt(cameraPos, this->target, vec3(0.0f,1.0f,0.0f));
 }
 
 void camera::setTarget(vec3 target)
 {
-    this->lookAt(this->cameraPos, target, this->up);
+    this->lookAt(this->cameraPos, target, vec3(0.0f,1.0f,0.0f));
 }
 
 void camera::rotate(GLfloat theta, GLfloat phi)
@@ -64,6 +64,8 @@ void camera::rotate(GLfloat theta, GLfloat phi)
     phi = phi*M_PI/180.0f;
 
     vec3 newPos;
+
+    vec3 upv(0.0f, 1.0f, 0.0f);
     
     matrix rot = matrix::eye(4);
     matrix aux = matrix(4,1);
@@ -72,26 +74,21 @@ void camera::rotate(GLfloat theta, GLfloat phi)
     aux(2,0) = this->cameraPos(2);
     aux(3,0) = 1;
 
-    //if()
     {
-        rot(0,0) = cos(theta) + (this->up(0)*this->up(0))*(1-cos(theta));
-        rot(0,1) = this->up(0)*this->up(1)*(1-cos(theta)) - this->up(2)*sin(theta);
-        rot(0,2) = this->up(0)*this->up(2)*(1-cos(theta)) + this->up(1)*sin(theta); 
-        rot(1,0) = this->up(0)*this->up(1)*(1-cos(theta)) + this->up(2)*sin(theta);
-        rot(1,1) = cos(theta) + (this->up(1)*this->up(1))*(1-cos(theta));
-        rot(1,2) = this->up(0)*this->up(2)*(1-cos(theta)) - this->up(0)*sin(theta);
-        rot(2,0) = this->up(0)*this->up(2)*(1-cos(theta)) - this->up(1)*sin(theta);
-        rot(2,1) = this->up(0)*this->up(2)*(1-cos(theta)) + this->up(0)*sin(theta);
-        rot(2,2) = cos(theta) + (this->up(2)*this->up(2))*(1-cos(theta));
+        rot(0,0) = cos(theta) + (upv(0)*upv(0))*(1-cos(theta));
+        rot(0,1) = upv(0)*upv(1)*(1-cos(theta)) - upv(2)*sin(theta);
+        rot(0,2) = upv(0)*upv(2)*(1-cos(theta)) + upv(1)*sin(theta); 
+        rot(1,0) = upv(0)*upv(1)*(1-cos(theta)) + upv(2)*sin(theta);
+        rot(1,1) = cos(theta) + (upv(1)*upv(1))*(1-cos(theta));
+        rot(1,2) = upv(0)*upv(2)*(1-cos(theta)) - upv(0)*sin(theta);
+        rot(2,0) = upv(0)*upv(2)*(1-cos(theta)) - upv(1)*sin(theta);
+        rot(2,1) = upv(0)*upv(2)*(1-cos(theta)) + upv(0)*sin(theta);
+        rot(2,2) = cos(theta) + (upv(2)*upv(2))*(1-cos(theta));
 
         aux = rot*aux;
     }
 
-        
-    vec3 upv(0.0f, 1.0f, 0.0f);
-
-    if(!(std::abs(vec3::dotProduct(dir, upv))>0.999f))
-    {
+    
         rot = matrix::eye(4);
 
         rot(0,0) = cos(phi) + (right(0)*right(0))*(1-cos(phi));
@@ -105,7 +102,7 @@ void camera::rotate(GLfloat theta, GLfloat phi)
         rot(2,2) = cos(phi) + (right(2)*right(2))*(1-cos(phi));
 
         aux = rot*aux;
-    }
+   
 
     
     newPos(0) = aux(0,0);
