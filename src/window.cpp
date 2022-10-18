@@ -170,7 +170,7 @@ window::window(int width, int height, const char* title, int* argc, char** argv)
     glutInit(argc, argv);
     glutInitContextVersion(3,3);
     glutInitContextProfile(GLUT_COMPATIBILITY_PROFILE);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(width,height);
     glutCreateWindow(title);
     glutDisplayFunc(window::draw);
@@ -280,6 +280,8 @@ void window::draw()
     glClearColor(0.0f,0.0f,0.0f, 1.0f); //Determina a cor de limpeza do buffer de cor
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Limpa o buffer de cor e o buffer de produndidade
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS); 
     w->vision->draw(); //Desenha a cena
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
