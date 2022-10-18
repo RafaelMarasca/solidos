@@ -340,7 +340,7 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
     {
         for(int i = 0; i<HDIV; i++)
         {
-            /*theta = i*HRES;
+            theta = i*HRES;
             phi = j*VRES;
 
             x = (r*cos(phi)+R)*cos(theta);
@@ -394,8 +394,8 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
             tmpIndex.push_back(tmpIndex[1]);
 
             this->indices.insert(this->indices.end(), tmpIndex.begin(), tmpIndex.end());
-            tmpIndex.clear();*/
-            theta = i*HRES;
+            tmpIndex.clear();
+            /*theta = i*HRES;
             phi = j*VRES;
 
             x = (r*cos(phi)+R)*cos(theta);
@@ -449,7 +449,7 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
             tmpIndex.push_back(tmpIndex[1]);
 
             this->indices.insert(this->indices.end(), tmpIndex.begin(), tmpIndex.end());
-            tmpIndex.clear();
+            tmpIndex.clear();*/
         }
     }
 
