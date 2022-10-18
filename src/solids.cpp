@@ -799,7 +799,7 @@ void solid::generateNormals()
         v3(1) = this->vertices[(*(it+2))*3+1];
         v3(2) = this->vertices[(*(it+2))*3+2];
 
-        normal = vec3::crossProduct(v3-v1,v2-v1);
+        normal = vec3::crossProduct(v2-v1,v3-v1);
 
         this->normals[(*it)*3] += normal(0);
         this->normals[((*it)*3)+1] += normal(1);
