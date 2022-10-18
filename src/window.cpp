@@ -436,16 +436,7 @@ void window::resize(int newWidth, int newHeight)
     GLfloat aspectRatio = (GLfloat)newWidth / (GLfloat)newHeight; //Calcula a razão de aspecto da janela atual
     w->aspectRatio = aspectRatio; //Atualiza o valor da razão de aspecto da janela atual
 
-    //Redimensiona a viewport para um quadrado limitado pela menor dimensão da janela
-    /*if(newWidth>newHeight)
-    {
-        GLfloat aux = GLfloat(newWidth-newHeight)/2.0f;
-        glViewport(aux, 0, newHeight, newHeight);
-    }else
-    {
-        GLfloat aux = GLfloat(newHeight-newWidth)/2.0f;
-        glViewport(0, aux, newWidth, newWidth);
-    }*/
+  
     glViewport(0, 0, newWidth, newHeight);
     w->cam->setAspectRatio(aspectRatio);
     w->vision->updateCam(w->cam->getView(), w->cam->getProjection(), w->cam->getCameraPos());
@@ -454,18 +445,11 @@ void window::resize(int newWidth, int newHeight)
     //Inicializa o sistema de coordenadas para a projeção ortogonal
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    
-    //Mantém a razão de aspecto na projeção.
-    if (newWidth <= newHeight)
-    {
-        glOrtho (-1.0f, 1.0f, -1.0f / aspectRatio, 1.0f / aspectRatio, 1.0f, -1.0f);
-    }else
-    {
-        glOrtho (-1.0f * aspectRatio, 1.0f * aspectRatio,-1.0f, 1.0f, 1.0f, -1.0f);
-    }
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    guiElement::setAspectRatio(aspectRatio);
+
+    //glMatrixMode(GL_MODELVIEW);
+    //glLoadIdentity();
 
     glutPostRedisplay();
 }

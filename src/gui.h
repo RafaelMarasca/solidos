@@ -69,6 +69,7 @@ typedef void (*functionPtr) (int); //Definição do tipo ponteiro para função
 class guiElement : public square
 {
     protected:
+        static GLfloat aspectRatio;
         int vSize; //Tamanho vertical do elemento em células.
         int hSize; //Tamanho horizontal do elemento em células.
         int ID; //ID do elemento.
@@ -94,6 +95,8 @@ class guiElement : public square
         virtual void setClicked(bool state); //Seta a flag de clicado.
         virtual void draw(); //Desenha o elemento de gui;
         virtual void clear(); //Limpa os dados do elemento de gui.
+
+        static void setAspectRatio(GLfloat ar);
 };
 
 

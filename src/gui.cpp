@@ -15,6 +15,7 @@
 #include<string>
 #include<iostream>
 
+GLfloat guiElement::aspectRatio = 1.0; 
 
 /****************************** guiElement *********************************/
 
@@ -596,27 +597,20 @@ void button::draw()
 
     //Desenha o texto do botão
     glUseProgram(0);
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    gluOrtho2D(-1.0f,1.0f,-1.0f,1.0f);
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
+    
     glColor4f(0.0f,0.0f,0.0f, 1.0f);
 
     int length = glutBitmapLength(GLUT_BITMAP_9_BY_15, (unsigned char*)(this->text.c_str()));
     
-    glRasterPos2f((this->xPos + ((this->width)-(length*2.0/600))/(2.0)), this->yPos-this->height/2);
+    glRasterPos2f((this->xPos + ((this->width)-(length*2.0/(aspectRatio*600)))/(2.0)), this->yPos-this->height/2);
 
     glutBitmapString(GLUT_BITMAP_9_BY_15, (unsigned char*)(this->text.c_str()));
 
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
+    //glMatrixMode(GL_MODELVIEW);
+    //glPopMatrix();
 
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
+    //glMatrixMode(GL_PROJECTION);
+    //glPopMatrix();
 }
 
 
@@ -937,4 +931,9 @@ void toggleButton::onClick(functionPtr fun)
 {
     this->toogle();
     fun(this->ID);
+}
+
+void guiElement::setAspectRatio(GLfloat ar)
+{
+    guiElement::aspectRatio = ar;
 }

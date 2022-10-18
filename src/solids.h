@@ -68,7 +68,7 @@ const std::string solidFragmentShader =
         "vec3 diffuse = vec3(diff,diff,diff)\n;"
         "vec3 reflectDir = reflect(-lightDir, norm);\n"
         "float spec = pow(max(dot(lightDir,reflectDir), 0.0f),32);\n"
-        "vec3 specular = 0.5*vec3(spec,spec,spec);\n"
+        "vec3 specular = 0.4*vec3(spec,spec,spec);\n"
         "vec3 result = (ambient+diffuse+spec)*color;\n"
         "FragColor = vec4(result,1.0f);\n"
         "}\n";
