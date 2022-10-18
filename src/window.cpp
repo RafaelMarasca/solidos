@@ -308,11 +308,11 @@ void window::mouseClick(int button, int state,int x, int y)
 
             //Mapeia os cliques das coordenadas da janela para as coordenadas normalizadas
             if(w->width > w->height){
-                xpos =  ((2.0*float(x)/float(w->width)) - 1.0f)*w->aspectRatio;
+                xpos =  ((2.0*float(x)/float(w->width)) - 1.0f);//*w->aspectRatio;
                 ypos =  (-2.0*float(y)/float(w->height)) + 1.0f;
             }else{
                 xpos =  ((2.0*float(x)/float(w->width)) - 1.0f);
-                ypos =  ((-2.0*float(y)/float(w->height)) + 1.0f)/w->aspectRatio;
+                ypos =  ((-2.0*float(y)/float(w->height)) + 1.0f);///w->aspectRatio;
             }
 
             if(w->menu[w->currentMenu]->visible()) //Verifica se há um menu sendo exibido
