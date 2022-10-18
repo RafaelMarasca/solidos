@@ -428,12 +428,14 @@ void window::resize(int newWidth, int newHeight)
     if(newWidth>newHeight)
     {
         GLfloat aux = GLfloat(newWidth-newHeight)/2.0f;
-        glViewport(aux, 0, newHeight, newHeight);
+        //glViewport(aux, 0, newHeight, newHeight);
     }else
     {
         GLfloat aux = GLfloat(newHeight-newWidth)/2.0f;
-        glViewport(0, aux, newWidth, newWidth);
+        //glViewport(0, aux, newWidth, newWidth);
     }
+
+    
    
     //Inicializa o sistema de coordenadas para a projeção ortogonal
     glMatrixMode(GL_PROJECTION);

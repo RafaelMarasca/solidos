@@ -275,3 +275,8 @@ void plane::print()
     std::cout<<this->normal(0)<<" "<<this->normal(1)<<" "<<this->normal(2)<<" "<<std::endl;
 }
 
+
+void camera::setAspectRatio(GLfloat ar)
+{
+    this->perspective(fov, ar);
+}

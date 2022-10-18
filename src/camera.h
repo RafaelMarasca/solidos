@@ -57,6 +57,7 @@ class camera
 
         void setPos(vec3 cameraPos);
         void setTarget(vec3 target);
+        void setAspectRatio(GLfloat ar);
         void rotate(GLfloat theta, GLfloat phi);
         void mouseMap(GLfloat dx, GLfloat dy, GLfloat vpHeight, GLfloat vpWidth);
 
