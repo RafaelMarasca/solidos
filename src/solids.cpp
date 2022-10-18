@@ -377,7 +377,6 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
             this->vertices.push_back(x);
             this->vertices.push_back(y);
             this->vertices.push_back(z);
-
     
             phi = (j+1)*VRES;
 
