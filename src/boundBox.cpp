@@ -1,3 +1,14 @@
+/**
+ * @file boundBox.cpp
+ * @author Rafael Marasca Martins
+ * @brief Implementa uma caixa colisora
+ * @version 0.1
+ * @date 2022-11-21
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #include "boundBox.h"
 
 
@@ -8,6 +19,10 @@ shaderProgram* boundBox::program = 0;
 int boundBox::boxCount  = 0;
 
 
+/**
+ * @brief Construtor para a caixa colisora
+ * 
+ */
 boundBox::boundBox() : geometry(GL_DYNAMIC_DRAW)
 {
     this->modelMatrix = matrix::eye(4);
@@ -36,6 +51,10 @@ boundBox::boundBox() : geometry(GL_DYNAMIC_DRAW)
     boundBox::boxCount++; //Incrementa o contador de formas.
 }
 
+/**
+ * @brief Destrutor para a caixa colisora
+ * 
+ */
 boundBox::~boundBox()
 {
     boundBox::boxCount--;
@@ -53,6 +72,13 @@ boundBox::~boundBox()
 }
 
 
+/**
+ * @brief Função de atualização para a caixa colisora
+ * 
+ * @param v vetor de vértices
+ * @param center Ponto central da caixa
+ * @param model Matriz model
+ */
 void boundBox::update(std::vector<GLfloat> &v, std::vector<GLfloat> &center,matrix &model)
 {
     GLfloat minX, maxX, minY, maxY, minZ, maxZ; 
@@ -117,6 +143,11 @@ void boundBox::update(std::vector<GLfloat> &v, std::vector<GLfloat> &center,matr
     this->updateVertices();
 }
 
+
+/**
+ * @brief Atualiza os vértices da caixa
+ * 
+ */
 void boundBox::updateVertices()
 {
     GLfloat xSize, ySize, zSize;
@@ -175,6 +206,11 @@ void boundBox::updateVertices()
     this->updateBuffers();
 }
 
+
+/**
+ * @brief Configura os buffers de desenho
+ * 
+ */
 void boundBox::setupBuffers()
 {
     glBindVertexArray(this->VAO);
@@ -193,6 +229,10 @@ void boundBox::setupBuffers()
 }
 
 
+/**
+ * @brief Atualiza os buffers da caixa
+ * 
+ */
 void boundBox::updateBuffers()
 {
     glBindVertexArray(this->VAO);
@@ -206,17 +246,31 @@ void boundBox::updateBuffers()
     glBindVertexArray(0);
 }
 
+/**
+ * @brief Obtém o ponto máximo da caixa
+ * 
+ * @return vec3 
+ */
 vec3 boundBox::getMax()
 {
     return this->max;
 }
 
+/**
+ * @brief Obtém o ponto mínimo da caixa
+ * 
+ * @return vec3 
+ */
 vec3 boundBox::getMin()
 {
     return this->min;
 }
 
 
+/**
+ * @brief Método de desenho da caixa
+ * 
+ */
 void boundBox::draw()
 {
     this->program->use();
@@ -236,11 +290,21 @@ void boundBox::draw()
     glUseProgram(0);
 }
 
+/**
+ * @brief Seta a matriz de projeção
+ * 
+ * @param projectionMatrix 
+ */
 void boundBox::setProjection(const matrix &projectionMatrix)
 {
     this->projectionMatrix = projectionMatrix;
 }
 
+/**
+ * @brief Seta a matriz view
+ * 
+ * @param viewMatrix 
+ */
 void boundBox::setView(const matrix &viewMatrix)
 {
     this->viewMatrix = viewMatrix;

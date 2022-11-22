@@ -20,6 +20,8 @@
 #define PLANE_COLOR_B 0.4f
 
 
+
+//Construtor para os eixos
 axis::axis() : geometry(GL_STATIC_DRAW)
 {
     this->viewMatrix = matrix::eye(4);
@@ -40,6 +42,7 @@ axis::axis() : geometry(GL_STATIC_DRAW)
 }
 
 
+//Configura os pontos do eixo
 void axis::setup()
 {
     this->vertices = 
@@ -125,6 +128,7 @@ void axis::setup()
 }
 
 
+//Seta os buffers
 void axis::setupBuffers()
 {
     //Seleciona o array de vértices da forma corrente.
@@ -150,6 +154,7 @@ void axis::setupBuffers()
     glDisableVertexAttribArray(1);
 }
 
+//Método de desnho para o eixo
 void axis::draw()
 {
     this->program->use();
@@ -166,6 +171,7 @@ void axis::draw()
     glUseProgram(0);
 }
 
+//Destrutor para o eixo
 axis::~axis()
 {
     delete this->program;
@@ -176,11 +182,13 @@ axis::~axis()
 }
 
 
+//Seta a matriz de projeção
 void axis::setProjection(const matrix &projectionMatrix)
 {
     this->projectionMatrix = projectionMatrix;
 }
 
+//Seta a matriz view
 void axis::setView(const matrix &viewMatrix)
 {
     this->viewMatrix = viewMatrix;

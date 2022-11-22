@@ -9,7 +9,10 @@ extern const std::string solidFragmentShader;
 shaderProgram* solid::program = 0;
 int solid::solidCount  = 0;
 
-
+/**
+ * @brief Construtora para a classe solido
+ * 
+ */
 solid::solid() : geometry(GL_STATIC_DRAW)
 {
     this->modelMatrix = matrix::eye(4);
@@ -42,6 +45,10 @@ solid::solid() : geometry(GL_STATIC_DRAW)
 }
 
 
+/**
+ * @brief Configura os buffers de vértices
+ * 
+ */
 void solid::setupBuffers()
 {
     //Seleciona o array de vértices da forma corrente.
@@ -71,7 +78,10 @@ void solid::setupBuffers()
     glDisableVertexAttribArray(1);
 }
 
-
+/**
+ * @brief Destrutor para a classe sólido
+ * 
+ */
 solid::~solid()
 {
     solid::solidCount--;
@@ -92,6 +102,11 @@ solid::~solid()
     glDeleteVertexArrays(1,&(this->VAO));
 }
 
+
+/**
+ * @brief Método de desenho para os sólidos
+ * 
+ */
 void solid::draw()
 {
     if(isBoundBox)
@@ -134,6 +149,12 @@ void solid::draw()
 
 /*************************************************************************/
 
+/**
+ * @brief Construtor para o cubo
+ * 
+ * @param size Tamanho da aresta do cubo
+ * @param center Centro do cubo
+ */
 cube::cube(GLfloat size, std::vector<GLfloat> &center)
 {
 
@@ -190,7 +211,12 @@ cube::cube(GLfloat size, std::vector<GLfloat> &center)
 }
 
 
-
+/**
+ * @brief Construtor para icosahedro
+ * 
+ * @param size Tamanho da aresta
+ * @param center Centro do icosahedro
+ */
 icosahedron::icosahedron(GLfloat size, std::vector<GLfloat> &center)
 {
     GLfloat gr = (1+sqrt(5))/2.0f;
@@ -245,6 +271,12 @@ icosahedron::icosahedron(GLfloat size, std::vector<GLfloat> &center)
     this->box->update(this->vertices, this->centralPoint, this->modelMatrix);
 }
 
+
+/**
+ * @brief Método auxiliar para subdividir um icosahedro até obter uma esfera
+ * 
+ * @param depth Profundidade de subdivisões de subdivisões
+ */
 void icosphere::subdivide(int depth)
 {
     while(depth)
@@ -266,6 +298,13 @@ void icosphere::subdivide(int depth)
 }
 
 
+/**
+ * @brief Construtor para uma esfera a partir de um icosaedro
+ * 
+ * @param radius Raio da esfera
+ * @param center Centro da esfera
+ * @param depth Profundidade da subdivisão
+ */
 icosphere::icosphere(GLfloat radius, std::vector<GLfloat> &center, int depth)
 {
 
@@ -325,6 +364,13 @@ icosphere::icosphere(GLfloat radius, std::vector<GLfloat> &center, int depth)
 }
 
 
+/**
+ * @brief Constroi uma torus
+ * 
+ * @param discRadius Raio do disco
+ * @param circleRadius Raio do círculo
+ * @param center Centro da torus
+ */
 torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &center)
 {
     GLfloat theta = 0.0f;
@@ -332,70 +378,12 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
     GLfloat r = discRadius;
     GLfloat R = circleRadius;
     GLfloat x,y,z;
-    //x = (r*cos(phi)+R)*cos(theta)
-    //z = (r*cos(phi)+R)*sin(theta)
-    //y = r*sin(phi)    
+ 
     std::vector<int> tmpIndex;
     for(int j = 0; j<VDIV; j++)
     {
         for(int i = 0; i<HDIV; i++)
         {
-            /*theta = i*HRES;
-            phi = j*VRES;
-
-            x = (r*cos(phi)+R)*cos(theta);
-            y =  r*sin(phi);
-            z = (r*cos(phi)+R)*sin(theta);
-
-            tmpIndex.push_back(this->vertices.size()/3);
-            
-            this->vertices.push_back(x);
-            this->vertices.push_back(y);
-            this->vertices.push_back(z);
-
-            phi = (j+1)*VRES;
-
-            x = (r*cos(phi)+R)*cos(theta);
-            y =  r*sin(phi);
-            z = (r*cos(phi)+R)*sin(theta);
-            
-            tmpIndex.push_back(this->vertices.size()/3);
-            
-            this->vertices.push_back(x);
-            this->vertices.push_back(y);
-            this->vertices.push_back(z);
-            
-            phi = j*VRES;
-            theta = -(1+i)*HRES;
-
-            x = (r*cos(phi)+R)*cos(theta);
-            y =  r*sin(phi);
-            z = (r*cos(phi)+R)*sin(theta);
-            
-            tmpIndex.push_back(this->vertices.size()/3);
-
-            this->vertices.push_back(x);
-            this->vertices.push_back(y);
-            this->vertices.push_back(z);
-    
-            phi = (j+1)*VRES;
-
-            x = (r*cos(phi)+R)*cos(theta);
-            y =  r*sin(phi);
-            z = (r*cos(phi)+R)*sin(theta);
-            
-            tmpIndex.push_back(this->vertices.size()/3);
-            
-            this->vertices.push_back(x);
-            this->vertices.push_back(y);
-            this->vertices.push_back(z);
-
-            tmpIndex.push_back(tmpIndex[2]);
-            tmpIndex.push_back(tmpIndex[1]);
-
-            this->indices.insert(this->indices.end(), tmpIndex.begin(), tmpIndex.end());
-            tmpIndex.clear();*/
-
             theta = -i*HRES;
             phi = j*VRES;
 
@@ -468,6 +456,7 @@ torus::torus(GLfloat discRadius, GLfloat circleRadius, std::vector<GLfloat> &cen
 
 /*************************************************************/
 
+//Subdivide um triangulo
 std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLfloat> &vertices, std::vector<bool> &visited)
 {
     GLfloat radius = 1.902f;
@@ -535,7 +524,7 @@ std::vector<int> triangleDivision(std::vector<int>::iterator it, std::vector<GLf
 }
 
 
-
+//Constroi um hexaedro (paralelepipedo)
 hexahedron::hexahedron(GLfloat xSize, GLfloat ySize, GLfloat zSize, std::vector<GLfloat> &center)
 {
     this->vertices = 
@@ -590,6 +579,7 @@ hexahedron::hexahedron(GLfloat xSize, GLfloat ySize, GLfloat zSize, std::vector<
 
 /********************************************************/
 
+//Define a colisão entre um ponto e um sólido
 bool solid::collision(GLfloat x, GLfloat y, GLfloat z)
 {
     vec3 max = this->box->getMax();
@@ -600,6 +590,7 @@ bool solid::collision(GLfloat x, GLfloat y, GLfloat z)
             && z>=min(2) && z<=max(2));
 }
 
+//Define a colisão entre sólidos
 bool solid::collision(solid* other)
 {
 
@@ -619,24 +610,27 @@ bool solid::collision(solid* other)
 
 /******************************************************/
 
+//Seta a matriz de projeção
 void solid::setProjection(const matrix &projectionMatrix)
 {
     this->projectionMatrix = projectionMatrix;
     this->box->setProjection(projectionMatrix);
 }
 
+//Seta a matriz de view
 void solid::setView(const matrix &viewMatrix)
 {
     this->viewMatrix = viewMatrix;
     this->box->setView(viewMatrix);
 }
 
+//Seta a posição da camera
 void solid::setCameraPos(vec3 &cameraPos)
 {
     this->cameraPos = {cameraPos(0),cameraPos(1),cameraPos(2)};
 }
 
-
+//Roda um sólido
 void solid::rotate(GLfloat degrees, AXIS a)
 {
     GLfloat rad = degrees*M_PI/180.0;
@@ -675,6 +669,7 @@ void solid::rotate(GLfloat degrees, AXIS a)
     this->box->update(this->vertices, this->centralPoint,this->modelMatrix);
 }
 
+//Translada um sólido
 void solid::translate(GLfloat dx, GLfloat dy, GLfloat dz)
 {
     matrix translation = matrix::eye(4);
@@ -695,6 +690,7 @@ void solid::translate(GLfloat dx, GLfloat dy, GLfloat dz)
     this->box->update(this->vertices, this->centralPoint, this->modelMatrix);
 }
 
+//Escalona um sólido
 void solid::scale(GLfloat sx, GLfloat sy, GLfloat sz)
 {
 
@@ -717,6 +713,7 @@ void solid::scale(GLfloat sx, GLfloat sy, GLfloat sz)
 
 /******************************************************/
 
+//Seta a cor do sólido
 void solid::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 {
     geometry::setColor(r,g,b,a);
@@ -727,6 +724,7 @@ void solid::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
     this->wireFrameColor[3] = a;
 }
 
+//Reseta a cor do sólido
 void solid::resetColor()
 {
     geometry::resetColor();
@@ -739,42 +737,49 @@ void solid::resetColor()
 
 /*******************************************************/
 
+//Mostra a estrutura aramada
 void solid::setWireFrame(bool state)
 {
     this->isWireFrame = state;
 }
 
+//Controla a transparencia do sólido
 void solid::setSolid(bool state)
 {
     this->isSolid = state;
 }
 
+//Verifica se o solido está em modo wireframe
 bool solid::getWireFrameState()
 {
     return this->isWireFrame;
 }
 
+//Verifica se o sólido está opaco
 bool solid::getSolidState()
 {
     return this->isSolid;
 }
 
+//Verifica se caixa colisora do sólido está visível
 bool solid::getBoundBoxState()
 {
     return this->isBoundBox;
 }
 
+//Seta a caixa colisora como visível ou invisível
 void solid::setBoundBox(bool state)
 {
     this->isBoundBox = state;
 }
 
+//Obtem a caixa colisora
 boundBox* solid::getBoundBox()
 {
     return this->box;
 }
 
-
+//Gera as normais 
 void solid::generateNormals()
 {
     std::vector<int>::iterator it;

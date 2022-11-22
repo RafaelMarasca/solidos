@@ -43,7 +43,7 @@ const std::string solidVertexShader =
         "out vec3 FragPos;\n"
         "void main(){\n"
         "gl_Position = projection*view*model*vec4(pos, 1.0f);\n"
-        "Normal = normals;\n"
+        "Normal = transpose(inverse(mat3(model)))*normals;\n"
         "FragPos = vec3(model*vec4(pos,1.0f));\n"
         "}\n";
 
