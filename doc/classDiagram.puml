@@ -1,0 +1,507 @@
+@startuml OpenGL_SL
+
+class axis extends geometry{
+    - VAO : GLuint
+    - VBO : GLuint
+    - EBO : GLuint
+
+    - viewMatrix : matrix
+    - projectionMatrix : matrix
+    - indices : vector<int>
+
+    - viewLoc : GLuint
+    - projectionLoc : GLuint
+    - colorLoc : GLuint
+
+    - program : shaderProgram*
+
+    - setup() : void
+
+    + axis();
+    + ~axis();
+
+    + setProjection(projectionMatrix : const matrix&) : void
+    + setView(viewMatrix : const matrix&) : void
+
+    + draw() : void
+    + setupBuffers() : void
+
+}
+axis "1" *-- "2" matrix
+axis "1" o-- "1" shaderProgram
+
+class boundBox extends geometry{
+    - max : vec3
+    - min : vec3
+    
+    - modelMatrix : matrix
+    - viewMatrix : matrix
+    - projectionMatrix : matrix
+
+    - indices : vector<int>
+
+    - modelLoc : GLuint
+    - viewLoc : GLuint
+    - projectionLoc : GLuint
+    - colorLoc : GLuint
+
+    - VAO : GLuint
+    - VBO : GLuint
+    - EBO : GLuint
+
+    - program : shaderProgram*
+    - boxCount : int
+
+    - setupBuffers() : void
+    - updateBuffers() : void
+
+    + boundBox() 
+    + {abstract} ~boundBox()
+
+    + update(v : vector<GLfloat>&, center : vector<GLfloat>&, model : matrix&) : void
+    + updateVertices() : void
+
+    + getMax() : vec3
+    + getMin() : vec3
+
+    + setProjection(projectionMatrix : matrix&) : void
+    + setProjection(viewMatrix : matrix&) : void
+
+    + {abstract} draw() : void
+}
+boundBox "1" *-- "3" matrix
+boundBox "1" o-- "1" shaderProgram
+
+class plane {
+    - normal : vec3
+    - point : vec3
+
+    + plane() 
+    + plane(p0 : vec3, p1 : vec3, p2 : vec3)
+
+    + dist(point : vec3) : GLfloat
+    + print() : void
+}
+
+class camera {
+    - viewMatrix : matrix
+    - projectionMatrix : matrix
+
+    - cameraPos : vec3
+    - target : vec3 
+    - up : vec3 
+    - dir : vec3 
+    - right : vec3 
+    - fov : GLfloat 
+    - ar : GLfloat
+
+    - planes : plane*
+
+    + camera(cameraPos : vec3, target : vec3, upVec : vec3, fov : GLfloat = 90.0f, aspectRatio : GLfloat = 1.0f)
+    
+    + lookAt(vec3 cameraPos, vec3 target, vec3 upVec) : void
+    + perspective(fov : GLfloat, ar : GLfloat = 1.0f) : void
+   
+    + getView() : matrix 
+    + getProjection() : matrix
+
+    + getCameraPos() : vec3&
+
+    + setPos(cameraPos : vec3) : void
+    + setTarget(target : vec3) : void
+    + setAspectRatio(GLfloat ar) void
+    + rotate(theta : GLfloat, phi : GLfloat) : void
+    + mouseMap(dx : GLfloat, dy : GLfloat, vpHeight : GLfloat, vpWidth : GLfloat) : void
+
+    + zoom(fovInc : GLfloat) : void
+
+    + setupNormals() : void 
+    + isInFrustrum(x : GLfloat, y : GLfloat, z : GLfloat) : bool
+    + isInFrustrum(s : solid*) : bool
+
+    + print() : void
+
+}
+camera "1" *-- "2" matrix
+camera "1" *-- "6" plane
+
+class graphics {
+    # vertexShader : string
+    # fragmentShader : string
+    # program : shaderProgram*
+
+    + graphics(vertexShader : string, fragmentShader : string)
+}
+graphics "1" *-- "1" shaderProgram
+
+
+abstract class geometry {
+    - geometryCount  : static unsigned int;
+
+    # centralPoint   : vector<GLfloat>;
+    # vertices       : vector<GLfloat>;
+    # color          : vector<GLfloat>; 
+
+    # usage : GLenum        
+
+    + geometry(usage            : GLenum = GL_STATIC_DRAW);    
+    + {abstract} ~geometry();
+
+    + {abstract} setColor(r : GLfloat, g : GLfloat, b : GLfloat) : void;
+    + {abstract} resetColor() : void;
+
+    + {abstract} draw() = 0 : void;
+    + print() : void;
+
+    + {abstract} setupBuffers() : void = 0
+}
+
+
+class scene {
+    - objects : map<unsigned int, geometry*>;
+    - theAxis : axis*;
+    - nextID  : unsigned int;
+
+    + scene();
+    + ~scene();
+    
+    + getObject(id : unsigned int) : pair<unsigned int, geometry*>
+    + checkCollision(geo : geometry*) : bool
+
+    + begin() : sceneIterator;
+    + end() : sceneIterator;
+
+    + draw() : void;
+
+    + addObject(object : geometry*) : unsigned int;
+    + removeObject(id : unsigned int) : geometry*;    
+
+    + updateCam(view : matrix&, projection : matrix&, cameraPos : vec3&)
+}
+scene "1"  *-- "0..*" solid
+scene "1" *-- "1" axis
+
+class shaderProgram {
+    - shaderProgramID : GLuint;
+    
+    - transformLoc : GLuint;
+    - colorLoc : GLuint;
+
+    - compile(vertexShaderSource : const char*, fragmentShaderSource : const char*) : void;
+
+    + shaderProgram(vertexShaderSource : const string, fragmentShaderSource : string);
+    + ~shaderProgram(); 
+
+    + use() : void;
+
+    + getTransformLoc : GLuint;
+    + getColorLoc : GLuint;
+}
+geometry "1" *-- "1" shaderProgram
+
+class solid extends geometry {
+    # isWireFrame : bool
+    # isSolid : bool
+    # isBoundBox : bool
+
+    # EBO : GLuint
+    # VAO : GLuint
+    # positionVBO : GLuint
+    # normalVBO : GLuint
+
+    # modelMatrix : matrix
+    # viewMatrix : matrix
+    # projectionMatrix : matrix
+
+    # box : boundBox*
+
+    # wireFrameColor : vector<GLfloat>
+    # indices : vector<int:
+    # normals : vector<GLfloat>
+    # cameraPos : vector<GLfloat>
+
+    # modelLoc : GLuint 
+    # viewLoc : GLuint 
+    # projectionLoc : GLuint 
+    # colorLoc : GLuint 
+    # lightPosLoc : GLuint 
+
+    # program : shaderProgram*
+    # solidCount : int
+
+    # setupBuffers()
+
+    + solid()
+    + {abstract} ~solid()
+
+    + setProjection(projectionMatrix : matrix&) : void
+    + viewProjection(viewMatrix : matrix&) : void
+
+    + setWireFrame(state : bool) : void
+    + setSolid(state : bool) : void
+    + setBoundBox(state : bool) : void
+
+    + getWireFrameState() : bool 
+    + getSolidState() : bool 
+    + getBoundBoxState() : bool 
+
+    + setColor(r : GLfloat, g : GLfloat, b : GLfloat) : void
+    + resetColor() : void
+
+    + rotate(degrees : GLfloat, a : AXIS) : void
+    + translate(dx : GLfloat, dy : GLfloat, dz : GLfloat) : void
+    + scale(dx : GLfloat, sy : GLfloat, sz : GLfloat) : void
+
+    + collision(x : GLfloat, y : GLfloat, z : GLfloat) : bool
+    + collision(other : solid*) : bool
+
+    + generateNormals() : void
+    
+    + setCameraPos(cameraPos : vec3&) : void
+
+    + getBoundBox() : boundBox*
+
+    + {abstract} : draw()
+}
+solid "1" *-- "1" shaderProgram
+solid "1" *-- "3" matrix
+
+class cube extends solid {
+    + cube(size : GLfloat, center : vector<GLfloat>&)
+}
+
+class hexahedron extends solid {
+    + hexahedron(xSize : GLfloat, ySize : GLfloat, zSize : GLfloat, center : vector<GLfloat>&)
+}
+
+class icosahedron extends solid {
+    + icosahedron(size : GLfloat, center : vector<GLfloat>&)
+}
+
+class icosphere extends solid {
+    + icosphere(radius : GLfloat, center : vector<GLfloat>&)
+    + subdivide(depth : int) : void
+}
+
+class torus extends solid {
+    + torus(discRadius : GLfloat, circleRadius : GLfloat, center : vector<GLfloat>&)
+}
+class square extends geometry {
+    - setup() : void
+    
+    - VBO : GLuint
+    - VAO : GLuint
+    - colorLoc : GLuint
+
+    - {abstract} squareCount : unsigned int
+    - program : shaderProgram*
+
+    + square();
+    + square(width : GLfloat, height : GLfloat, xPos : GLfloat, yPos : GLfloat);
+    + {abstract} ~square()
+
+    + addVertex(vertex : vector<GLfloat>) 
+
+    + setupBuffers() : void
+
+    + draw() : void;
+    + collision(x : GLfloat, y : GLfloat, z : GLfloat) : bool;
+}    
+square "1" *-- "1" shaderProgram
+
+
+class guiElement extends square {
+    # vSize : int;
+    # hSize : int;
+    # ID : int;
+
+    # width : GLfloat;
+    # height : GLfloat;
+    # xPos : GLfloat;
+    # yPos : GLfloat;
+
+    # clicked : bool;
+
+    + guiElement(verticalSize : int, horizontalSize : int, ID : int);
+    + guiElement(height : GLfloat, width : GLfloat, xPos : GLfloat, yPos : GLfloat)
+
+    + getHSize() : int;
+    + getVSize() : int;
+    + getID() : int;
+
+    + {abstract} onClick(int*) : void
+    + {abstract} onKeyPress(int) : void
+    + {abstract} generate(height : GLfloat, width : GLfloat, xPos : GLfloat, yPos : GLfloat) : void;
+    + {abstract} setClicked(state : bool) : void;
+    + {abstract} draw() : void;
+    + {abstract} clear() : void;
+}
+
+class frame extends guiElement {
+    - numHorizontalElements : int;
+    - numVerticalElements : int;
+
+    - elementHeight : GLfloat;
+    - elementWidth : GLfloat;
+    - vGap : GLfloat;
+    - hGap : GLfloat;
+    - gap : GLfloat;
+
+    - clickFunction : functionPtr;
+
+    - isVisible : bool;
+
+    - elements : vector<vector<guiElement*>>
+
+    - addElement(vpos : int, hpos : int, element : guiElement*) : void;
+
+    + frame(height : GLfloat, width : GLfloat, numVertical : int, numHorizontal : int, xPos : GLfloat, yPos : GLfloat, ID : int = -1, gap : float = 0.05);
+    
+    + show() : void;
+    + draw() : void;
+    + hide() : void;
+    + generate() : void;
+
+    + addButton(vpos : int, hpos : int, vsize : int, hsize : int, ID : int, text : const char*) : void;
+    + addButton(vpos : int, hpos : int, vsize : int, hsize : int, ID : int, text : const char*, color : vector<GLfloat>) : void;
+    + addToggleButton(vpos : int, hpos : int, vsize : int, hsize : int, ID : int, state : bool) : void;
+    
+    + addText(vpos : int, hpos : int, vsize : int, hsize : int, ID : int, text : const char*) : void;
+    + addTextInput(vpos : int, hpos : int, vsize : int, hsize : int, ID : int) : void;
+
+    + addClickFunction(fun : functionPtr) : void;
+
+    + clear() : void;
+    + keyPress(key : int);
+    + mouseClick(button : int, state : int, xpos : GLfloat, yPos : GLfloat) : int;
+
+    + visible() : bool;
+    + getState(ID : int) : bool;
+    + setState(ID : int, state : bool) : void;
+
+    + getTextInput(ID : int) : string;
+    + getElement(ID : int) : guiElement*;
+
+}
+frame "1" *-- "0..*" guiElement
+
+class textDisp extends guiElement {
+    - text : string;
+    - textColor : vector<GLfloat>
+
+    + textDisp(vsize : int, hsize : int, ID : int, text : const char*, color : vector<GLfloat>);
+    + textDisp(vsize : int, hsize : int, ID : int, text : const char*);
+
+    + onClick(fun : functionPtr) : void;
+    
+    + setTextColor(r : GLfloat, g : GLfloat, b : GLfloat) : void;
+    + setText(text : const char*) : void;
+
+    + draw() : void;
+}
+
+class textInput extends guiElement {
+    - text : string;
+    - textColor : vector<GLfloat>
+
+    + textInput(vsize : int, hsize : int, ID : int);
+
+    + getText() : string;
+
+    + onKeyPress(int) : void;
+    + onClick(fun : functionPtr) : void;
+    + addChar(character : char) : void;
+    + deleteChar() : void;
+    
+    + draw() : void;
+    + clear() : void;
+
+    + setClicked(state : bool) : void;
+}
+
+class button extends guiElement {
+    - text : string;
+    - color : vector<GLfloat>
+
+    + button(vsize : int, hsize : int, ID : int, status : bool, color : vector<GLfloat>);
+    + button(vsize : int, hsize : int, ID : int, status : bool);
+
+    + setText(const char*) : void;
+    + draw() : void;
+}
+
+class toggleButton extends button {
+    - state : bool;
+
+    + toggleButton(vsize : int, hsize : int, ID : int, status : bool);
+
+    + getState() : bool : void;
+    + setState(state : bool) : void;
+
+    + onClick(fun : functionPtr) : void;
+    
+    + toggle() : void;
+}
+
+class window {
+    - vision : scene*;
+    - selectedShape : solid*
+    - cam : camera*
+    
+    - selectedShapeID : usigned int;
+
+    - selIterator : sceneIterator
+
+    - inType : inputType;
+
+    - aspectRatio : GLfloat;
+    
+    - waitingInput : int;
+    - width : int;
+    - height : int;
+    - currentMenu : int;
+
+    - menu : map<int, frame*>;
+    - tempMenu : pair<int, bool>;
+
+    + window(width : int, height : int, title : char*, argc : int*, argv : char**)
+    + ~window()
+
+    + input() : void;
+    + init() : void;
+
+    + deleteShape() : void;
+    
+    + void select(std::pair<unsigned int, geometry*>);
+    + clearSelection() : void;
+
+    + updateSelection() : void;
+
+    + showPopup(text : char*) : void;
+    + closePopup() : void;
+
+    + addShape(shape : solid*) : void
+
+    + setMenu(ID : int, state : menuState = VISIBLE, clear : bool = true) : void;
+    + getMenu() : frame*;
+
+    + getWaiting() : int
+    + setWaiting(waiting : int) : void
+    + decWaiting() : void
+
+    + setInputType(inputType) : void
+    + getInputType() : inpytType
+
+    + draw() : static void;
+    + mouseClick(button : int, state : int, x : int, y : int) : static void;
+    + keyp(key : unsigned char, x : int, y : int) : static void;
+    + specialKeyp(key : int, x : int, y : int) : static void;
+    + resize(w : int, h : int) : static void;
+    + mouseMove(x : int, y : int) : static void;
+}
+window "1" *-- "1" scene
+window "1" *-- "1" camera
+window "1" *-- "0..*" frame
+
+
+@enduml

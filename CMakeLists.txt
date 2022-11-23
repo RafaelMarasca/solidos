@@ -44,6 +44,7 @@ if (UNIX)
 
   find_library(GLFW NAMES glfw3 glfw glfw3dll)
   find_library(GLEW NAMES glew glew2 GLEW)
+  find_library(GLU NAMES glu GLU) 
   find_library(GLUT NAMES glut freeglut freeglut3)
   find_library(PTHREAD NAMES thread pthread threads pthreads)
 

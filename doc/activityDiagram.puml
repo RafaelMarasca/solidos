@@ -1,0 +1,26 @@
+@startuml OpenGL_SL_AD
+
+start
+
+repeat :Tela de visualização;
+if(Tecla pressionada?) then (Não)
+
+(Sim) elseif() then (Delete)
+    :Deleta o sólido;
+(Espaço) elseif (Sólido selecionado?) then (Sim)
+    :Edita o sólido;
+(Não) elseif (Adicionar novo sólido?) then (Sim)
+    repeat
+    :Menu de inserção de sólido;
+    :Digitar coordenadas do centro e tamanho das arestas/raios;
+    repeat while (Dados válidos?) is (Não)
+    ->Sim;
+    :Sólido adicionado;
+
+else (Não)
+endif
+repeat while (Sair?) is (Não)
+->Sim;
+stop
+
+@enduml
